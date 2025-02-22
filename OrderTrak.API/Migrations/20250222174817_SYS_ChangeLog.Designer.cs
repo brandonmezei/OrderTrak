@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250222174817_SYS_ChangeLog")]
+    partial class SYS_ChangeLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,52 +57,6 @@ namespace OrderTrak.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SYS_ChangeLog");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLogDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChangeLogId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("FormID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("TicketID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TicketInfo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdateName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChangeLogId");
-
-                    b.ToTable("SYS_ChangeLogDetails");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_User", b =>
@@ -161,22 +118,6 @@ namespace OrderTrak.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SYS_Users");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLogDetails", b =>
-                {
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLog", "SYS_ChangeLog")
-                        .WithMany("SYS_ChangeLogDetails")
-                        .HasForeignKey("ChangeLogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SYS_ChangeLog");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLog", b =>
-                {
-                    b.Navigation("SYS_ChangeLogDetails");
                 });
 #pragma warning restore 612, 618
         }

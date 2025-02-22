@@ -5,5 +5,6 @@ namespace OrderTrak.API.Services.Auth
     public interface IAuthService
     {
         Task Register(RegisterDTO registerDTO);
+        Task<AuthReturnDTO> Login(LoginDTO loginDTO);
     }
 }

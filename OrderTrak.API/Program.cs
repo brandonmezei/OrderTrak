@@ -1,22 +1,49 @@
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.MSSqlServer;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using OrderTrak.API.Services.Auth;
+using Microsoft.IdentityModel.Tokens;
 using OrderTrak.API.Models.OrderTrakDB;
-using System.Collections.ObjectModel;
+using OrderTrak.API.Providers;
+using OrderTrak.API.Services.Auth;
+using OrderTrak.API.Services.ChangeLog;
+using Serilog;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new TrimmingJsonConverter());
+    });
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Configure JWT authentication
+var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new Exception("No JWT Key"));
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
 // Configure Serilog
-// dotnet user-secrets init
-// dotnet user-secrets set "ConnectionStrings:OrderTrakDatabase" "Server=BRANDON-PC;Database=OrderTrak;User Id=OrderTrak;Password=Mezei3657!;Trusted_Connection=True;Encrypt=false"
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -37,8 +64,11 @@ builder.Host.UseSerilog();
 builder.Services.AddDbContext<OrderTrakContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("OrderTrakDatabase")));
 
+builder.Services.AddHttpContextAccessor();
+
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IChangeLogService, ChangeLogService>();
 
 var app = builder.Build();
 
@@ -50,7 +80,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseUsernameMiddleware();
 
 app.MapControllers();
 

@@ -1,16 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OrderTrak.API.Models.DTO.Auth;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Static;
+using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace OrderTrak.API.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly OrderTrakContext _db;
+        private readonly OrderTrakContext _orderTrakContext;
+        private readonly IConfiguration _configuration;
+        private readonly string _jwtKey;
 
-        public AuthService(OrderTrakContext db)
+        public AuthService(OrderTrakContext db, IConfiguration configuration)
         {
-            _db = db;
+            _orderTrakContext = db;
+            _configuration = configuration;
+
+            _jwtKey = _configuration["Jwt:Key"] ?? throw new Exception("JWT Key not found");
         }
 
         private void PasswordCheck(string password)
@@ -37,11 +48,8 @@ namespace OrderTrak.API.Services.Auth
         public async Task Register(RegisterDTO registerDTO)
         {
             // Check if user already exists
-            var user = await _db.SYS_Users
-                .FirstOrDefaultAsync(x => x.Email == registerDTO.Email && !x.IsDelete);
-
-            if (user != null)
-                throw new Exception("User already exists");
+            if (await _orderTrakContext.SYS_Users.AnyAsync(x => x.Email == registerDTO.Email && !x.IsDelete))
+                throw new ValidationException("User already exists");
 
             // Password Check
             PasswordCheck(registerDTO.Password);
@@ -50,9 +58,9 @@ namespace OrderTrak.API.Services.Auth
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDTO.Password);
 
             // Create new user
-            user = new SYS_User
+            var user = new SYS_User
             {
-                UserName = registerDTO.Email.Split('@')[0],
+                UserName = registerDTO.Email.Split('@')[0].Substring(0, 50),
                 FirstName = registerDTO.FirstName,
                 LastName = registerDTO.LastName,
                 Email = registerDTO.Email,
@@ -61,8 +69,46 @@ namespace OrderTrak.API.Services.Auth
             };
 
             // Add the new user to the database
-            _db.SYS_Users.Add(user);
-            await _db.SaveChangesAsync();
+            _orderTrakContext.SYS_Users.Add(user);
+            await _orderTrakContext.SaveChangesAsync();
+        }
+
+        public async Task<AuthReturnDTO> Login(LoginDTO loginDTO)
+        {
+            // Get User From DB
+            var user = await _orderTrakContext.SYS_Users
+                .FirstOrDefaultAsync(x => x.Email == loginDTO.Email && x.Approved)
+                ?? throw new ValidationException(Messages.CannotLogin);
+
+            // Check Password
+            if (!BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
+                throw new ValidationException(Messages.CannotLogin);
+
+            // Generate JWT Token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"]
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return new AuthReturnDTO
+            {
+                Token = tokenString,
+                Expiration = tokenDescriptor.Expires.Value,
+                UserName = user.UserName,
+                Email = user.Email
+            };
         }
     }
 }

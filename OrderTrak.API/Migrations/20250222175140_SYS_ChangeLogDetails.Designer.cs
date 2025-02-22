@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250222175140_SYS_ChangeLogDetails")]
+    partial class SYS_ChangeLogDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,17 +169,12 @@ namespace OrderTrak.API.Migrations
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLogDetails", b =>
                 {
                     b.HasOne("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLog", "SYS_ChangeLog")
-                        .WithMany("SYS_ChangeLogDetails")
+                        .WithMany()
                         .HasForeignKey("ChangeLogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("SYS_ChangeLog");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLog", b =>
-                {
-                    b.Navigation("SYS_ChangeLogDetails");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
     public class CommonObject
     {
         [Required]
-        public DateTime CreateDate { get; set; } = DateTime.Now;
+        public DateTime CreateDate { get; set; } = DateTime.UtcNow;
 
         [Required]
         [MaxLength(50)]
