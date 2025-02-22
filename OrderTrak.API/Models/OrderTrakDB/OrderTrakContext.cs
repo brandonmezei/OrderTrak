@@ -1,19 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace YourNamespace
+namespace OrderTrak.API.Models.OrderTrakDB
 {
     public class OrderTrakContext : DbContext
     {
-        public DbSet<SYS_User> SYS_Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public OrderTrakContext(DbContextOptions<OrderTrakContext> options)
+            : base(options)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            optionsBuilder.UseSqlServer(config.GetConnectionString("OrderTrakDatabase"));
         }
+
+        public DbSet<SYS_User> SYS_Users { get; set; }
     }
 }

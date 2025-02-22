@@ -1,0 +1,44 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "OrderTrakDatabase": ""
+  },
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.MSSqlServer", "Serilog.Sinks.Console" ],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Information",
+        "System": "Information"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console"
+      },
+      {
+        "Name": "MSSqlServer",
+        "Args": {
+          "connectionString": "OrderTrakDatabase",
+          "tableName": "SYS_EventLog",
+          "autoCreateSqlTable": true,
+          "restrictedToMinimumLevel": "Information",
+          "columnOptionsSection": {
+            "addStandardColumns": [ "LogEvent" ],
+            "removeStandardColumns": [ "Properties" ]
+          }
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
+    "Properties": {
+      "Application": "OrderTrak.API"
+    }
+  },
+  "AllowedHosts": "*"
+}

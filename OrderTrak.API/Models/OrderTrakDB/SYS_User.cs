@@ -1,8 +1,7 @@
-using OrderTrak.API.Models.OrderTrakDB;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YourNamespace
+namespace OrderTrak.API.Models.OrderTrakDB
 {
     public class SYS_User : CommonObject
     {
@@ -29,5 +28,8 @@ namespace YourNamespace
         [Required]
         [MaxLength(100)]
         public string Password { get; set; }
+
+        [Required]
+        public bool Approved { get; set; }
     }
 }

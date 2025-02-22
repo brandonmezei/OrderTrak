@@ -18,5 +18,8 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         [Required]
         public bool IsDelete { get; set; }
+
+        [Required]
+        public Guid FormID { get; set; } = Guid.NewGuid();
     }
 }

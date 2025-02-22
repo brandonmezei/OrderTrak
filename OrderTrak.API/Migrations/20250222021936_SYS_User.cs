@@ -22,11 +22,13 @@ namespace OrderTrak.API.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Approved = table.Column<bool>(type: "bit", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdateName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDelete = table.Column<bool>(type: "bit", nullable: false)
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
+                    FormID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
