@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OrderTrak.API.Models.OrderTrakDB;
 using OrderTrak.API.Providers;
+using OrderTrak.API.Providers.AuthRequirements;
 using OrderTrak.API.Services.Auth;
 using OrderTrak.API.Services.ChangeLog;
+using OrderTrak.API.Services.Customer;
 using Serilog;
 using System.Text;
 
@@ -69,6 +72,15 @@ builder.Services.AddHttpContextAccessor();
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IChangeLogService, ChangeLogService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+// Register custom authorization handler
+builder.Services.AddScoped<IAuthorizationHandler, FunctionAccessHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Customer", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Customer")));
+});
 
 var app = builder.Build();
 

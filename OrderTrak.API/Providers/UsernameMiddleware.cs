@@ -1,4 +1,6 @@
-﻿namespace OrderTrak.API.Providers
+﻿using System.Security.Claims;
+
+namespace OrderTrak.API.Providers
 {
     public class UsernameMiddleware
     {
@@ -11,14 +13,16 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.User?.Identity != null)
+            if (context.User.Identity?.IsAuthenticated == true)
             {
-                if (context.User.Identity.IsAuthenticated)
+                var username = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                
+                if (username != null)
                 {
-                    var username = context.User.Identity.Name;
                     context.Items["Username"] = username;
                 }
             }
+
             await _next(context);
         }
     }

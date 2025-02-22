@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250222204329_SYS_Function")]
+    partial class SYS_Function
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,9 +362,6 @@ namespace OrderTrak.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("RoleID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
@@ -375,8 +375,6 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleID");
 
                     b.ToTable("SYS_Users");
                 });
@@ -738,15 +736,6 @@ namespace OrderTrak.API.Migrations
                         .IsRequired();
 
                     b.Navigation("SYS_Function");
-
-                    b.Navigation("SYS_Roles");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_User", b =>
-                {
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.SYS_Roles", "SYS_Roles")
-                        .WithMany()
-                        .HasForeignKey("RoleID");
 
                     b.Navigation("SYS_Roles");
                 });

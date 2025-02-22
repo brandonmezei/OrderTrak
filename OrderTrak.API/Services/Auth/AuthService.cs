@@ -45,7 +45,7 @@ namespace OrderTrak.API.Services.Auth
 
         }
 
-        public async Task Register(RegisterDTO registerDTO)
+        public async Task RegisterAsync(RegisterDTO registerDTO)
         {
             // Check if user already exists
             if (await _orderTrakContext.SYS_Users.AnyAsync(x => x.Email == registerDTO.Email && !x.IsDelete))
@@ -60,7 +60,7 @@ namespace OrderTrak.API.Services.Auth
             // Create new user
             var user = new SYS_User
             {
-                UserName = registerDTO.Email.Split('@')[0].Substring(0, 50),
+                UserName = registerDTO.Email.Split('@')[0],
                 FirstName = registerDTO.FirstName,
                 LastName = registerDTO.LastName,
                 Email = registerDTO.Email,
@@ -73,7 +73,7 @@ namespace OrderTrak.API.Services.Auth
             await _orderTrakContext.SaveChangesAsync();
         }
 
-        public async Task<AuthReturnDTO> Login(LoginDTO loginDTO)
+        public async Task<AuthReturnDTO> LoginAsync(LoginDTO loginDTO)
         {
             // Get User From DB
             var user = await _orderTrakContext.SYS_Users

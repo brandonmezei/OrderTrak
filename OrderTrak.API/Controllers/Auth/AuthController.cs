@@ -22,7 +22,7 @@ namespace OrderTrak.API.Controllers.Auth
         {
             try
             {
-                await _authService.Register(registerDTO);
+                await _authService.RegisterAsync(registerDTO);
                 return Ok();
             }
             catch (ValidationException ex)
@@ -31,7 +31,7 @@ namespace OrderTrak.API.Controllers.Auth
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -40,7 +40,7 @@ namespace OrderTrak.API.Controllers.Auth
         {
             try
             {
-                return Ok(await _authService.Login(loginDTO));
+                return Ok(await _authService.LoginAsync(loginDTO));
             }
             catch (ValidationException ex)
             {
@@ -48,7 +48,7 @@ namespace OrderTrak.API.Controllers.Auth
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
         #endregion

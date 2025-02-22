@@ -17,7 +17,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public int TicketID { get; set; }
 
         [Required]
-        public string TicketInfo { get; set; } = string.Empty;  
+        public string TicketInfo { get; set; } = string.Empty;
 
         public virtual SYS_ChangeLog SYS_ChangeLog { get; set; } = null!;
     }

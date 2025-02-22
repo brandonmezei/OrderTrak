@@ -6,11 +6,12 @@ namespace OrderTrak.API.Models.OrderTrakDB
 {
     public class OrderTrakContext : DbContext
     {
-        private readonly string _username;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public OrderTrakContext(DbContextOptions<OrderTrakContext> options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
-            _username = httpContextAccessor.HttpContext?.Items["Username"]?.ToString() ?? "System";
+            _httpContextAccessor = httpContextAccessor;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +34,20 @@ namespace OrderTrak.API.Models.OrderTrakDB
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
                 }
             }
+
+            // Configure foreign key constraint for PO_Line
+            modelBuilder.Entity<PO_Line>()
+                .HasOne(pl => pl.UPL_ProjectPart)
+                .WithMany(pp => pp.PO_Line)
+                .HasForeignKey(pl => pl.ProjectPartID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure foreign key constraint for SYS_RolesToFunction
+            modelBuilder.Entity<SYS_RolesToFunction>()
+                .HasOne(pl => pl.SYS_Function)
+                .WithMany(pp => pp.SYS_RolesToFunction)
+                .HasForeignKey(pl => pl.FunctionID)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public override int SaveChanges()
@@ -49,12 +64,14 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         private void SetDefaults()
         {
+            var username = _httpContextAccessor.HttpContext?.Items["Username"]?.ToString() ?? "System";
+
             var entries = ChangeTracker.Entries<CommonObject>()
                 .Where(e => e.State == EntityState.Added);
 
             foreach (var entry in entries)
             {
-                entry.Entity.CreateName = _username;
+                entry.Entity.CreateName = username;
                 entry.Entity.CreateDate = DateTime.UtcNow;
             }
 
@@ -63,7 +80,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
             foreach (var entry in entries)
             {
-                entry.Entity.UpdateName = _username;
+                entry.Entity.UpdateName = username;
                 entry.Entity.UpdateDate = DateTime.UtcNow;
             }
         }
@@ -72,5 +89,14 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         public DbSet<SYS_ChangeLog> SYS_ChangeLog { get; set; }
         public DbSet<SYS_ChangeLogDetails> SYS_ChangeLogDetails { get; set; }
+        public DbSet<PO_Header> PO_Header { get; set; }
+        public DbSet<PO_Line> PO_Line { get; set; }
+        public DbSet<UPL_Customer> UPL_Customer { get; set; }
+        public DbSet<UPL_PartInfo> UPL_PartInfo { get; set; }
+        public DbSet<UPL_Project> UPL_Project { get; set; }
+        public DbSet<UPL_ProjectPart> UPL_ProjectPart { get; set; }
+        public DbSet<SYS_Roles> SYS_Roles { get; set; }
+        public DbSet<SYS_RolesToFunction> SYS_RolesToFunction { get; set; }
+        public DbSet<SYS_Function> SYS_Function { get; set; }
     }
 }
