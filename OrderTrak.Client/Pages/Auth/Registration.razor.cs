@@ -1,25 +1,23 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Auth;
-using OrderTrak.Client.Shared;
-using System.ComponentModel.DataAnnotations;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Auth
 {
-    public partial class Login : OrderTrakBasePage
+    public partial class Registration
     {
-        [Inject] 
+        [Inject]
         private IAuthService _authService { get; set; } = default!;
 
-        protected LoginDTO LoginModel { get; set; } = new();
+        public RegisterDTO RegisterModel { get; set; } = new();
 
         protected override void OnInitialized()
         {
-            Layout.UpdateHeader("Welcome to OrderTrak", "Please Login Below...");
+            Layout.UpdateHeader("Welcome to OrderTrak", "Please Register Below...");
         }
 
-        protected async Task LoginUser()
+        protected async Task RegisterUser()
         {
             if (IsLoading)
                 return;
@@ -30,14 +28,17 @@ namespace OrderTrak.Client.Pages.Auth
 
             try
             {
-                await _authService.Login(LoginModel);
+                await _authService.Register(RegisterModel);
+                Layout.AddMessage("Registration Successful", MessageType.Success);
+
+                Navigation.NavigateTo("/login");
             }
 
             catch (ApiException ex)
             {
                 Layout.AddMessage(ex.Response, MessageType.Error);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }

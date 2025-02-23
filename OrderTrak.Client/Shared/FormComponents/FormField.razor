@@ -1,0 +1,26 @@
+﻿<div class="field">
+    @if(!string.IsNullOrEmpty(Title))
+    {
+        <label class="label">@Title</label>
+    }
+    <div class="control @(!string.IsNullOrEmpty(Icon) ? "has-icons-left" : string.Empty)">
+        @Content
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <span class="icon is-small is-left">
+                <i class="fas @Icon"></i>
+            </span>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+}

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
@@ -15,7 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\ChangeLog\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\webfonts\" />
   </ItemGroup>
 
 </Project>

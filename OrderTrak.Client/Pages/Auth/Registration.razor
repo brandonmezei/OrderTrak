@@ -1,0 +1,45 @@
+﻿@page "/register"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Registration - OrderTrak</PageTitle>
+
+<div class="columns is-centered">
+    <div class="column is-one-third">
+        <EditForm Model="@RegisterModel" OnValidSubmit="@RegisterUser">
+            <CardComponent Title="Register" Icon="fa-user-plus">
+                <CardBody>
+                    <DataAnnotationsValidator />
+                    <FormField Icon="fa-user">
+                        <Content>
+                            <InputText class="input is-danger" Type="text" Placeholder="First Name" @bind-Value="RegisterModel.FirstName" />
+                            <ValidationMessage For="@(() => RegisterModel.FirstName)" />
+                        </Content>
+                    </FormField>
+                    <FormField Icon="fa-user">
+                        <Content>
+                            <InputText class="input is-danger" Type="text" Placeholder="Last Name" @bind-Value="RegisterModel.LastName" />
+                            <ValidationMessage For="@(() => RegisterModel.LastName)" />
+                        </Content>
+                    </FormField>
+                    <FormField Icon="fa-envelope">
+                        <Content>
+                            <InputText class="input is-danger" Type="text" Placeholder="Email" @bind-Value="RegisterModel.Email" />
+                            <ValidationMessage For="@(() => RegisterModel.Email)" />
+                        </Content>
+                    </FormField>
+                    <FormField Icon="fa-lock">
+                        <Content>
+                             <InputText class="input is-danger" Type="password" Placeholder="Password" @bind-Value="RegisterModel.Password" />
+                            <ValidationMessage For="@(() => RegisterModel.Password)" />
+                        </Content>
+                    </FormField>
+                </CardBody>
+                <Footer>
+                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">Register</button>
+                </Footer>
+            </CardComponent>
+        </EditForm>
+    </div>
+</div>

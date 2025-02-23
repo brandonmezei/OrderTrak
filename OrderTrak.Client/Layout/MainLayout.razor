@@ -20,12 +20,21 @@
             </div>
 
             <div class="navbar-end">
-                <a class="navbar-item" href="/login">
-                    <strong>Login</strong>
-                </a>
-                <a class="navbar-item" href="/register">
-                    Register
-                </a>
+                @if (UserName != null)
+                {
+                    <span class="navbar-item">
+                        <strong>Welcome @UserName</strong>
+                    </span>
+                }
+                else
+                {
+                    <a class="navbar-item" href="/login">
+                        <strong>Login</strong>
+                    </a>
+                    <a class="navbar-item" href="/register">
+                        Register
+                    </a>
+                }
             </div>
         </div>
     </nav>
@@ -50,8 +59,16 @@
                 <div class="column is-10">
                     <div class="content">
                         <div class="notification @message.BulmaLevel">
-                            <button class="delete" @onclick="() => RemoveMessage(message)"></button>
-                            <strong>@message.Text</strong>
+                            <div class="columns is-centered">
+                                <div class="column">
+                                    <strong>@message.Text</strong>
+                                </div>
+                                <div class="column">
+                                    <div class="button is-pulled-right">
+                                        <button class="fas fa-trash-alt @message.BulmaLevel" @onclick="() => RemoveMessage(message)"></button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

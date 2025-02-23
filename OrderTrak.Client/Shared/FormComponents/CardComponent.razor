@@ -3,6 +3,12 @@
         <p class="card-header-title">
             @Title
         </p>
+        @if (Icon != null)
+        {
+            <span class="card-header-icon">
+                <i class="fas @Icon"></i>
+            </span>
+        }
     </header>
     <div class="card-content">
         <div class="content">
@@ -24,4 +30,6 @@
     [Parameter]
     public RenderFragment? Footer { get; set; }
 
+    [Parameter]
+    public string? Icon { get; set; }
 }

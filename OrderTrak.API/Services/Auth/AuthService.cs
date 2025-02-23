@@ -92,7 +92,8 @@ namespace OrderTrak.API.Services.Auth
                 Subject = new ClaimsIdentity(
                 [
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("Full Name", $"{user.FirstName} {user.LastName}")
                 ]),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

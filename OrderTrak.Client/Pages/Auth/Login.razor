@@ -6,17 +6,26 @@
 <PageTitle>Login - OrderTrak</PageTitle>
 
 <div class="columns is-centered">
-    <div class="column is-half">
+    <div class="column is-one-third">
         <EditForm Model="@LoginModel" OnValidSubmit="@LoginUser">
-            <CardComponent Title="Login">
+            <CardComponent Title="Login" Icon="fa-lock">
                 <CardBody>
-                    <ValidationSummary />
-                    <InputText Label="Email" Type="text" Placeholder="Email" @bind-Value="LoginModel.Email" />
-                    <InputText Label="Password" Type="password" Placeholder="Password" @bind-Value="LoginModel.Password" />
+                    <DataAnnotationsValidator />
+                    <FormField Icon="fa-envelope">
+                        <Content>
+                            <InputText class="input is-danger" Type="text" Placeholder="Email" @bind-Value="LoginModel.Email" />
+                            <ValidationMessage For="@(() => LoginModel.Email)" />
+                        </Content>
+                    </FormField>
+                    <FormField Icon="fa-lock">
+                        <Content>
+                            <InputText class="input is-danger" Type="password" Placeholder="Password" @bind-Value="LoginModel.Password" />
+                            <ValidationMessage For="@(() => LoginModel.Password)" />
+                        </Content>
+                    </FormField>
                 </CardBody>
                 <Footer>
-                    <button type="submit" class="card-footer-item">Login</button>
-                    <a href="/register" class="card-footer-item">Register</a>
+                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">Login</button>
                 </Footer>
             </CardComponent>
         </EditForm>
