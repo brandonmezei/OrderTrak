@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderTrak.API.Models.DTO.Project;
 using OrderTrak.API.Services.Project;
@@ -15,8 +14,8 @@ namespace OrderTrak.API.Controllers.Project
         private readonly IProjectService _projectService = projectService;
 
         #region GET
-        [HttpGet("get/{projectID}")]
-        public async Task<IActionResult> GetProjectAsync(Guid projectID)
+        [HttpGet("GetProject/{projectID}")]
+        public async Task<ActionResult<ProjectDTO>> GetProjectAsync(Guid projectID)
         {
             try
             {
@@ -34,8 +33,8 @@ namespace OrderTrak.API.Controllers.Project
         #endregion
 
         #region POST
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateProjectAsync([FromBody] ProjectCreateDTO projectCreateDTO)
+        [HttpPost("CreateProject")]
+        public async Task<ActionResult<Guid>> CreateProjectAsync([FromBody] ProjectCreateDTO projectCreateDTO)
         {
             try
             {
@@ -51,8 +50,8 @@ namespace OrderTrak.API.Controllers.Project
             }
         }
 
-        [HttpPost("update")]
-        public async Task<IActionResult> UpdateProjectAsync([FromBody] ProjectUpdateDTO projectUpdateDTO)
+        [HttpPost("UpdateProject")]
+        public async Task<ActionResult> UpdateProjectAsync([FromBody] ProjectUpdateDTO projectUpdateDTO)
         {
             try
             {
@@ -71,8 +70,8 @@ namespace OrderTrak.API.Controllers.Project
         #endregion
 
         #region DELETE
-        [HttpDelete("delete/{projectID}")]
-        public async Task<IActionResult> DeleteProjectAsync(Guid projectID)
+        [HttpDelete("DeleteProject/{projectID}")]
+        public async Task<ActionResult> DeleteProjectAsync(Guid projectID)
         {
             try
             {

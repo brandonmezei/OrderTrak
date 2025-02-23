@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OrderTrak.API.Models.DTO.Customer
+﻿namespace OrderTrak.API.Models.DTO.Customer
 {
     public class CustomerDTO
     {

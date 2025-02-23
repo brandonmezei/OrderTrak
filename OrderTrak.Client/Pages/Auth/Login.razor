@@ -1,0 +1,24 @@
+﻿@page "/login"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Login - OrderTrak</PageTitle>
+
+<div class="columns is-centered">
+    <div class="column is-half">
+        <EditForm Model="@LoginModel" OnValidSubmit="@LoginUser">
+            <CardComponent Title="Login">
+                <CardBody>
+                    <ValidationSummary />
+                    <InputText Label="Email" Type="text" Placeholder="Email" @bind-Value="LoginModel.Email" />
+                    <InputText Label="Password" Type="password" Placeholder="Password" @bind-Value="LoginModel.Password" />
+                </CardBody>
+                <Footer>
+                    <button type="submit" class="card-footer-item">Login</button>
+                    <a href="/register" class="card-footer-item">Register</a>
+                </Footer>
+            </CardComponent>
+        </EditForm>
+    </div>
+</div>

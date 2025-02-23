@@ -17,8 +17,8 @@ namespace OrderTrak.API.Services.Project
                 .FirstOrDefaultAsync(x => x.FormID == projectCreateDTO.CustID)
                 ?? throw new ValidationException("Customer not found.");
 
-            if(customer.UPL_Projects.Count > 0)
-                throw new ValidationException($"Project { projectCreateDTO.ProjectCode } already exists in customer { customer.CustomerCode }.");
+            if (customer.UPL_Projects.Count > 0)
+                throw new ValidationException($"Project {projectCreateDTO.ProjectCode} already exists in customer {customer.CustomerCode}.");
 
             // Create new Project
             var project = new UPL_Project

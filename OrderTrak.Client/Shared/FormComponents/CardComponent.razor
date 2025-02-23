@@ -1,0 +1,27 @@
+﻿<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            @Title
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            @CardBody
+        </div>
+    </div>
+    <footer class="card-footer">
+        @Footer
+    </footer>
+</div>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? CardBody { get; set; }
+
+    [Parameter]
+    public RenderFragment? Footer { get; set; }
+
+}

@@ -13,7 +13,7 @@ namespace OrderTrak.API.Controllers.Auth
 
         #region POST
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
+        public async Task<ActionResult> Register([FromBody] RegisterDTO registerDTO)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace OrderTrak.API.Controllers.Auth
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        public async Task<ActionResult<AuthReturnDTO>> Login([FromBody] LoginDTO loginDTO)
         {
             try
             {

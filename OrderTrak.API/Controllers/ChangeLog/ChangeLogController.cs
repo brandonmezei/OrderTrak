@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderTrak.API.Models.DTO;
+using OrderTrak.API.Models.DTO.ChangeLog;
 using OrderTrak.API.Services.ChangeLog;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,7 +16,7 @@ namespace OrderTrak.API.Controllers.ChangeLog
 
         #region POST
         [HttpPost("GetChangeLogs")]
-        public async Task<IActionResult> GetChangeLogsAsync(SearchQueryDTO searchQuery)
+        public async Task<ActionResult<PagedTable<ChangeLogDTO>>> GetChangeLogsAsync(SearchQueryDTO searchQuery)
         {
             try
             {

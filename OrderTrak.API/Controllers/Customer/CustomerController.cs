@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Customer;
 using OrderTrak.API.Services.Customer;
 using System.ComponentModel.DataAnnotations;
@@ -15,8 +15,8 @@ namespace OrderTrak.API.Controllers.Customer
         private readonly ICustomerService _customerService = customerService;
 
         #region GET
-        [HttpGet("get/{customerId}")]
-        public async Task<IActionResult> GetCustomerAsync(Guid customerId)
+        [HttpGet("GetCustomer/{customerId}")]
+        public async Task<ActionResult<CustomerDTO>> GetCustomerAsync(Guid customerId)
         {
             try
             {
@@ -34,8 +34,8 @@ namespace OrderTrak.API.Controllers.Customer
         #endregion
 
         #region POST
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateCustomerAsync([FromBody] CustomerCreateDTO customerCreateDTO)
+        [HttpPost("CreateCustomer")]
+        public async Task<ActionResult<Guid>> CreateCustomerAsync([FromBody] CustomerCreateDTO customerCreateDTO)
         {
             try
             {
@@ -51,8 +51,8 @@ namespace OrderTrak.API.Controllers.Customer
             }
         }
 
-        [HttpPost("update")]
-        public async Task<IActionResult> UpdateCustomerAsync([FromBody] CustomerUpdateDTO customerUpdateDTO)
+        [HttpPost("UpdateCustomer")]
+        public async Task<ActionResult> UpdateCustomerAsync([FromBody] CustomerUpdateDTO customerUpdateDTO)
         {
             try
             {
@@ -69,8 +69,8 @@ namespace OrderTrak.API.Controllers.Customer
             }
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchCustomersAsync([FromBody] CustomerSearchDTO customerSearchDTO)
+        [HttpPost("SearchCustomer")]
+        public async Task<ActionResult<PagedTable<CustomerSearchReturnDTO>>> SearchCustomersAsync([FromBody] CustomerSearchDTO customerSearchDTO)
         {
             try
             {
@@ -88,8 +88,8 @@ namespace OrderTrak.API.Controllers.Customer
         #endregion
 
         #region DELETE
-        [HttpDelete("delete/{customerId}")]
-        public async Task<IActionResult> DeleteCustomerAsync(Guid customerId)
+        [HttpDelete("DeleteCustomer/{customerId}")]
+        public async Task<ActionResult> DeleteCustomerAsync(Guid customerId)
         {
             try
             {

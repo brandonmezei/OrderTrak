@@ -1,17 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using OrderTrak.Client.Layout;
-using System.Runtime.CompilerServices;
+using OrderTrak.Client.Shared;
 
 namespace OrderTrak.Client.Pages
 {
-    public partial class Home
+    public partial class Home : OrderTrakBasePage
     {
-        [CascadingParameter]
-        public MainLayout MainLayout { get; set; } = default!;
 
-        protected override void OnInitialized()
-        {
-            MainLayout.UpdateHeader("Welcome to OrderTrak.", "Test Update.");
-        }
     }
 }

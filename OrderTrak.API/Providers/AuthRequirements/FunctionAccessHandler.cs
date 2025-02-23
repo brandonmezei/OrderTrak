@@ -24,7 +24,7 @@
             }
 
             var email = context.User.FindFirst(ClaimTypes.Email)?.Value;
-            
+
             if (email == null)
             {
                 context.Fail();

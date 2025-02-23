@@ -1,50 +1,68 @@
 ﻿@inherits LayoutComponentBase
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <div class="navbar-item">
-            <strong>OrderTrak</strong>
-        </div>
+<CascadingValue Value="this">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <div class="navbar-item">
+                <strong>OrderTrak</strong>
+            </div>
 
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-        </a>
-    </div>
-
-    <div class="navbar-menu">
-        <div class="navbar-start">
-            <!-- Additional navigation items can be added here if needed -->
-        </div>
-
-        <div class="navbar-end">
-            <a class="navbar-item" href="/login">
-                <strong>Login</strong>
-            </a>
-            <a class="navbar-item" href="/register">
-                Register
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarData">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
             </a>
         </div>
-    </div>
-</nav>
 
-<section class="hero is-light">
-    <div class="hero-body">
-        <p class="title">
-            @HeaderMessage
-        </p>
-        <p class="subtitle">
-            @SubTitle
-        </p>
-    </div>
-</section>
+        <div class="navbar-menu" id="navbarData">
+            <div class="navbar-start">
+                <!-- Additional navigation items can be added here if needed -->
+            </div>
 
+            <div class="navbar-end">
+                <a class="navbar-item" href="/login">
+                    <strong>Login</strong>
+                </a>
+                <a class="navbar-item" href="/register">
+                    Register
+                </a>
+            </div>
+        </div>
+    </nav>
 
-<section class="section">
-    @Body
-</section>
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <p class="title">
+                @HeaderMessage
+            </p>
+            <p class="subtitle">
+                @SubTitle
+            </p>
+        </div>
+    </section>
 
+    @if (Messages.Count > 0)
+    {
+        @foreach (var message in Messages)
+        {
+            <br />
+            <div class="columns is-centered">
+                <div class="column is-10">
+                    <div class="content">
+                        <div class="notification @message.BulmaLevel">
+                            <button class="delete" @onclick="() => RemoveMessage(message)"></button>
+                            <strong>@message.Text</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    <section class="section">
+        @Body
+    </section>
+</CascadingValue>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

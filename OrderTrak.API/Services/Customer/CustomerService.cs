@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderTrak.API.Models.DTO;
-using OrderTrak.API.Models.DTO.ChangeLog;
 using OrderTrak.API.Models.DTO.Customer;
 using OrderTrak.API.Models.OrderTrakDB;
 using System.ComponentModel.DataAnnotations;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OrderTrak.API.Services.Customer
 {
@@ -116,7 +114,7 @@ namespace OrderTrak.API.Services.Customer
             if (!string.IsNullOrEmpty(searchQuery.CustomerCode))
                 query = query.Where(x => x.CustomerCode.Contains(searchQuery.CustomerCode));
 
-            if(!string.IsNullOrEmpty(searchQuery.Address))
+            if (!string.IsNullOrEmpty(searchQuery.Address))
                 query = query.Where(x => x.Address.Contains(searchQuery.Address));
 
             if (!string.IsNullOrEmpty(searchQuery.City))

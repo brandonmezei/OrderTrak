@@ -1,30 +1,23 @@
 ﻿@page "/"
-@inherits LayoutComponentBase
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
 
 <PageTitle>OrderTrak</PageTitle>
 
 <div class="columns is-centered">
     <div class="column is-half">
-        <div class="card">
-            <header class="card-header is-link">
-                <p class="card-header-title">
-                    Welcome to OrderTrak
-                </p>
-            </header>
-            <div class="card-content">
-                <div class="content">
-                    OrderTrak is your comprehensive solution for managing orders and tracking projects efficiently. 
-                    Use the navigation bar to access different sections of the application. 
-                    If you have any questions, feel free to reach out to our support team.
-                    <br>
-                    <time datetime="2025-02-22">February 22, 2025</time>
-                </div>
-            </div>
-            <footer class="card-footer">
+        <CardComponent Title="Welcome to OrderTrak">
+            <CardBody>
+                OrderTrak is your comprehensive solution for managing orders and tracking projects efficiently.
+                Use the navigation bar to access different sections of the application.
+                If you have any questions, feel free to reach out to our support team.
+            </CardBody>
+            <Footer>
                 <a href="/login" class="card-footer-item">Login</a>
                 <a href="/register" class="card-footer-item">Register</a>
-            </footer>
-        </div>
+            </Footer>
+        </CardComponent>
     </div>
 </div>
 

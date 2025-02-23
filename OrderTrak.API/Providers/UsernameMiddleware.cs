@@ -16,7 +16,7 @@ namespace OrderTrak.API.Providers
             if (context.User.Identity?.IsAuthenticated == true)
             {
                 var username = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                
+
                 if (username != null)
                 {
                     context.Items["Username"] = username;

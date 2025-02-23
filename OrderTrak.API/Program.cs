@@ -88,6 +88,16 @@ builder.Services.AddAuthorization(options =>
         policy.Requirements.Add(new FunctionAccessRequirement("Project")));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", builder =>
+    {
+        builder.WithOrigins("https://localhost:7049")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -102,6 +112,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseUsernameMiddleware();
+
+app.UseCors("AllowBlazorClient");
 
 app.MapControllers();
 

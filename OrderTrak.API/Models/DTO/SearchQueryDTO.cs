@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrak.API.Models.DTO
 {

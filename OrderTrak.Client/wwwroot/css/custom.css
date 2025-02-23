@@ -7,3 +7,12 @@
     .navbar .navbar-burger span {
         color: white;
     }
+
+.card .card-header {
+    background-color: #4B0082; /* Deep Purple */
+    color: white;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
