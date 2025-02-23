@@ -10,13 +10,9 @@ namespace OrderTrak.API.Controllers.ChangeLog
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ChangeLogController : ControllerBase
+    public class ChangeLogController(IChangeLogService changeLogService) : ControllerBase
     {
-        private readonly IChangeLogService _changeLogService;
-        public ChangeLogController(IChangeLogService changeLogService)
-        {
-            _changeLogService = changeLogService;
-        }
+        private readonly IChangeLogService _changeLogService = changeLogService;
 
         #region POST
         [HttpPost("GetChangeLogs")]

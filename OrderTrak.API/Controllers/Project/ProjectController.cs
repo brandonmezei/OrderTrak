@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OrderTrak.API.Models.DTO.Customer;
-using OrderTrak.API.Services.Customer;
+using OrderTrak.API.Models.DTO.Project;
+using OrderTrak.API.Services.Project;
 using System.ComponentModel.DataAnnotations;
 
-namespace OrderTrak.API.Controllers.Customer
+namespace OrderTrak.API.Controllers.Project
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "Customer")]
-    public class CustomerController(ICustomerService customerService) : ControllerBase
+    [Authorize(Policy = "Project")]
+    public class ProjectController(IProjectService projectService) : ControllerBase
     {
-        private readonly ICustomerService _customerService = customerService;
+        private readonly IProjectService _projectService = projectService;
 
         #region GET
-        [HttpGet("get/{customerId}")]
-        public async Task<IActionResult> GetCustomerAsync(Guid customerId)
+        [HttpGet("get/{projectID}")]
+        public async Task<IActionResult> GetProjectAsync(Guid projectID)
         {
             try
             {
-                return Ok(await _customerService.GetCustomerAsync(customerId));
+                return Ok(await _projectService.GetProjectAsync(projectID));
             }
             catch (ValidationException ex)
             {
@@ -35,11 +35,11 @@ namespace OrderTrak.API.Controllers.Customer
 
         #region POST
         [HttpPost("create")]
-        public async Task<IActionResult> CreateCustomerAsync([FromBody] CustomerCreateDTO customerCreateDTO)
+        public async Task<IActionResult> CreateProjectAsync([FromBody] ProjectCreateDTO projectCreateDTO)
         {
             try
             {
-                return Ok(await _customerService.CreateCustomerAsync(customerCreateDTO));
+                return Ok(await _projectService.CreateProjectAsync(projectCreateDTO));
             }
             catch (ValidationException ex)
             {
@@ -52,29 +52,12 @@ namespace OrderTrak.API.Controllers.Customer
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> UpdateCustomerAsync([FromBody] CustomerUpdateDTO customerUpdateDTO)
+        public async Task<IActionResult> UpdateProjectAsync([FromBody] ProjectUpdateDTO projectUpdateDTO)
         {
             try
             {
-                await _customerService.UpdateCustomerAsync(customerUpdateDTO);
+                await _projectService.UpdateProjectAsync(projectUpdateDTO);
                 return Ok();
-            }
-            catch (ValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchCustomersAsync([FromBody] CustomerSearchDTO customerSearchDTO)
-        {
-            try
-            {
-                return Ok(await _customerService.SearchCustomersAsync(customerSearchDTO));
             }
             catch (ValidationException ex)
             {
@@ -88,12 +71,12 @@ namespace OrderTrak.API.Controllers.Customer
         #endregion
 
         #region DELETE
-        [HttpDelete("delete/{customerId}")]
-        public async Task<IActionResult> DeleteCustomerAsync(Guid customerId)
+        [HttpDelete("delete/{projectID}")]
+        public async Task<IActionResult> DeleteProjectAsync(Guid projectID)
         {
             try
             {
-                await _customerService.DeleteCustomerAsync(customerId);
+                await _projectService.DeleteProjectAsync(projectID);
                 return Ok();
             }
             catch (ValidationException ex)

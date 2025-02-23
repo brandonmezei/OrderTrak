@@ -5,14 +5,9 @@ using OrderTrak.API.Models.OrderTrakDB;
 
 namespace OrderTrak.API.Services.ChangeLog
 {
-    public class ChangeLogService : IChangeLogService
+    public class ChangeLogService(OrderTrakContext db) : IChangeLogService
     {
-        private readonly OrderTrakContext _orderTrakContext;
-
-        public ChangeLogService(OrderTrakContext db)
-        {
-            _orderTrakContext = db;
-        }
+        private readonly OrderTrakContext _orderTrakContext = db;
 
         public async Task<PagedTable<ChangeLogDTO>> GetChangeLogsAsync(SearchQueryDTO searchQuery)
         {

@@ -24,7 +24,7 @@ namespace OrderTrak.API.Services.Auth
             _jwtKey = _configuration["Jwt:Key"] ?? throw new Exception("JWT Key not found");
         }
 
-        private void PasswordCheck(string password)
+        private static void PasswordCheck(string password)
         {
             // Apply Basic Password Rules
             if (password.Length < 8)
@@ -89,11 +89,11 @@ namespace OrderTrak.API.Services.Auth
             var key = Encoding.ASCII.GetBytes(_jwtKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
+                Subject = new ClaimsIdentity(
+                [
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email)
-                }),
+                ]),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Issuer = _configuration["Jwt:Issuer"],

@@ -1,15 +1,18 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public class TrimmingJsonConverter : JsonConverter<string>
+namespace OrderTrak.API.Services.StringHandlers
 {
-    public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public class TrimmingJsonConverter : JsonConverter<string>
     {
-        return reader.GetString()?.Trim() ?? string.Empty;
-    }
+        public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return reader.GetString()?.Trim() ?? string.Empty;
+        }
 
-    public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
-    {
-        writer.WriteStringValue(value);
+        public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value);
+        }
     }
 }

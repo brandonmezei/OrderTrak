@@ -8,6 +8,8 @@ using OrderTrak.API.Providers.AuthRequirements;
 using OrderTrak.API.Services.Auth;
 using OrderTrak.API.Services.ChangeLog;
 using OrderTrak.API.Services.Customer;
+using OrderTrak.API.Services.Project;
+using OrderTrak.API.Services.StringHandlers;
 using Serilog;
 using System.Text;
 
@@ -73,6 +75,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IChangeLogService, ChangeLogService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 // Register custom authorization handler
 builder.Services.AddScoped<IAuthorizationHandler, FunctionAccessHandler>();
@@ -80,6 +83,9 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Customer", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Customer")));
+
+    options.AddPolicy("Project", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Project")));
 });
 
 var app = builder.Build();
