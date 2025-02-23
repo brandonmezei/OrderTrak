@@ -20,13 +20,7 @@
             </div>
 
             <div class="navbar-end">
-                @if (UserName != null)
-                {
-                    <span class="navbar-item">
-                        <strong>Welcome @UserName</strong>
-                    </span>
-                }
-                else
+                @if (string.IsNullOrEmpty(UserName))
                 {
                     <a class="navbar-item" href="/login">
                         <strong>Login</strong>
@@ -34,6 +28,34 @@
                     <a class="navbar-item" href="/register">
                         Register
                     </a>
+                }
+                else
+                {  
+                    <span class="navbar-item has-dropdown is-hoverable">
+                        <span class="navbar-link">
+                            @if (DateTime.Now.Hour < 12)
+                            {
+                                <i class="fas fa-sun"></i>
+                            }
+                            else if (DateTime.Now.Hour < 18)
+                            {
+                                <i class="fas fa-cloud-sun"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-moon"></i>
+                            }
+                            <strong>Welcome @UserName</strong>
+                        </span>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="/profile">
+                                User Profile
+                            </a>
+                            <a class="navbar-item" href="/signout">
+                                Sign Out
+                            </a>
+                        </div>
+                    </span>
                 }
             </div>
         </div>

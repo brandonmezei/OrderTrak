@@ -5,13 +5,16 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            @if (routeData.PageType == typeof(Login) || routeData.PageType == typeof(Registration))
+            @if (routeData.PageType == typeof(Login) || routeData.PageType == typeof(Registration) || routeData.PageType == typeof(Home))
             {
                 <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
             }
             else
             {
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <Authorizing>
+                        <RedirectToLogin />
+                    </Authorizing>
                     <NotAuthorized>
                         <RedirectToLogin />
                     </NotAuthorized>

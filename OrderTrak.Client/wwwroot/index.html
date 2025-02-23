@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="utf-8" />
@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/bulma.min.css" />
     <link rel="stylesheet" href="css/custom.css" />
     <link rel="stylesheet" href="css/all.css" />
+    <link rel="stylesheet" href="css/bulma-timeline.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
     <!-- If you add any scoped CSS files, uncomment the following to load them
     <link href="OrderTrak.Client.styles.css" rel="stylesheet" /> -->
@@ -17,11 +18,32 @@
 
 <body>
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <div class="navbar-item">
+                    <strong>OrderTrak</strong>
+                </div>
+            </div>
+        </nav>
+        <section class="hero is-light is-small">
+            <div class="hero-body">
+                <p class="title">
+                    Welcome to OrderTrak
+                </p>
+                <p class="subtitle">
+                    Now loading, this may take 30 seconds....
+                </p>
+            </div>
+        </section>
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <div class="loadingio-eclipse">
+                    <div class="ldio-rpinwye8j0b">
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="blazor-error-ui">

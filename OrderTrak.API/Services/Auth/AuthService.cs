@@ -93,7 +93,6 @@ namespace OrderTrak.API.Services.Auth
                 [
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim("Full Name", $"{user.FirstName} {user.LastName}")
                 ]),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
@@ -108,7 +107,8 @@ namespace OrderTrak.API.Services.Auth
                 Token = tokenString,
                 Expiration = tokenDescriptor.Expires.Value,
                 UserName = user.UserName,
-                Email = user.Email
+                Email = user.Email,
+                FullName = $"{user.FirstName} {user.LastName}"
             };
         }
     }

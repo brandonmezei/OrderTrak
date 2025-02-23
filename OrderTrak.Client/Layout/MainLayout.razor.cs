@@ -1,15 +1,14 @@
-using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using OrderTrak.Client.Models;
-using System.Security.Claims;
 
 namespace OrderTrak.Client.Layout
 {
     public partial class MainLayout
     {
-        [CascadingParameter]
-        private Task<AuthenticationState> authenticationStateTask { get; set; } = default!;
+        [Inject]
+        private ILocalStorageService _localStorageService { get; set; } = default!;
 
         protected string HeaderMessage { get; set; } = "Welcome to OrderTrak";
         protected string SubTitle { get; set; } = "Your trusted order management system...";
@@ -20,13 +19,7 @@ namespace OrderTrak.Client.Layout
 
         protected override async Task OnInitializedAsync()
         {
-            var authState = await authenticationStateTask;
-            var user = authState.User;
-
-            if (user.Identity != null && user.Identity.IsAuthenticated)
-            {
-                UserName = user.FindFirst(c => c.Type == "Full Name")?.Value;
-            }
+            UserName = await _localStorageService.GetItemAsync<string>("fullname");
         }
 
         public void UpdateHeader(string message, string subtitle)
@@ -52,7 +45,7 @@ namespace OrderTrak.Client.Layout
                     return;
                 }
             }
-            catch { }   
+            catch { }
 
             var pushedMessage = new OrderTrakMessages { Text = message };
 

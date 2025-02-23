@@ -1,0 +1,47 @@
+﻿@page "/changelog"
+@using OrderTrak.Client.Services
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Change Log - OrderTrak</PageTitle>
+
+@if (ChangeLogs != null)
+{
+    @if (ChangeLogs.TotalRecords > 0)
+    {
+        <div class="columns is-centered">
+            <div class="column is-three-quarters">
+                <CardComponent Title="Change Log" Icon="fas fa-history">
+                    <CardBody>
+                        <div class="timeline">
+                            @foreach (var changeLog in ChangeLogs.Data)
+                            {
+                                <div class="timeline-header">
+                                    <span class="tag">@changeLog.RollOutDate.DateTime.ToString("MMM dd yyyy")</span>
+                                </div>
+
+                                @foreach (var ticket in changeLog.ChangeLogDetails)
+                                {
+                                    <div class="timeline-item">
+                                        <div class="timeline-content">
+                                            <div class="box">
+                                                <p class="heading">Ticket: @ticket.TicketID</p>
+                                                <p>@ticket.TicketInfo</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <OrderTrakLoading />
+}

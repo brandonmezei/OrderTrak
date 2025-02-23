@@ -1,0 +1,16 @@
+﻿@page "/signout"
+@using Microsoft.AspNetCore.Components.Authorization
+@using OrderTrak.Client.Provider
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@code {
+    [Inject]
+    private AuthenticationStateProvider _authenticationStateProvider { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
+        Navigation.NavigateTo("/");
+    }
+}

@@ -25,6 +25,7 @@ namespace OrderTrak.Client.Services.Auth
             // Set String
             await _localStorageService.SetItemAsStringAsync("token", returnObj.Token);
             await _localStorageService.SetItemAsync("tokenExpiration", returnObj.Expiration);
+            await _localStorageService.SetItemAsync("fullname", returnObj.FullName);
 
             ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(returnObj.Token);
         }

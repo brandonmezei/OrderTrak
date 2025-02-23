@@ -1,5 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using Microsoft.JSInterop;
 
 namespace OrderTrak.Client.Services.API
 {

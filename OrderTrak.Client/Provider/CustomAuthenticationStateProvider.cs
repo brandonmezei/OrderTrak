@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace OrderTrak.Client.Provider
@@ -16,7 +17,7 @@ namespace OrderTrak.Client.Provider
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var token = await _localStorageService.GetItemAsync<string>("token") ?? string.Empty;
-            var expiration = await _localStorageService.GetItemAsync<DateTime>("tokenExpiration");
+            var expiration = await _localStorageService.GetItemAsync<DateTimeOffset>("tokenExpiration");
 
             if (string.IsNullOrEmpty(token) || expiration <= DateTime.UtcNow)
             {
@@ -24,7 +25,11 @@ namespace OrderTrak.Client.Provider
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
-            var claims = new[] { new Claim(ClaimTypes.Name, "User") }; // Add more claims as needed
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var claims = jwtToken.Claims.ToList();
+
             var identity = new ClaimsIdentity(claims, "jwt");
             var user = new ClaimsPrincipal(identity);
 
@@ -33,7 +38,11 @@ namespace OrderTrak.Client.Provider
 
         public void MarkUserAsAuthenticated(string token)
         {
-            var claims = new[] { new Claim(ClaimTypes.Name, "User") }; // Add more claims as needed
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var claims = jwtToken.Claims.ToList();
+
             var identity = new ClaimsIdentity(claims, "jwt");
             var user = new ClaimsPrincipal(identity);
 
@@ -44,6 +53,11 @@ namespace OrderTrak.Client.Provider
         {
             var identity = new ClaimsIdentity();
             var user = new ClaimsPrincipal(identity);
+
+            // Remove Local Storage Items
+            _localStorageService.RemoveItemAsync("token");
+            _localStorageService.RemoveItemAsync("tokenExpiration");
+            _localStorageService.RemoveItemAsync("fullname");
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }

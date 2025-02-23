@@ -6,8 +6,7 @@ using OrderTrak.Client;
 using OrderTrak.Client.Provider;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Auth;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using OrderTrak.Client.Services.ChangeLog;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,6 +16,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<IChangeLogService, ChangeLogService>();
 
 builder.Services.AddTransient<TokenHttpClientHandler>();
 
