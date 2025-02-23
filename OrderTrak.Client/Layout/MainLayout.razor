@@ -29,22 +29,22 @@
     </div>
 </nav>
 
-@if(string.IsNullOrEmpty(HeaderMessage))
-{
-<section class="hero is-primary">
+<section class="hero is-light">
     <div class="hero-body">
-        <div class="container">
-            <h1 class="title">
-                @HeaderMessage
-            </h1>
-        </div>
+        <p class="title">
+            @HeaderMessage
+        </p>
+        <p class="subtitle">
+            @SubTitle
+        </p>
     </div>
 </section>
-}
+
 
 <section class="section">
     @Body
 </section>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
