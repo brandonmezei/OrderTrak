@@ -6,14 +6,9 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
 
-    public class FunctionAccessHandler : AuthorizationHandler<FunctionAccessRequirement>
+    public class FunctionAccessHandler(OrderTrakContext dbContext) : AuthorizationHandler<FunctionAccessRequirement>
     {
-        private readonly OrderTrakContext _dbContext;
-
-        public FunctionAccessHandler(OrderTrakContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        private readonly OrderTrakContext _dbContext = dbContext;
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, FunctionAccessRequirement requirement)
         {

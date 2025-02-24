@@ -58,6 +58,8 @@ namespace OrderTrak.Client.Provider
             _localStorageService.RemoveItemAsync("token");
             _localStorageService.RemoveItemAsync("tokenExpiration");
             _localStorageService.RemoveItemAsync("fullname");
+            _localStorageService.RemoveItemAsync("permissions");
+
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }

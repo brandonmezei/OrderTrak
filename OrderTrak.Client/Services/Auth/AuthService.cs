@@ -5,18 +5,11 @@ using OrderTrak.Client.Services.API;
 
 namespace OrderTrak.Client.Services.Auth
 {
-    public class AuthService : IAuthService
+    public class AuthService(IClient client, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider) : IAuthService
     {
-        private readonly IClient _apiService;
-        private readonly ILocalStorageService _localStorageService;
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
-
-        public AuthService(IClient client, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider)
-        {
-            _apiService = client;
-            _localStorageService = localStorageService;
-            _authenticationStateProvider = authenticationStateProvider;
-        }
+        private readonly IClient _apiService = client;
+        private readonly ILocalStorageService _localStorageService = localStorageService;
+        private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
 
         public async Task Login(LoginDTO loginRequest)
         {
@@ -26,6 +19,11 @@ namespace OrderTrak.Client.Services.Auth
             await _localStorageService.SetItemAsStringAsync("token", returnObj.Token);
             await _localStorageService.SetItemAsync("tokenExpiration", returnObj.Expiration);
             await _localStorageService.SetItemAsync("fullname", returnObj.FullName);
+
+            var permissionList = await _apiService.PermissionsAsync();
+
+            // Set Permissions
+            await _localStorageService.SetItemAsync("permissions", permissionList.ToList());
 
             ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(returnObj.Token);
         }

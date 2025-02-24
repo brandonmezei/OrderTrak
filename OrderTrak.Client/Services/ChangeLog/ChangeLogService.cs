@@ -2,14 +2,9 @@
 
 namespace OrderTrak.Client.Services.ChangeLog
 {
-    public class ChangeLogService : IChangeLogService
+    public class ChangeLogService(IClient client) : IChangeLogService
     {
-        private readonly IClient _apiService;
-
-        public ChangeLogService(IClient apiService)
-        {
-            _apiService = apiService;
-        }
+        private readonly IClient _apiService = client;
 
         public async Task<PagedTableOfChangeLogDTO> GetChangeLogsAsync(SearchQueryDTO searchQuery)
         {

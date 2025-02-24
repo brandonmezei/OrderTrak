@@ -1,5 +1,3 @@
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using OrderTrak.Client.Models;
 
@@ -7,20 +5,10 @@ namespace OrderTrak.Client.Layout
 {
     public partial class MainLayout
     {
-        [Inject]
-        private ILocalStorageService _localStorageService { get; set; } = default!;
-
         protected string HeaderMessage { get; set; } = "Welcome to OrderTrak";
         protected string SubTitle { get; set; } = "Your trusted order management system...";
 
-        protected string? UserName { get; set; }
-
         protected List<OrderTrakMessages> Messages { get; set; } = [];
-
-        protected override async Task OnInitializedAsync()
-        {
-            UserName = await _localStorageService.GetItemAsync<string>("fullname");
-        }
 
         public void UpdateHeader(string message, string subtitle)
         {

@@ -15,11 +15,12 @@ namespace OrderTrak.API.Services.Auth
         private readonly OrderTrakContext _orderTrakContext;
         private readonly IConfiguration _configuration;
         private readonly string _jwtKey;
-
-        public AuthService(OrderTrakContext db, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthService(OrderTrakContext db, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _orderTrakContext = db;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
 
             _jwtKey = _configuration["Jwt:Key"] ?? throw new Exception("JWT Key not found");
         }
@@ -110,6 +111,20 @@ namespace OrderTrak.API.Services.Auth
                 Email = user.Email,
                 FullName = $"{user.FirstName} {user.LastName}"
             };
+        }
+
+        public async Task<List<string>> FetchPermissionsAsync()
+        {
+            var username = _httpContextAccessor.HttpContext?.Items["Username"]?.ToString() ?? "System";
+
+            var user = await _orderTrakContext.SYS_Users
+                .Include(x => x.SYS_Roles)
+                    .ThenInclude(x => x.SYS_RolesToFunction.Where(i => i.CanAccess))
+                        .ThenInclude(x => x.SYS_Function)
+                .FirstOrDefaultAsync(x => x.UserName == username && x.Approved)
+                ?? throw new ValidationException("User not found");
+
+            return [.. user.SYS_Roles.SYS_RolesToFunction.Select(x => x.SYS_Function.FunctionName)];
         }
     }
 }

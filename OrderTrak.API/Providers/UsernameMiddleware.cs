@@ -2,14 +2,9 @@
 
 namespace OrderTrak.API.Providers
 {
-    public class UsernameMiddleware
+    public class UsernameMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public UsernameMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next;
 
         public async Task InvokeAsync(HttpContext context)
         {

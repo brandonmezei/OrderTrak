@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderTrak.API.Models.DTO.Auth;
 using OrderTrak.API.Services.Auth;
 using System.ComponentModel.DataAnnotations;
@@ -36,6 +37,24 @@ namespace OrderTrak.API.Controllers.Auth
             try
             {
                 return Ok(await _authService.LoginAsync(loginDTO));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("permissions")]
+        public async Task<ActionResult<List<string>>> FetchPermissions()
+        {
+            try
+            {
+                return Ok(await _authService.FetchPermissionsAsync());
             }
             catch (ValidationException ex)
             {

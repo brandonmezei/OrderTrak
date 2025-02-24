@@ -2,14 +2,9 @@
 
 namespace OrderTrak.Client.Services.API
 {
-    public class TokenHttpClientHandler : DelegatingHandler
+    public class TokenHttpClientHandler(ITokenProvider tokenProvider) : DelegatingHandler
     {
-        private readonly ITokenProvider _tokenProvider;
-
-        public TokenHttpClientHandler(ITokenProvider tokenProvider)
-        {
-            _tokenProvider = tokenProvider;
-        }
+        private readonly ITokenProvider _tokenProvider = tokenProvider;
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
