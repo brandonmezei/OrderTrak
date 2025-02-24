@@ -111,27 +111,51 @@ namespace OrderTrak.API.Services.Customer
                 .AsQueryable();
 
             // Filters
-            if (!string.IsNullOrEmpty(searchQuery.CustomerCode))
-                query = query.Where(x => x.CustomerCode.Contains(searchQuery.CustomerCode));
+            if(!string.IsNullOrEmpty(searchQuery.SearchFilter))
+            {
+                var searchFilter = searchQuery.SearchFilter.Split(',');
+                foreach (var filter in searchFilter)
+                {
+                    query = query.Where(x => x.CustomerCode.Contains(filter) ||
+                                             x.CustomerName.Contains(filter) ||
+                                             x.Address.Contains(filter) ||
+                                             x.City.Contains(filter) ||
+                                             x.State.Contains(filter) ||
+                                             x.Zip.Contains(filter) ||
+                                             x.Phone.Contains(filter));
+                }
+            }
 
-            if (!string.IsNullOrEmpty(searchQuery.Address))
-                query = query.Where(x => x.Address.Contains(searchQuery.Address));
-
-            if (!string.IsNullOrEmpty(searchQuery.City))
-                query = query.Where(x => x.City.Contains(searchQuery.City));
-
-            if (!string.IsNullOrEmpty(searchQuery.State))
-                query = query.Where(x => x.State.Contains(searchQuery.State));
-
-            if (!string.IsNullOrEmpty(searchQuery.Zip))
-                query = query.Where(x => x.Zip.Contains(searchQuery.Zip));
-
-            if (!string.IsNullOrEmpty(searchQuery.Phone))
-                query = query.Where(x => x.Phone.Contains(searchQuery.Phone));
+            // Apply Order By
+            switch(searchQuery.SortColumn)
+            {
+                case 1:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.CustomerCode)
+                        : query.OrderByDescending(x => x.CustomerCode);
+                    break;
+                case 2:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.CustomerName)
+                        : query.OrderByDescending(x => x.CustomerName);
+                    break;
+                case 3:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.Phone)
+                        : query.OrderByDescending(x => x.Phone);
+                    break;
+                case 4:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.UPL_Projects.Count)
+                        : query.OrderByDescending(x => x.UPL_Projects.Count);
+                    break;
+                default:
+                    query = query.OrderBy(x => x.Id);
+                    break;
+            }
 
             // Apply pagination and projection
             var customerList = await query
-                .OrderBy(x => x.Id)
                 .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                 .Take(searchQuery.RecordSize)
                 .Select(x => new CustomerSearchReturnDTO

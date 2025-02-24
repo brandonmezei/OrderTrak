@@ -29,7 +29,7 @@ namespace OrderTrak.Client.Pages.Auth
             }
         }
 
-        protected async Task RegisterUser()
+        protected async Task Register_Click()
         {
             if (IsLoading)
                 return;

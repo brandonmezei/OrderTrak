@@ -1530,24 +1530,11 @@ namespace OrderTrak.Client.Services.API
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CustomerSearchDTO
     {
-        [Newtonsoft.Json.JsonProperty("customerCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(4)]
-        public string CustomerCode { get; set; }
+        [Newtonsoft.Json.JsonProperty("emptyOnly", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool EmptyOnly { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("address", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Address { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("city", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string City { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string State { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("zip", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Zip { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("phone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Phone { get; set; }
+        [Newtonsoft.Json.JsonProperty("searchFilter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SearchFilter { get; set; }
 
         [Newtonsoft.Json.JsonProperty("recordSize", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Range(0, 50)]
@@ -1555,6 +1542,12 @@ namespace OrderTrak.Client.Services.API
 
         [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public int Page { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sortColumn", Required = Newtonsoft.Json.Required.Always)]
+        public int SortColumn { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sortOrder", Required = Newtonsoft.Json.Required.Always)]
+        public int SortOrder { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
@@ -1955,12 +1948,21 @@ namespace OrderTrak.Client.Services.API
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class SearchQueryDTO
     {
+        [Newtonsoft.Json.JsonProperty("searchFilter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SearchFilter { get; set; }
+
         [Newtonsoft.Json.JsonProperty("recordSize", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Range(0, 50)]
         public int RecordSize { get; set; }
 
         [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public int Page { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sortColumn", Required = Newtonsoft.Json.Required.Always)]
+        public int SortColumn { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sortOrder", Required = Newtonsoft.Json.Required.Always)]
+        public int SortOrder { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 

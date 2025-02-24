@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Layout;
 
 namespace OrderTrak.Client.Shared
@@ -7,6 +8,9 @@ namespace OrderTrak.Client.Shared
     {
         [Inject]
         public NavigationManager Navigation { get; set; } = default!;
+
+        [Inject]
+        public ILocalStorageService LocalStorage { get; set; } = default!;
 
         [CascadingParameter]
         public MainLayout Layout { get; set; } = default!;

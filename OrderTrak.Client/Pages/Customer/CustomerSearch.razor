@@ -6,3 +6,28 @@
 
 <PageTitle>Customer - OrderTrak</PageTitle>
 
+<div class="columns is-centered">
+    <div class="column">
+        <CardComponent Title="Customer(s)" Icon="fas fa-users">
+            <CardBody>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                            <div class="field has-addons">
+                                <div class="control is-expanded">
+                                    <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                </div>
+                                <div class="control">
+                                    <button class="button" type="submit" @onclick="Search_Click">
+                                        <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                        <span>Search</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </CardBody>
+        </CardComponent>
+    </div>
+</div>
