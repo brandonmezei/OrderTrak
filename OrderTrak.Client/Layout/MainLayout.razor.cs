@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using OrderTrak.Client.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OrderTrak.Client.Layout
 {
@@ -35,8 +36,12 @@ namespace OrderTrak.Client.Layout
             }
             catch { }
 
+            if (string.IsNullOrEmpty(message) && type == OrderTrakMessages.MessageType.Error)
+                message = "An unknown error occurred. You may not be authorized to use this resource. Please try again.";
+
             var pushedMessage = new OrderTrakMessages { Text = message };
 
+           
             switch (type)
             {
                 case OrderTrakMessages.MessageType.Success:

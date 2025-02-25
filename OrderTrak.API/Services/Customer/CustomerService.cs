@@ -91,13 +91,7 @@ namespace OrderTrak.API.Services.Customer
                     City = x.City,
                     State = x.State,
                     Zip = x.Zip,
-                    Phone = x.Phone,
-                    ProjectList = x.UPL_Projects.Select(i => new CustomerProjectListDTO
-                    {
-                        FormID = i.FormID,
-                        ProjectCode = i.ProjectCode,
-                        ProjectName = i.ProjectName
-                    }).ToList()
+                    Phone = x.Phone
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Customer not found");

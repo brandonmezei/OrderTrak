@@ -50,12 +50,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var customer in ReturnTable.Data)
+                                @foreach (var line in ReturnTable.Data)
                                 {
                                     <tr>
                                         <td>
                                             <div class="buttons">
-                                                <a class="button is-primary is-outlined is-hovered is-small">
+                                                <a class="button is-primary is-outlined is-hovered is-small" href="@($"/customer/{line.FormID}")">
                                                     <span class="icon">
                                                         <i class="fas fa-edit" />
                                                     </span>
@@ -63,10 +63,10 @@
                                                 </a>
                                             </div>
                                         </td>
-                                        <td>@customer.CustomerCode</td>
-                                        <td>@customer.CustomerName</td>
-                                        <td>@customer.Phone</td>
-                                        <td>@customer.ProjectCount</td>
+                                        <td>@line.CustomerCode</td>
+                                        <td>@line.CustomerName</td>
+                                        <td>@line.Phone</td>
+                                        <td>@line.ProjectCount</td>
                                     </tr>
                                 }
                             </tbody>

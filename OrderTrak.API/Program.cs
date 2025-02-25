@@ -108,12 +108,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowBlazorClient");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseUsernameMiddleware();
-
-app.UseCors("AllowBlazorClient");
 
 app.MapControllers();
 

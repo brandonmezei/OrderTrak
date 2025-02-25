@@ -24,13 +24,16 @@ namespace OrderTrak.Client.Pages.Customer
             try
             {
                 SearchFilters = await LocalStorage.GetItemAsync<CustomerSearchDTO>("search") ?? SearchFilters;
+                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
             }
-            catch
+            catch (ApiException ex)
             {
-                await LocalStorage.RemoveItemAsync("search");
+                Layout.AddMessage(ex.Response, MessageType.Error);
             }
-
-            ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
         }
 
         protected async Task Search_Click()

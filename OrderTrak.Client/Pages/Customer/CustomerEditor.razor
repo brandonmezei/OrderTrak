@@ -1,0 +1,53 @@
+﻿@page "/customer/{FormID:guid}"
+@using OrderTrak.Client.Services
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Customer - OrderTrak</PageTitle>
+
+@if (Customer != null)
+{
+    <div class="box">
+        <div class="columns is-centered">
+            <div class="column is-3">
+                <CardComponent Title="Information" Icon="fa-info-circle">
+                    <CardBody>
+                        <FormField Icon="fa-id-card" Title="Customer Code">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="Customer.CustomerCode" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-user" Title="Customer Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Customer Name" @bind-Value="Customer.CustomerName" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column is-9">  
+               <CardComponent Title="Address" Icon="fa-map-marker-alt">  
+                   <CardBody>
+                        <FormField Icon="fa-id-card" Title="Address">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="Customer.Address" />
+                                <InputText class="input is-primary" Type="text" Placeholder="Customer Code" @bind-Value="Customer.Address2" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-user" Title="City">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Customer Name" @bind-Value="Customer.CustomerName" />
+                            </Content>
+                        </FormField>
+                   </CardBody>
+               </CardComponent>  
+            </div>
+        </div>
+        <hr />
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}
