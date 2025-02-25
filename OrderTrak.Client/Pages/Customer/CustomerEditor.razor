@@ -18,7 +18,7 @@
                                 <InputText class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="Customer.CustomerCode" />
                             </Content>
                         </FormField>
-                        <FormField Icon="fa-user" Title="Customer Name">
+                        <FormField Icon="fa-id-card" Title="Customer Name">
                             <Content>
                                 <InputText class="input is-danger" Type="text" Placeholder="Customer Name" @bind-Value="Customer.CustomerName" />
                             </Content>
@@ -27,24 +27,113 @@
                 </CardComponent>
             </div>
             <div class="column is-9">  
-               <CardComponent Title="Address" Icon="fa-map-marker-alt">  
-                   <CardBody>
-                        <FormField Icon="fa-id-card" Title="Address">
-                            <Content>
-                                <InputText class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="Customer.Address" />
-                                <InputText class="input is-primary" Type="text" Placeholder="Customer Code" @bind-Value="Customer.Address2" />
-                            </Content>
-                        </FormField>
-                        <FormField Icon="fa-user" Title="City">
-                            <Content>
-                                <InputText class="input is-danger" Type="text" Placeholder="Customer Name" @bind-Value="Customer.CustomerName" />
-                            </Content>
-                        </FormField>
-                   </CardBody>
-               </CardComponent>  
+                <CardComponent Title="Address" Icon="fa-map-marker-alt">  
+                    <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <FormField Icon="fa-id-card" Title="Address">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Address" @bind-Value="Customer.Address" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-city" Title="City">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="City" @bind-Value="Customer.City" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-phone" Title="Phone">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Phone" @bind-Value="Customer.Phone" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column">
+                                <FormField Icon="fa-id-card" Title="Address 2">
+                                    <Content>
+                                        <InputText class="input is-primary" Type="text" Placeholder="Address" @bind-Value="Customer.Address2" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-flag" Title="State">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="State" @bind-Value="Customer.State" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-envelope" Title="Zip">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Zip" @bind-Value="Customer.Zip" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                        </div>
+                    </CardBody>
+                </CardComponent>  
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-10">
+                <CardComponent Title="Project(s)" Icon="fa-project-diagram">
+                    <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column is-half">
+                                <div class="box">
+                                    <EditForm Model="@ProjectSearchFilter" OnValidSubmit="@ProjectSearch_Click">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <InputText class="input" @bind-Value="ProjectSearchFilter.SearchText" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-hovered @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                    <span>Search</span>
+                                                </button>
+                                            </div>
+                                        </div>                                        
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        @if(FilteredProjectList.Count > 0)
+                        {
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th><a @onclick="() => SortSwitch_Click(1)">Code</a></th>
+                                        <th><a @onclick="() => SortSwitch_Click(2)">Name</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in FilteredProjectList)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="buttons">
+                                                    <a class="button is-hovered is-small">
+                                                        <span class="icon">
+                                                            <i class="fas fa-edit" />
+                                                        </span>
+                                                        <span>Edit</span>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>@line.ProjectCode</td>
+                                            <td>@line.ProjectName</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </CardBody>
+                 </CardComponent>
             </div>
         </div>
         <hr />
+        <a href="/customer/search" class="button is-danger is-hovered">
+            <span class="icon">
+                <i class="fas fa-arrow-left" />
+            </span>
+            <span>Back</span>
+        </a>
     </div>
 }
 else

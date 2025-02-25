@@ -20,6 +20,10 @@ namespace OrderTrak.API.Services.Project
             if (customer.UPL_Projects.Count > 0)
                 throw new ValidationException($"Project {projectCreateDTO.ProjectCode} already exists in customer {customer.CustomerCode}.");
 
+            // Check if project will make 50 projects
+            if (customer.UPL_Projects.Count >= 50)
+                throw new ValidationException("Customers have a 50 project max.");
+
             // Create new Project
             var project = new UPL_Project
             {

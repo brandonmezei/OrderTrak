@@ -11,5 +11,6 @@
         public string State { get; set; } = string.Empty;
         public string Zip { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
+        public List<CustomerProjectListDTO> ProjectList { get; set; } = [];
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Customer;
 using static OrderTrak.Client.Models.OrderTrakMessages;
@@ -13,7 +14,13 @@ namespace OrderTrak.Client.Pages.Customer
         [Inject]
         private ICustomerService CustomerService { get; set; } = default!;
 
-        protected CustomerDTO? Customer { get;set; }
+        protected CustomerDTO? Customer { get; set; }
+
+        protected List<CustomerProjectListDTO> FilteredProjectList { get; set; } = [];
+
+        protected TableSearch ProjectSearchFilter { get; set; } = new();
+
+        protected int SortOrder { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -22,6 +29,7 @@ namespace OrderTrak.Client.Pages.Customer
             try
             {
                 Customer = await CustomerService.GetCustomerAsync(FormID);
+                FilteredProjectList = Customer.ProjectList.ToList();
             }
             catch (ApiException ex)
             {
@@ -30,6 +38,62 @@ namespace OrderTrak.Client.Pages.Customer
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected void ProjectSearch_Click()
+        {
+            if (Customer == null)
+            {
+                FilteredProjectList = [];
+                return;
+            }
+
+            if (string.IsNullOrEmpty(ProjectSearchFilter.SearchText))
+            {
+                FilteredProjectList = [.. Customer.ProjectList];
+            }
+            else
+            {
+                FilteredProjectList = [.. Customer.ProjectList
+                    .Where(
+                        p => p.ProjectName.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase) || p.ProjectCode.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase)
+                    )
+                ];
+            }
+        }
+
+        protected void SortSwitch_Click(int column)
+        {
+
+            if (FilteredProjectList.Count == 0)
+                return;
+
+            SortOrder = SortOrder == 1 ? 2 : 1;
+
+            switch (SortOrder)
+            {
+                case 1:
+                    FilteredProjectList = [.. FilteredProjectList
+                        .OrderBy(x => column switch
+                        {
+                            0 => x.ProjectName,
+                            1 => x.ProjectCode,
+                            _ => x.ProjectName
+                        })
+                    ];
+                    break;
+
+                case 2:
+                    FilteredProjectList = [.. FilteredProjectList
+                        .OrderByDescending(x => column switch
+                        {
+                            0 => x.ProjectName,
+                            1 => x.ProjectCode,
+                            _ => x.ProjectName
+                        })
+                    ];
+                    break;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Customer;
 using OrderTrak.API.Models.OrderTrakDB;
@@ -91,7 +92,15 @@ namespace OrderTrak.API.Services.Customer
                     City = x.City,
                     State = x.State,
                     Zip = x.Zip,
-                    Phone = x.Phone
+                    Phone = x.Phone,
+                    ProjectList = x.UPL_Projects
+                        .Select(i => new CustomerProjectListDTO
+                        {
+                            FormID = i.FormID,
+                            ProjectCode = i.ProjectCode,
+                            ProjectName = i.ProjectName
+                        })
+                        .ToList()
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Customer not found");
