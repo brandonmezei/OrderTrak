@@ -45,6 +45,7 @@
             {
                 <div class="navbar-item has-dropdown @(IsUserOpen ? "is-active" : string.Empty)">
                     <button class="navbar-link" @onclick="Toggle_User">
+                        <span class="icon">
                         @if (DateTime.Now.Hour < 12)
                         {
                             <i class="fas fa-sun"></i>
@@ -57,7 +58,8 @@
                         {
                             <i class="fas fa-moon"></i>
                         }
-                        Welcome @UserName
+                        </span>
+                        <span>Welcome @UserName</span>
                     </button>
                     <div class="navbar-dropdown">
                         <a class="navbar-item" href="/profile">

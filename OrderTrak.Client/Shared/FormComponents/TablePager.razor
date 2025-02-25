@@ -1,0 +1,74 @@
+﻿<span class="heading">Showing @PageSize of @TotalRecordCount</span>
+
+<nav class="pagination is-centered" role="navigation">   
+    @if (TotalPages > 1)
+    {
+        if (PageIndex > 1)
+        {
+            <a class="pagination-previous" @onclick="() => OnPage_Click(PageIndex - 1)">Previous</a>
+        }
+
+        if (PageIndex < TotalPages)
+        {
+            <a class="pagination-next" @onclick="() => OnPage_Click(PageIndex + 1)">Next page</a>
+        }
+    }
+
+    <ul class="pagination-list">
+        @if(TotalPages > 1)
+        {
+            <li><a class="pagination-link" @onclick="() => OnPage_Click(1)">1</a></li>
+            <li><span class="pagination-ellipsis">&hellip;</span></li>
+        }
+
+        @for(int i = 1; i <= TotalPages; i++)
+        {
+            var index = i;
+
+            <li>
+                <a class="pagination-link @(index == PageIndex ? "is-current" : string.Empty)" @onclick="() => OnPage_Click(index)">@index</a>
+            </li>
+        }
+
+        @if(TotalPages > 1)
+        {
+            <li><span class="pagination-ellipsis">&hellip;</span></li>
+            <li><a class="pagination-link" @onclick="() => OnPage_Click(TotalPages)">@TotalPages</a></li>
+        }
+    </ul>
+</nav>
+
+
+
+@code {
+    [Parameter]
+    public int PageIndex { get; set; }
+
+    [Parameter]
+    public int TotalRecordCount { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPageChanged { get; set; }
+
+    protected int TotalPages { get; set; } = 1;
+
+    protected override void OnInitialized()
+    {
+        TotalPages = TotalRecordCount % PageSize == 0
+        ? TotalRecordCount / PageSize 
+        : (TotalRecordCount / PageSize) + 1;
+    }
+
+    protected async Task OnPage_Click(int page)
+    {
+        page = page < 1 ? 1 : page;
+        page = page > TotalPages ? TotalPages : page;
+
+        await OnPageChanged.InvokeAsync(page);
+
+        StateHasChanged();
+    }
+}

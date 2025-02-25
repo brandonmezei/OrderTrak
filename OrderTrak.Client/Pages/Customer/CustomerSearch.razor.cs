@@ -11,7 +11,9 @@ namespace OrderTrak.Client.Pages.Customer
     {
         [Inject]
         private ICustomerService CustomerService { get; set; } = default!;
+
         protected CustomerSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+
         
         protected PagedTableOfCustomerSearchReturnDTO? ReturnTable;
 
@@ -20,10 +22,10 @@ namespace OrderTrak.Client.Pages.Customer
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
 
             try
-            { 
+            {
                 SearchFilters = await LocalStorage.GetItemAsync<CustomerSearchDTO>("search") ?? SearchFilters;
             }
-            catch 
+            catch
             {
                 await LocalStorage.RemoveItemAsync("search");
             }
@@ -33,7 +35,6 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected async Task Search_Click()
         {
-
             if (IsLoading)
                 return;
 
@@ -49,7 +50,7 @@ namespace OrderTrak.Client.Pages.Customer
 
                 ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
 
-                if(ReturnTable?.TotalRecords == 0)
+                if (ReturnTable?.TotalRecords == 0)
                 {
                     Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
                 }
@@ -73,6 +74,55 @@ namespace OrderTrak.Client.Pages.Customer
             SearchFilters.SortColumn = column;
             SearchFilters.SortOrder = SearchFilters.SortOrder == 1 ? 2 : 1;
 
+            try
+            {
+                await LocalStorage.SetItemAsync("search", SearchFilters);
+
+                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+
+                if (ReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected async Task PageSwitch_Click(int page)
+        {
+            SearchFilters.Page = page;
+
+            try
+            {
+                await LocalStorage.SetItemAsync("search", SearchFilters);
+
+                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+
+                if (ReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected async Task EmptyCustomer_Change()
+        {
+            SearchFilters.EmptyOnly = !SearchFilters.EmptyOnly;
             await Search_Click();
         }
     }

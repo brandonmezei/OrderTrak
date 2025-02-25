@@ -14,36 +14,55 @@
                 <CardBody>
                     <div class="columns is-centered">
                         <div class="column is-half">
-                            <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
-                                <div class="field has-addons">
-                                    <div class="control is-expanded">
-                                        <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                            <div class="box">
+                                <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                    <div class="field has-addons">
+                                        <div class="control is-expanded">
+                                            <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                        </div>
+                                        <div class="control">
+                                            <button class="button is-link is-outlined is-hovered @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                <span>Search</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="control">
-                                        <button class="button is-link is-outlined is-hovered @(IsLoading ? "is-loading" : string.Empty)" type="submit">
-                                            <span class="fa fa-search" style="margin-right: 5px;"></span>
-                                            <span>Search</span>
-                                        </button>
+                                    <hr />
+                                    <div class="field">
+                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.EmptyOnly" id="EmptyOnly" @onclick="EmptyCustomer_Change" />
+                                        <label for="EmptyOnly">Empty Customers Only</label>
                                     </div>
-                                </div>
-                            </EditForm>
+                                </EditForm>
+                            </div>
                         </div>
                     </div>
+
                     @if (ReturnTable?.Data.Count > 0)
                     {
                         <table class="table is-fullwidth is-striped is-hoverable">
                             <thead>
                                 <tr>
-                                    <th><a onclick="() => SortSwitch_Click(1)">Code</a></th>
-                                    <th><a onclick="() => SortSwitch_Click(2)">Name</a></th>
-                                    <th><a onclick="() => SortSwitch_Click(3)">Phone</a></th>
-                                    <th><a onclick="() => SortSwitch_Click(4)">Project(s)</a></th>
+                                    <th></th>
+                                    <th><a @onclick="() => SortSwitch_Click(1)">Code</a></th>
+                                    <th><a @onclick="() => SortSwitch_Click(2)">Name</a></th>
+                                    <th><a @onclick="() => SortSwitch_Click(3)">Phone</a></th>
+                                    <th><a @onclick="() => SortSwitch_Click(4)">Project(s)</a></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var customer in ReturnTable.Data)
                                 {
                                     <tr>
+                                        <td>
+                                            <div class="buttons">
+                                                <a class="button is-primary is-outlined is-hovered is-small">
+                                                    <span class="icon">
+                                                        <i class="fas fa-edit" />
+                                                    </span>
+                                                    <span>Edit</span>
+                                                </a>
+                                            </div>
+                                        </td>
                                         <td>@customer.CustomerCode</td>
                                         <td>@customer.CustomerName</td>
                                         <td>@customer.Phone</td>
@@ -52,6 +71,10 @@
                                 }
                             </tbody>
                         </table>
+                        @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
+                        {
+                            <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
+                        }
                     }
                 </CardBody>
             </CardComponent>

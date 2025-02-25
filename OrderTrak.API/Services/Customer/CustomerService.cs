@@ -116,6 +116,7 @@ namespace OrderTrak.API.Services.Customer
                 var searchFilter = searchQuery.SearchFilter
                     .Split(',')
                     .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
 
                 foreach (var filter in searchFilter)
@@ -130,6 +131,9 @@ namespace OrderTrak.API.Services.Customer
                 }
             }
 
+            if(searchQuery.EmptyOnly)
+                query = query.Where(x => !x.UPL_Projects.Any());
+            
             // Apply Order By
             switch(searchQuery.SortColumn)
             {
