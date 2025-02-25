@@ -12,7 +12,7 @@ namespace OrderTrak.API.Controllers.Customer
     [Authorize(Policy = "Customer")]
     public class CustomerController(ICustomerService customerService) : ControllerBase
     {
-        private readonly ICustomerService _customerService = customerService;
+        private readonly ICustomerService CustomerService = customerService;
 
         #region GET
         [HttpGet("GetCustomer/{customerId}")]
@@ -20,7 +20,7 @@ namespace OrderTrak.API.Controllers.Customer
         {
             try
             {
-                return Ok(await _customerService.GetCustomerAsync(customerId));
+                return Ok(await CustomerService.GetCustomerAsync(customerId));
             }
             catch (ValidationException ex)
             {
@@ -39,7 +39,7 @@ namespace OrderTrak.API.Controllers.Customer
         {
             try
             {
-                return Ok(await _customerService.CreateCustomerAsync(customerCreateDTO));
+                return Ok(await CustomerService.CreateCustomerAsync(customerCreateDTO));
             }
             catch (ValidationException ex)
             {
@@ -56,7 +56,7 @@ namespace OrderTrak.API.Controllers.Customer
         {
             try
             {
-                await _customerService.UpdateCustomerAsync(customerUpdateDTO);
+                await CustomerService.UpdateCustomerAsync(customerUpdateDTO);
                 return Ok();
             }
             catch (ValidationException ex)
@@ -74,7 +74,7 @@ namespace OrderTrak.API.Controllers.Customer
         {
             try
             {
-                return Ok(await _customerService.SearchCustomersAsync(customerSearchDTO));
+                return Ok(await CustomerService.SearchCustomersAsync(customerSearchDTO));
             }
             catch (ValidationException ex)
             {
@@ -93,7 +93,7 @@ namespace OrderTrak.API.Controllers.Customer
         {
             try
             {
-                await _customerService.DeleteCustomerAsync(customerId);
+                await CustomerService.DeleteCustomerAsync(customerId);
                 return Ok();
             }
             catch (ValidationException ex)

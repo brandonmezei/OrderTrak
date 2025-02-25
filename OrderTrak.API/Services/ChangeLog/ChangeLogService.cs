@@ -7,12 +7,12 @@ namespace OrderTrak.API.Services.ChangeLog
 {
     public class ChangeLogService(OrderTrakContext db) : IChangeLogService
     {
-        private readonly OrderTrakContext _orderTrakContext = db;
+        private readonly OrderTrakContext DB = db;
 
         public async Task<PagedTable<ChangeLogDTO>> GetChangeLogsAsync(SearchQueryDTO searchQuery)
         {
             // Get Change Logs
-            var query = _orderTrakContext.SYS_ChangeLog
+            var query = DB.SYS_ChangeLog
                 .Include(x => x.SYS_ChangeLogDetails)
                 .OrderByDescending(x => x.CreateDate);
 

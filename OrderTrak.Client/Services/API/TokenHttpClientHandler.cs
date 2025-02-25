@@ -4,11 +4,11 @@ namespace OrderTrak.Client.Services.API
 {
     public class TokenHttpClientHandler(ITokenProvider tokenProvider) : DelegatingHandler
     {
-        private readonly ITokenProvider _tokenProvider = tokenProvider;
+        private readonly ITokenProvider TokenProvider = tokenProvider;
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var token = await _tokenProvider.GetTokenAsync();
+            var token = await TokenProvider.GetTokenAsync();
             if (!string.IsNullOrEmpty(token))
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);

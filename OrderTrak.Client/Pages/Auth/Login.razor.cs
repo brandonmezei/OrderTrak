@@ -10,10 +10,10 @@ namespace OrderTrak.Client.Pages.Auth
     public partial class Login : OrderTrakBasePage
     {
         [Inject]
-        private AuthenticationStateProvider _authenticationStateProvider { get; set; } = default!;
+        private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
         [Inject]
-        private IAuthService _authService { get; set; } = default!;
+        private IAuthService AuthService { get; set; } = default!;
 
         protected LoginDTO LoginModel { get; set; } = new();
 
@@ -21,7 +21,7 @@ namespace OrderTrak.Client.Pages.Auth
         {
             Layout.UpdateHeader("Welcome to OrderTrak", "Please login below.");
 
-            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
             if (user.Identity != null && user.Identity.IsAuthenticated)
@@ -41,7 +41,7 @@ namespace OrderTrak.Client.Pages.Auth
 
             try
             {
-                await _authService.Login(LoginModel);
+                await AuthService.Login(LoginModel);
                 Navigation.NavigateTo("/changelog");
             }
 

@@ -2,15 +2,18 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Customer;
+using OrderTrak.Client.Statics;
+using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Customer
 {
     public partial class CustomerSearch
     {
         [Inject]
-        private ICustomerService _customerService { get; set; } = default!;
+        private ICustomerService CustomerService { get; set; } = default!;
         protected CustomerSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
-        protected PagedTableOfCustomerSearchReturnDTO ReturnTable { get; set; } = new();
+        
+        protected PagedTableOfCustomerSearchReturnDTO? ReturnTable;
 
         protected override async Task OnInitializedAsync()
         {
@@ -25,12 +28,52 @@ namespace OrderTrak.Client.Pages.Customer
                 await LocalStorage.RemoveItemAsync("search");
             }
 
-            ReturnTable = await _customerService.SearchCustomersAsync(SearchFilters);
+            ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
         }
 
         protected async Task Search_Click()
         {
 
+            if (IsLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsLoading = true;
+
+            try
+            {
+                SearchFilters.Page = 1;
+
+                await LocalStorage.SetItemAsync("search", SearchFilters);
+
+                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+
+                if(ReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        protected async Task SortSwitch_Click(int column)
+        {
+            SearchFilters.SortColumn = column;
+            SearchFilters.SortOrder = SearchFilters.SortOrder == 1 ? 2 : 1;
+
+            await Search_Click();
         }
     }
 }

@@ -7,17 +7,17 @@ namespace OrderTrak.Client.Provider
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService _localStorageService;
+        private readonly ILocalStorageService LocalStorageService;
 
         public CustomAuthenticationStateProvider(ILocalStorageService localStorageService)
         {
-            _localStorageService = localStorageService;
+            LocalStorageService = localStorageService;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _localStorageService.GetItemAsync<string>("token") ?? string.Empty;
-            var expiration = await _localStorageService.GetItemAsync<DateTimeOffset>("tokenExpiration");
+            var token = await LocalStorageService.GetItemAsync<string>("token") ?? string.Empty;
+            var expiration = await LocalStorageService.GetItemAsync<DateTimeOffset>("tokenExpiration");
 
             if (string.IsNullOrEmpty(token) || expiration <= DateTime.UtcNow)
             {
@@ -55,10 +55,10 @@ namespace OrderTrak.Client.Provider
             var user = new ClaimsPrincipal(identity);
 
             // Remove Local Storage Items
-            _localStorageService.RemoveItemAsync("token");
-            _localStorageService.RemoveItemAsync("tokenExpiration");
-            _localStorageService.RemoveItemAsync("fullname");
-            _localStorageService.RemoveItemAsync("permissions");
+            LocalStorageService.RemoveItemAsync("token");
+            LocalStorageService.RemoveItemAsync("tokenExpiration");
+            LocalStorageService.RemoveItemAsync("fullname");
+            LocalStorageService.RemoveItemAsync("permissions");
 
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));

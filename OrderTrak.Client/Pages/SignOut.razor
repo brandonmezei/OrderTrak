@@ -6,11 +6,11 @@
 
 @code {
     [Inject]
-    private AuthenticationStateProvider _authenticationStateProvider { get; set; } = default!;
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
+        ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsLoggedOut();
         Navigation.NavigateTo("/");
     }
 }

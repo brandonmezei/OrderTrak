@@ -11,7 +11,7 @@ namespace OrderTrak.API.Controllers.Project
     [Authorize(Policy = "Project")]
     public class ProjectController(IProjectService projectService) : ControllerBase
     {
-        private readonly IProjectService _projectService = projectService;
+        private readonly IProjectService ProjectService = projectService;
 
         #region GET
         [HttpGet("GetProject/{projectID}")]
@@ -19,7 +19,7 @@ namespace OrderTrak.API.Controllers.Project
         {
             try
             {
-                return Ok(await _projectService.GetProjectAsync(projectID));
+                return Ok(await ProjectService.GetProjectAsync(projectID));
             }
             catch (ValidationException ex)
             {
@@ -38,7 +38,7 @@ namespace OrderTrak.API.Controllers.Project
         {
             try
             {
-                return Ok(await _projectService.CreateProjectAsync(projectCreateDTO));
+                return Ok(await ProjectService.CreateProjectAsync(projectCreateDTO));
             }
             catch (ValidationException ex)
             {
@@ -55,7 +55,7 @@ namespace OrderTrak.API.Controllers.Project
         {
             try
             {
-                await _projectService.UpdateProjectAsync(projectUpdateDTO);
+                await ProjectService.UpdateProjectAsync(projectUpdateDTO);
                 return Ok();
             }
             catch (ValidationException ex)
@@ -75,7 +75,7 @@ namespace OrderTrak.API.Controllers.Project
         {
             try
             {
-                await _projectService.DeleteProjectAsync(projectID);
+                await ProjectService.DeleteProjectAsync(projectID);
                 return Ok();
             }
             catch (ValidationException ex)

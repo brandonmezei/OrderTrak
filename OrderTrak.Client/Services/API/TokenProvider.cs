@@ -4,11 +4,11 @@ namespace OrderTrak.Client.Services.API
 {
     public class TokenProvider(ILocalStorageService localStorageService) : ITokenProvider
     {
-        private readonly ILocalStorageService _localStorageService = localStorageService;
+        private readonly ILocalStorageService LocalStorageService = localStorageService;
 
         public async Task<string> GetTokenAsync()
         {
-            return await _localStorageService.GetItemAsync<string>("token") ?? string.Empty;
+            return await LocalStorageService.GetItemAsync<string>("token") ?? string.Empty;
         }
     }
 }

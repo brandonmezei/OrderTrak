@@ -12,7 +12,7 @@ namespace OrderTrak.API.Controllers.ChangeLog
     [Authorize]
     public class ChangeLogController(IChangeLogService changeLogService) : ControllerBase
     {
-        private readonly IChangeLogService _changeLogService = changeLogService;
+        private readonly IChangeLogService ChangeLogService = changeLogService;
 
         #region POST
         [HttpPost("GetChangeLogs")]
@@ -20,7 +20,7 @@ namespace OrderTrak.API.Controllers.ChangeLog
         {
             try
             {
-                return Ok(await _changeLogService.GetChangeLogsAsync(searchQuery));
+                return Ok(await ChangeLogService.GetChangeLogsAsync(searchQuery));
             }
             catch (ValidationException ex)
             {

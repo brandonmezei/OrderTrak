@@ -12,17 +12,18 @@ namespace OrderTrak.API.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly OrderTrakContext _orderTrakContext;
-        private readonly IConfiguration _configuration;
-        private readonly string _jwtKey;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly OrderTrakContext DB;
+        private readonly IConfiguration Configuration;
+        private readonly string JwtKey;
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
         public AuthService(OrderTrakContext db, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
-            _orderTrakContext = db;
-            _configuration = configuration;
-            _httpContextAccessor = httpContextAccessor;
+            DB = db;
+            Configuration = configuration;
+            HttpContextAccessor = httpContextAccessor;
 
-            _jwtKey = _configuration["Jwt:Key"] ?? throw new Exception("JWT Key not found");
+            JwtKey = Configuration["Jwt:Key"] ?? throw new Exception("JWT Key not found");
         }
 
         private static void PasswordCheck(string password)
@@ -49,7 +50,7 @@ namespace OrderTrak.API.Services.Auth
         public async Task RegisterAsync(RegisterDTO registerDTO)
         {
             // Check if user already exists
-            if (await _orderTrakContext.SYS_Users.AnyAsync(x => x.Email == registerDTO.Email && !x.IsDelete))
+            if (await DB.SYS_Users.AnyAsync(x => x.Email == registerDTO.Email && !x.IsDelete))
                 throw new ValidationException("User already exists");
 
             // Password Check
@@ -70,14 +71,14 @@ namespace OrderTrak.API.Services.Auth
             };
 
             // Add the new user to the database
-            _orderTrakContext.SYS_Users.Add(user);
-            await _orderTrakContext.SaveChangesAsync();
+            DB.SYS_Users.Add(user);
+            await DB.SaveChangesAsync();
         }
 
         public async Task<AuthReturnDTO> LoginAsync(LoginDTO loginDTO)
         {
             // Get User From DB
-            var user = await _orderTrakContext.SYS_Users
+            var user = await DB.SYS_Users
                 .FirstOrDefaultAsync(x => x.Email == loginDTO.Email && x.Approved)
                 ?? throw new ValidationException(Messages.CannotLogin);
 
@@ -87,7 +88,7 @@ namespace OrderTrak.API.Services.Auth
 
             // Generate JWT Token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtKey);
+            var key = Encoding.ASCII.GetBytes(JwtKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(
@@ -97,8 +98,8 @@ namespace OrderTrak.API.Services.Auth
                 ]),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"]
+                Issuer = Configuration["Jwt:Issuer"],
+                Audience = Configuration["Jwt:Audience"]
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
@@ -115,9 +116,9 @@ namespace OrderTrak.API.Services.Auth
 
         public async Task<List<string>> FetchPermissionsAsync()
         {
-            var username = _httpContextAccessor.HttpContext?.Items["Username"]?.ToString() ?? "System";
+            var username = HttpContextAccessor.HttpContext?.Items["Username"]?.ToString() ?? "System";
 
-            var user = await _orderTrakContext.SYS_Users
+            var user = await DB.SYS_Users
                 .Include(x => x.SYS_Roles)
                     .ThenInclude(x => x.SYS_RolesToFunction.Where(i => i.CanAccess))
                         .ThenInclude(x => x.SYS_Function)

@@ -6,28 +6,59 @@
 
 <PageTitle>Customer - OrderTrak</PageTitle>
 
-<div class="columns is-centered">
-    <div class="column">
-        <CardComponent Title="Customer(s)" Icon="fas fa-users">
-            <CardBody>
-                <div class="columns is-centered">
-                    <div class="column is-half">
-                        <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
-                            <div class="field has-addons">
-                                <div class="control is-expanded">
-                                    <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+@if (ReturnTable != null)
+{
+    <div class="columns is-centered">
+        <div class="column">
+            <CardComponent Title="Customer(s)" Icon="fas fa-users">
+                <CardBody>
+                    <div class="columns is-centered">
+                        <div class="column is-half">
+                            <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                <div class="field has-addons">
+                                    <div class="control is-expanded">
+                                        <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-link is-outlined is-hovered @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                            <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                            <span>Search</span>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="control">
-                                    <button class="button" type="submit" @onclick="Search_Click">
-                                        <span class="fa fa-search" style="margin-right: 5px;"></span>
-                                        <span>Search</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </EditForm>
+                            </EditForm>
+                        </div>
                     </div>
-                </div>
-            </CardBody>
-        </CardComponent>
+                    @if (ReturnTable?.Data.Count > 0)
+                    {
+                        <table class="table is-fullwidth is-striped is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th><a onclick="() => SortSwitch_Click(1)">Code</a></th>
+                                    <th><a onclick="() => SortSwitch_Click(2)">Name</a></th>
+                                    <th><a onclick="() => SortSwitch_Click(3)">Phone</a></th>
+                                    <th><a onclick="() => SortSwitch_Click(4)">Project(s)</a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var customer in ReturnTable.Data)
+                                {
+                                    <tr>
+                                        <td>@customer.CustomerCode</td>
+                                        <td>@customer.CustomerName</td>
+                                        <td>@customer.Phone</td>
+                                        <td>@customer.ProjectCount</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </CardBody>
+            </CardComponent>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <OrderTrakLoading />
+}

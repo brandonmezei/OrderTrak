@@ -5,11 +5,11 @@ namespace OrderTrak.Client.Services.Customer
     public class CustomerService(IClient client) : ICustomerService
     {
 
-        private readonly IClient _apiService = client;
+        private readonly IClient ApiService = client;
 
         public async Task<PagedTableOfCustomerSearchReturnDTO> SearchCustomersAsync(CustomerSearchDTO searchDTO)
         {
-            return await _apiService.SearchCustomerAsync(searchDTO);
+            return await ApiService.SearchCustomerAsync(searchDTO);
         }
     }
 }

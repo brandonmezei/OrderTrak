@@ -10,7 +10,7 @@ namespace OrderTrak.API.Controllers.Auth
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        private readonly IAuthService _authService = authService;
+        private readonly IAuthService AuthService = authService;
 
         #region POST
         [HttpPost("register")]
@@ -18,7 +18,7 @@ namespace OrderTrak.API.Controllers.Auth
         {
             try
             {
-                await _authService.RegisterAsync(registerDTO);
+                await AuthService.RegisterAsync(registerDTO);
                 return Ok();
             }
             catch (ValidationException ex)
@@ -36,7 +36,7 @@ namespace OrderTrak.API.Controllers.Auth
         {
             try
             {
-                return Ok(await _authService.LoginAsync(loginDTO));
+                return Ok(await AuthService.LoginAsync(loginDTO));
             }
             catch (ValidationException ex)
             {
@@ -54,7 +54,7 @@ namespace OrderTrak.API.Controllers.Auth
         {
             try
             {
-                return Ok(await _authService.FetchPermissionsAsync());
+                return Ok(await AuthService.FetchPermissionsAsync());
             }
             catch (ValidationException ex)
             {

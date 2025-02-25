@@ -5,12 +5,12 @@ namespace OrderTrak.API.Models.OrderTrakDB
 {
     public class OrderTrakContext : DbContext
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor HttpContextAccessor;
 
         public OrderTrakContext(DbContextOptions<OrderTrakContext> options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
-            _httpContextAccessor = httpContextAccessor;
+            HttpContextAccessor = httpContextAccessor;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,7 +63,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         private void SetDefaults()
         {
-            var username = _httpContextAccessor.HttpContext?.Items["Username"]?.ToString() ?? "System";
+            var username = HttpContextAccessor.HttpContext?.Items["Username"]?.ToString() ?? "System";
 
             var entries = ChangeTracker.Entries<CommonObject>()
                 .Where(e => e.State == EntityState.Added);

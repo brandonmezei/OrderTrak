@@ -8,12 +8,12 @@ namespace OrderTrak.API.Services.Customer
 {
     public class CustomerService(OrderTrakContext orderTrakContext) : ICustomerService
     {
-        private readonly OrderTrakContext _orderTrakContext = orderTrakContext;
+        private readonly OrderTrakContext DB = orderTrakContext;
 
         public async Task<Guid> CreateCustomerAsync(CustomerCreateDTO customerCreateDTO)
         {
             // Check if customer already exists
-            if (await _orderTrakContext.UPL_Customer.AnyAsync(x => x.CustomerCode == customerCreateDTO.CustomerCode))
+            if (await DB.UPL_Customer.AnyAsync(x => x.CustomerCode == customerCreateDTO.CustomerCode))
                 throw new ValidationException("Customer already exists");
 
             // Create new customer
@@ -30,8 +30,8 @@ namespace OrderTrak.API.Services.Customer
             };
 
             // Save
-            await _orderTrakContext.UPL_Customer.AddAsync(newCustomer);
-            await _orderTrakContext.SaveChangesAsync();
+            await DB.UPL_Customer.AddAsync(newCustomer);
+            await DB.SaveChangesAsync();
 
             return newCustomer.FormID;
         }
@@ -39,12 +39,12 @@ namespace OrderTrak.API.Services.Customer
         public async Task UpdateCustomerAsync(CustomerUpdateDTO customerUpdateDTO)
         {
             // Get Customer
-            var customer = await _orderTrakContext.UPL_Customer
+            var customer = await DB.UPL_Customer
                 .FirstOrDefaultAsync(x => x.FormID == customerUpdateDTO.FormID)
                 ?? throw new ValidationException("Customer not found");
 
             // Check if customer already exists
-            if (await _orderTrakContext.UPL_Customer.AnyAsync(x => x.CustomerCode == customerUpdateDTO.CustomerCode && x.FormID != customerUpdateDTO.FormID))
+            if (await DB.UPL_Customer.AnyAsync(x => x.CustomerCode == customerUpdateDTO.CustomerCode && x.FormID != customerUpdateDTO.FormID))
                 throw new ValidationException("Customer already exists");
 
             // Update customer
@@ -58,13 +58,13 @@ namespace OrderTrak.API.Services.Customer
             customer.Phone = customerUpdateDTO.Phone;
 
             // Save
-            await _orderTrakContext.SaveChangesAsync();
+            await DB.SaveChangesAsync();
         }
 
         public async Task DeleteCustomerAsync(Guid customerId)
         {
             // Get Customer
-            var customer = await _orderTrakContext.UPL_Customer
+            var customer = await DB.UPL_Customer
                 .FirstOrDefaultAsync(x => x.FormID == customerId)
                 ?? throw new ValidationException("Customer not found");
 
@@ -72,13 +72,13 @@ namespace OrderTrak.API.Services.Customer
             customer.IsDelete = true;
 
             // Save
-            await _orderTrakContext.SaveChangesAsync();
+            await DB.SaveChangesAsync();
         }
 
         public async Task<CustomerDTO> GetCustomerAsync(Guid customerId)
         {
             // Get Customer
-            return await _orderTrakContext.UPL_Customer
+            return await DB.UPL_Customer
                 .Include(x => x.UPL_Projects)
                 .Where(x => x.FormID == customerId)
                 .Select(x => new CustomerDTO
@@ -106,14 +106,18 @@ namespace OrderTrak.API.Services.Customer
         public async Task<PagedTable<CustomerSearchReturnDTO>> SearchCustomersAsync(CustomerSearchDTO searchQuery)
         {
             // Get Change Logs
-            var query = _orderTrakContext.UPL_Customer
+            var query = DB.UPL_Customer
                 .Include(x => x.UPL_Projects)
                 .AsQueryable();
 
             // Filters
             if(!string.IsNullOrEmpty(searchQuery.SearchFilter))
             {
-                var searchFilter = searchQuery.SearchFilter.Split(',');
+                var searchFilter = searchQuery.SearchFilter
+                    .Split(',')
+                    .Select(x => x.Trim())
+                    .ToList();
+
                 foreach (var filter in searchFilter)
                 {
                     query = query.Where(x => x.CustomerCode.Contains(filter) ||

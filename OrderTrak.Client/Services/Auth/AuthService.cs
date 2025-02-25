@@ -7,30 +7,30 @@ namespace OrderTrak.Client.Services.Auth
 {
     public class AuthService(IClient client, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider) : IAuthService
     {
-        private readonly IClient _apiService = client;
-        private readonly ILocalStorageService _localStorageService = localStorageService;
-        private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
+        private readonly IClient ApiService = client;
+        private readonly ILocalStorageService LocalStorageService = localStorageService;
+        private readonly AuthenticationStateProvider AuthenticationStateProvider = authenticationStateProvider;
 
         public async Task Login(LoginDTO loginRequest)
         {
-            var returnObj = await _apiService.LoginAsync(loginRequest);
+            var returnObj = await ApiService.LoginAsync(loginRequest);
 
             // Set String
-            await _localStorageService.SetItemAsStringAsync("token", returnObj.Token);
-            await _localStorageService.SetItemAsync("tokenExpiration", returnObj.Expiration);
-            await _localStorageService.SetItemAsync("fullname", returnObj.FullName);
+            await LocalStorageService.SetItemAsStringAsync("token", returnObj.Token);
+            await LocalStorageService.SetItemAsync("tokenExpiration", returnObj.Expiration);
+            await LocalStorageService.SetItemAsync("fullname", returnObj.FullName);
 
-            var permissionList = await _apiService.PermissionsAsync();
+            var permissionList = await ApiService.PermissionsAsync();
 
             // Set Permissions
-            await _localStorageService.SetItemAsync("permissions", permissionList.ToList());
+            await LocalStorageService.SetItemAsync("permissions", permissionList.ToList());
 
-            ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(returnObj.Token);
+            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(returnObj.Token);
         }
 
         public async Task Register(RegisterDTO registerRequest)
         {
-            await _apiService.RegisterAsync(registerRequest);
+            await ApiService.RegisterAsync(registerRequest);
         }
     }
 }

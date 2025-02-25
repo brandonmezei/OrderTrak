@@ -9,7 +9,7 @@ namespace OrderTrak.Client.Shared.Nav
         public NavigationManager Navigation { get; set; } = default!;
 
         [Inject]
-        private ILocalStorageService _localStorageService { get; set; } = default!;
+        private ILocalStorageService LocalStorageService { get; set; } = default!;
 
         protected string? UserName { get; set; }
 
@@ -20,8 +20,8 @@ namespace OrderTrak.Client.Shared.Nav
 
         protected override async Task OnInitializedAsync()
         {
-            UserName = await _localStorageService.GetItemAsync<string>("fullname");
-            Permissions = await _localStorageService.GetItemAsync<List<string>>("permissions") ?? [];
+            UserName = await LocalStorageService.GetItemAsync<string>("fullname");
+            Permissions = await LocalStorageService.GetItemAsync<List<string>>("permissions") ?? [];
 
             Navigation.LocationChanged += (sender, args) =>
             {

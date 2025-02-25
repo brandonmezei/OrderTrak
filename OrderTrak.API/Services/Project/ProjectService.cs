@@ -7,12 +7,12 @@ namespace OrderTrak.API.Services.Project
 {
     public class ProjectService(OrderTrakContext orderTrakContext) : IProjectService
     {
-        private readonly OrderTrakContext _orderTrakContext = orderTrakContext;
+        private readonly OrderTrakContext DB = orderTrakContext;
 
         public async Task<Guid> CreateProjectAsync(ProjectCreateDTO projectCreateDTO)
         {
             // Get Customer
-            var customer = await _orderTrakContext.UPL_Customer
+            var customer = await DB.UPL_Customer
                 .Include(x => x.UPL_Projects.Where(i => i.ProjectCode == projectCreateDTO.ProjectCode))
                 .FirstOrDefaultAsync(x => x.FormID == projectCreateDTO.CustID)
                 ?? throw new ValidationException("Customer not found.");
@@ -42,7 +42,7 @@ namespace OrderTrak.API.Services.Project
 
             // Save
             customer.UPL_Projects.Add(project);
-            await _orderTrakContext.SaveChangesAsync();
+            await DB.SaveChangesAsync();
 
             return project.FormID;
         }
@@ -50,12 +50,12 @@ namespace OrderTrak.API.Services.Project
         public async Task UpdateProjectAsync(ProjectUpdateDTO projectUpdateDTO)
         {
             // Get Project
-            var project = await _orderTrakContext.UPL_Project
+            var project = await DB.UPL_Project
                 .FirstOrDefaultAsync(x => x.FormID == projectUpdateDTO.FormID)
                 ?? throw new ValidationException("Project not found.");
 
             // Check if project already exists in this customer
-            if (await _orderTrakContext.UPL_Project.AnyAsync(x => x.ProjectCode == projectUpdateDTO.ProjectCode && x.FormID != projectUpdateDTO.FormID && x.CustomerID == project.CustomerID))
+            if (await DB.UPL_Project.AnyAsync(x => x.ProjectCode == projectUpdateDTO.ProjectCode && x.FormID != projectUpdateDTO.FormID && x.CustomerID == project.CustomerID))
                 throw new ValidationException($"Project {projectUpdateDTO.ProjectCode} already exists.");
 
             // Update project
@@ -76,26 +76,26 @@ namespace OrderTrak.API.Services.Project
             project.UDF10 = projectUpdateDTO.UDF10;
 
             // Save
-            await _orderTrakContext.SaveChangesAsync();
+            await DB.SaveChangesAsync();
         }
 
         public async Task DeleteProjectAsync(Guid projectID)
         {
             // Get Project
-            var project = await _orderTrakContext.UPL_Project
+            var project = await DB.UPL_Project
                 .FirstOrDefaultAsync(x => x.FormID == projectID)
                 ?? throw new ValidationException("Project not found.");
 
             // Delete
             project.IsDelete = true;
 
-            await _orderTrakContext.SaveChangesAsync();
+            await DB.SaveChangesAsync();
         }
 
         public async Task<ProjectDTO> GetProjectAsync(Guid projectID)
         {
             // Get Project
-            return await _orderTrakContext.UPL_Project
+            return await DB.UPL_Project
                 .Include(x => x.UPL_Customer)
                 .Select(x => new ProjectDTO
                 {
