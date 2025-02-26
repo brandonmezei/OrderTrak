@@ -21,18 +21,14 @@
             <br />
             <div class="columns is-centered">
                 <div class="column is-10">
-                    <div class="content">
-                        <div class="notification @message.BulmaLevel">
-                            <div class="columns is-centered">
-                                <div class="column">
-                                    <strong>@message.Text</strong>
-                                </div>
-                                <div class="column">
-                                    <div class="button is-pulled-right">
-                                        <button class="fas fa-times @message.BulmaLevel" @onclick="() => RemoveMessage(message)"></button>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="message @message.BulmaLevel">
+                        <div class="message-header">
+                            <span>@message.HeaderMessage</span>
+                            <button class="delete" aria-label="delete" @onclick="() => RemoveMessage(message)"></button>
+                        </div>
+                        <div class="message-body">
+                            <span>@message.Text</span>
+                            
                         </div>
                     </div>
                 </div>

@@ -45,15 +45,19 @@ namespace OrderTrak.Client.Layout
             switch (type)
             {
                 case OrderTrakMessages.MessageType.Success:
+                    pushedMessage.HeaderMessage = "Success";
                     pushedMessage.BulmaLevel = "is-success";
                     break;
                 case OrderTrakMessages.MessageType.Warning:
+                    pushedMessage.HeaderMessage = "Warning";
                     pushedMessage.BulmaLevel = "is-warning";
                     break;
                 case OrderTrakMessages.MessageType.Error:
+                    pushedMessage.HeaderMessage = "Error";
                     pushedMessage.BulmaLevel = "is-danger";
                     break;
                 default:
+                    pushedMessage.HeaderMessage = "Infomation";
                     pushedMessage.BulmaLevel = "is-info";
                     break;
             }
