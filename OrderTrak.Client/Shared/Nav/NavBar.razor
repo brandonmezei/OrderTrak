@@ -34,12 +34,8 @@
         <div class="navbar-end">
             @if (string.IsNullOrEmpty(UserName))
             {
-                <a class="navbar-item" onclick="() => NavigateTo('/login')">
-                    <strong>Login</strong>
-                </a>
-                <a class="navbar-item" onclick="() => NavigateTo('/register')">
-                    Register
-                </a>
+                <NavBarItem Label="Login" URL="/login" />
+                <NavBarItem Label="Register" URL="/register" />
             }
             else
             {

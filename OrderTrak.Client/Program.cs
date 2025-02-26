@@ -8,6 +8,7 @@ using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Auth;
 using OrderTrak.Client.Services.ChangeLog;
 using OrderTrak.Client.Services.Customer;
+using OrderTrak.Client.Services.Project;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -19,6 +20,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<IChangeLogService, ChangeLogService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddTransient<TokenHttpClientHandler>();
 

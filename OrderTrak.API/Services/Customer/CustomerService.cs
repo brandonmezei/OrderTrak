@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Customer;
 using OrderTrak.API.Models.OrderTrakDB;
@@ -114,7 +113,7 @@ namespace OrderTrak.API.Services.Customer
                 .AsQueryable();
 
             // Filters
-            if(!string.IsNullOrEmpty(searchQuery.SearchFilter))
+            if (!string.IsNullOrEmpty(searchQuery.SearchFilter))
             {
                 var searchFilter = searchQuery.SearchFilter
                     .Split(',')
@@ -134,11 +133,11 @@ namespace OrderTrak.API.Services.Customer
                 }
             }
 
-            if(searchQuery.EmptyOnly)
+            if (searchQuery.EmptyOnly)
                 query = query.Where(x => !x.UPL_Projects.Any());
-            
+
             // Apply Order By
-            switch(searchQuery.SortColumn)
+            switch (searchQuery.SortColumn)
             {
                 case 1:
                     query = searchQuery.SortOrder == 1

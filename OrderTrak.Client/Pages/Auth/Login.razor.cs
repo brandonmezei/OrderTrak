@@ -32,12 +32,7 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected async Task Login_Click()
         {
-            if (IsLoading)
-                return;
-
             Layout.ClearMessages();
-
-            IsLoading = true;
 
             try
             {
@@ -53,10 +48,7 @@ namespace OrderTrak.Client.Pages.Auth
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }
-            finally
-            {
-                IsLoading = false;
-            }
+
         }
     }
 }

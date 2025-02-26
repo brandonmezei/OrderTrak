@@ -1,4 +1,3 @@
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Customer;
@@ -14,7 +13,7 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected CustomerSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
-        
+
         protected PagedTableOfCustomerSearchReturnDTO? ReturnTable;
 
         protected override async Task OnInitializedAsync()

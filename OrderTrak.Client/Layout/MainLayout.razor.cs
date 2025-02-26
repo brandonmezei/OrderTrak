@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using OrderTrak.Client.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OrderTrak.Client.Layout
 {
@@ -41,7 +40,7 @@ namespace OrderTrak.Client.Layout
 
             var pushedMessage = new OrderTrakMessages { Text = message };
 
-           
+
             switch (type)
             {
                 case OrderTrakMessages.MessageType.Success:

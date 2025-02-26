@@ -10,6 +10,14 @@
 {
     <div class="box">
         <div class="columns is-centered">
+            <div class="column">
+                
+                <div class="buttons is-pulled-right">
+                    <FormButton Title="Delete" Style="is-danger" Icon="fa-trash" />
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
             <div class="column is-3">
                 <CardComponent Title="Information" Icon="fa-info-circle">
                     <CardBody>
@@ -26,8 +34,8 @@
                     </CardBody>
                 </CardComponent>
             </div>
-            <div class="column is-9">  
-                <CardComponent Title="Address" Icon="fa-map-marker-alt">  
+            <div class="column is-9">
+                <CardComponent Title="Address" Icon="fa-map-marker-alt">
                     <CardBody>
                         <div class="columns is-centered">
                             <div class="column">
@@ -66,7 +74,7 @@
                             </div>
                         </div>
                     </CardBody>
-                </CardComponent>  
+                </CardComponent>
             </div>
         </div>
         <div class="columns is-centered">
@@ -82,17 +90,17 @@
                                                 <InputText class="input" @bind-Value="ProjectSearchFilter.SearchText" Placeholder="Search Filter (Comma Seperate Terms)" />
                                             </div>
                                             <div class="control">
-                                                <button class="button is-hovered @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
                                                     <span class="fa fa-search" style="margin-right: 5px;"></span>
                                                     <span>Search</span>
                                                 </button>
                                             </div>
-                                        </div>                                        
+                                        </div>
                                     </EditForm>
                                 </div>
                             </div>
                         </div>
-                        @if(FilteredProjectList.Count > 0)
+                        @if (FilteredProjectList.Count > 0)
                         {
                             <table class="table is-fullwidth is-striped is-hoverable">
                                 <thead>
@@ -108,12 +116,7 @@
                                         <tr>
                                             <td>
                                                 <div class="buttons">
-                                                    <a class="button is-hovered is-small">
-                                                        <span class="icon">
-                                                            <i class="fas fa-edit" />
-                                                        </span>
-                                                        <span>Edit</span>
-                                                    </a>
+                                                    <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/project/{line.FormID}")" />
                                                 </div>
                                             </td>
                                             <td>@line.ProjectCode</td>
@@ -124,16 +127,14 @@
                             </table>
                         }
                     </CardBody>
-                 </CardComponent>
+                </CardComponent>
             </div>
         </div>
         <hr />
-        <a href="/customer/search" class="button is-danger is-hovered">
-            <span class="icon">
-                <i class="fas fa-arrow-left" />
-            </span>
-            <span>Back</span>
-        </a>
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/customer/search" />
+            <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
+        </div>
     </div>
 }
 else

@@ -5,22 +5,22 @@ namespace OrderTrak.API.Models.DTO.Project
     public class ProjectCreateDTO
     {
         [Required]
-        public Guid CustID { get; set; }
+        public Guid? CustID { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Project Code is required.")]
         [MaxLength(4)]
-        public string ProjectCode { get; set; } = string.Empty;
+        public string? ProjectCode { get; set; }
 
-        [Required]
-        public string ProjectName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Project Name is required.")]
+        public string? ProjectName { get; set; }
 
-        [Required]
-        public string ContactName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Contact Name is required.")]
+        public string? ContactName { get; set; }
 
-        [Required]
-        public string ContactPhone { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Contact Phone is required.")]
+        public string? ContactPhone { get; set; }
 
-        public string? ContactEmail { get; set; } = string.Empty;
+        public string? ContactEmail { get; set; }
 
         public string? UDF1 { get; set; }
         public string? UDF2 { get; set; }

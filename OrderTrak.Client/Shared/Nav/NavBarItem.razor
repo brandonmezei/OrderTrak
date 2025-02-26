@@ -1,8 +1,11 @@
 ﻿@using Blazored.LocalStorage
 <a class="navbar-item" @onclick="NavigateTo">
-    <span class="icon">
-        <i class="fas @Icon"></i>
-    </span>
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <span class="icon">
+            <i class="fas @Icon"></i>
+        </span>
+    }
     <span>@Label</span>
 </a>
 
@@ -15,7 +18,7 @@
     private ILocalStorageService LocalStorageService { get; set; } = default!;
 
     [Parameter]
-    public string Icon { get; set; } = string.Empty;
+    public string? Icon { get; set; }
 
     [Parameter]
     public string Label { get; set; } = string.Empty;

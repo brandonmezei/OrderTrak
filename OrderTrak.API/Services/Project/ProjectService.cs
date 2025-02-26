@@ -104,6 +104,7 @@ namespace OrderTrak.API.Services.Project
                 .Select(x => new ProjectDTO
                 {
                     FormID = x.FormID,
+                    CustomerID = x.UPL_Customer.FormID,
                     CustomerCode = x.UPL_Customer.CustomerCode,
                     CustomerName = x.UPL_Customer.CustomerName,
                     ProjectCode = x.ProjectCode,

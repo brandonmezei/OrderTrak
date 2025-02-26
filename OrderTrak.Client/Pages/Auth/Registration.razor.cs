@@ -14,7 +14,7 @@ namespace OrderTrak.Client.Pages.Auth
         [Inject]
         private IAuthService AuthService { get; set; } = default!;
 
-        public RegisterDTO RegisterModel { get; set; } = new();
+        public RegisterDTO RegisterModel { get; set; } = new() { FirstName = string.Empty, LastName = string.Empty, Email = string.Empty, Password = string.Empty };
 
         protected override async Task OnInitializedAsync()
         {
@@ -31,12 +31,7 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected async Task Register_Click()
         {
-            if (IsLoading)
-                return;
-
             Layout.ClearMessages();
-
-            IsLoading = true;
 
             try
             {
@@ -53,10 +48,6 @@ namespace OrderTrak.Client.Pages.Auth
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
-            }
-            finally
-            {
-                IsLoading = false;
             }
         }
     }

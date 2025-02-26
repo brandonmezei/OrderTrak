@@ -1,0 +1,69 @@
+﻿@page "/project/{FormID:guid}"
+@using OrderTrak.Client.Services
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Project - OrderTrak</PageTitle>
+
+@if (Project != null)
+{
+    <div class="box">
+        <div class="columns is-centered">
+            <div class="column is-3">
+                <CardComponent Title="Information" Icon="fa-info-circle">
+                    <CardBody>
+                        <FormField Icon="fa-id-card" Title="Customer Code">
+                            <Content>
+                                <InputText class="input" Type="text" Placeholder="Customer Code" @bind-Value="Project.CustomerCode" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-id-card" Title="Customer Name">
+                            <Content>
+                                <InputText class="input" Type="text" Placeholder="Customer Name" @bind-Value="Project.CustomerName" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-project-diagram" Title="Project Code">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Project Code" @bind-Value="Project.ProjectCode" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-project-diagram" Title="Project Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Project Name" @bind-Value="Project.ProjectName" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+
+                <CardComponent Title="Contact" Icon="fa-address-book">
+                    <CardBody>
+                        <FormField Icon="fa-user" Title="Contact Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Contact Name" @bind-Value="Project.ContactName" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-phone" Title="Contact Phone">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Contact Phone" @bind-Value="Project.ContactPhone" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-envelope" Title="Contact Email">
+                            <Content>
+                                <InputText class="input is-primary" Type="text" Placeholder="Contact Email" @bind-Value="Project.ContactEmail" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="@($"/customer/{Project.CustomerID}")" />
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

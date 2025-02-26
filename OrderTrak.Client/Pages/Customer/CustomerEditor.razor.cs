@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Customer;
+using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Customer
@@ -22,12 +23,18 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected int SortOrder { get; set; }
 
+        protected bool CanEditProjects { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
 
             try
             {
+                var permission = await LocalStorage.GetItemAsync<List<string>>("permissions") ?? [];
+
+                CanEditProjects = permission.Contains("Project");
+
                 Customer = await CustomerService.GetCustomerAsync(FormID);
                 FilteredProjectList = Customer.ProjectList.ToList();
             }
@@ -43,6 +50,13 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected void ProjectSearch_Click()
         {
+            if (IsLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsLoading = true;
+
             if (Customer == null)
             {
                 FilteredProjectList = [];
@@ -61,6 +75,8 @@ namespace OrderTrak.Client.Pages.Customer
                     )
                 ];
             }
+
+            IsLoading = false;
         }
 
         protected void SortSwitch_Click(int column)
@@ -94,6 +110,43 @@ namespace OrderTrak.Client.Pages.Customer
                         })
                     ];
                     break;
+            }
+        }
+
+        protected async Task Save_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if (Customer != null)
+                {
+                    await CustomerService.UpdateCustomerAsync(new CustomerUpdateDTO
+                    {
+                        FormID = Customer.FormID,
+                        CustomerCode = Customer.CustomerCode,
+                        CustomerName = Customer.CustomerName,
+                        Address = Customer.Address,
+                        Address2 = Customer.Address2,
+                        City = Customer.City,
+                        State = Customer.State,
+                        Zip = Customer.Zip,
+                        Phone = Customer.Phone
+                    });
+
+                    Customer = await CustomerService.GetCustomerAsync(FormID);
+                    ProjectSearch_Click();
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
             }
         }
     }

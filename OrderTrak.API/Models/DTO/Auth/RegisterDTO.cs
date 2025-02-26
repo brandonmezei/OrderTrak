@@ -4,20 +4,19 @@ namespace OrderTrak.API.Models.DTO.Auth
 {
     public class RegisterDTO
     {
-        [Required]
+        [Required(ErrorMessage = "First Name is required.")]
         [MaxLength(50)]
-        public string FirstName { get; set; } = string.Empty;
+        public string? FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Last Name is required.")]
         [MaxLength(50)]
-        public string LastName { get; set; } = string.Empty;
+        public string? LastName { get; set; }
 
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Email Address is required.")]
+        public string? Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is required.")]
         [MaxLength(100)]
-        public string Password { get; set; } = string.Empty;
+        public string? Password { get; set; }
     }
 }

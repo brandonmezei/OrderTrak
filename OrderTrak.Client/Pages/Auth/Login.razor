@@ -7,27 +7,22 @@
 
 <div class="columns is-centered">
     <div class="column is-one-third">
-        <EditForm Model="@LoginModel" OnValidSubmit="@Login_Click">
-            <CardComponent Title="Login" Icon="fa-lock">
-                <CardBody>
-                    <DataAnnotationsValidator />
-                    <FormField Icon="fa-envelope">
-                        <Content>
-                            <InputText class="input is-danger" Type="text" Placeholder="Email" @bind-Value="LoginModel.Email" />
-                            <ValidationMessage For="@(() => LoginModel.Email)" />
-                        </Content>
-                    </FormField>
-                    <FormField Icon="fa-lock">
-                        <Content>
-                            <InputText class="input is-danger" Type="password" Placeholder="Password" @bind-Value="LoginModel.Password" />
-                            <ValidationMessage For="@(() => LoginModel.Password)" />
-                        </Content>
-                    </FormField>
-                </CardBody>
-                <Footer>
-                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">Login</button>
-                </Footer>
-            </CardComponent>
-        </EditForm>
+        <CardComponent Title="Login" Icon="fa-lock">
+            <CardBody>
+                <FormField Icon="fa-envelope">
+                    <Content>
+                        <InputText class="input is-danger" Type="text" Placeholder="Email" @bind-Value="LoginModel.Email" />
+                    </Content>
+                </FormField>
+                <FormField Icon="fa-lock">
+                    <Content>
+                        <InputText class="input is-danger" Type="password" Placeholder="Password" @bind-Value="LoginModel.Password" />
+                    </Content>
+                </FormField>
+            </CardBody>
+            <Footer>
+                <FormButton Title="Login" Style="card-footer-item" Icon="fa-sign-in-alt" OnClick="Login_Click" />
+            </Footer>
+        </CardComponent>
     </div>
 </div>

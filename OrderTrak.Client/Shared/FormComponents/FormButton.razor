@@ -1,0 +1,56 @@
+﻿@if (string.IsNullOrEmpty(URL))
+{
+    <button title="@Title" class="button is-hoverable @Style @(IsLoading ? "is-loading" : "")" @onclick="OnClick_Handler">
+        @if(!string.IsNullOrEmpty(Icon))
+        {
+            <span class="icon">
+                <i class="fas @Icon" />
+            </span>
+        }
+        <span>@Title</span>
+    </button>
+}
+else
+{
+    <a href="@URL" class="button is-hoverable @Style">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <span class="icon">
+                <i class="fas @Icon" />
+            </span>
+        }
+        <span>@Title</span>
+    </a>
+}
+
+
+
+@code {
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? URL { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    protected bool IsLoading { get; set; }  
+
+    private async Task OnClick_Handler()
+    {
+        IsLoading = true;
+
+        await OnClick.InvokeAsync();
+
+        IsLoading = false;
+
+        StateHasChanged();
+    }
+}

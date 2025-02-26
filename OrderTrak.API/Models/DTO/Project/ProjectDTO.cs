@@ -3,6 +3,7 @@
     public class ProjectDTO
     {
         public Guid FormID { get; set; }
+        public Guid CustomerID { get; set; }
         public string CustomerCode { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
         public string ProjectCode { get; set; } = string.Empty;
