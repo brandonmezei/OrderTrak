@@ -14,11 +14,14 @@ namespace OrderTrak.Client.Pages.Auth
         [Inject]
         private IAuthService AuthService { get; set; } = default!;
 
-        public RegisterDTO RegisterModel { get; set; } = new() { FirstName = string.Empty, LastName = string.Empty, Email = string.Empty, Password = string.Empty };
+        public RegisterDTO RegisterModel { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
+            Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Please register below.");
+            
+            IsLoading = false;
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
@@ -31,7 +34,12 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected async Task Register_Click()
         {
+            if (IsLoading)
+                return;
+
             Layout.ClearMessages();
+
+            IsLoading = true;
 
             try
             {
@@ -48,6 +56,10 @@ namespace OrderTrak.Client.Pages.Auth
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
     }

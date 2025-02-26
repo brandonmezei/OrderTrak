@@ -19,7 +19,10 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected override async Task OnInitializedAsync()
         {
+            Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Please login below.");
+
+            IsLoading = false;
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
@@ -32,7 +35,12 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected async Task Login_Click()
         {
+            if (IsLoading)
+                return;
+
             Layout.ClearMessages();
+
+            IsLoading = true;
 
             try
             {
@@ -48,7 +56,10 @@ namespace OrderTrak.Client.Pages.Auth
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }
-
+            finally
+            {
+                IsLoading = false;
+            }
         }
     }
 }

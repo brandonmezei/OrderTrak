@@ -27,6 +27,7 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected override async Task OnInitializedAsync()
         {
+            Layout.ClearMessages();
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
 
             try

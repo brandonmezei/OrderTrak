@@ -11,6 +11,8 @@ namespace OrderTrak.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            Layout.ClearMessages();
+
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 

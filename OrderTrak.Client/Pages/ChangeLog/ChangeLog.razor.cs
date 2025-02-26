@@ -15,6 +15,7 @@ namespace OrderTrak.Client.Pages.ChangeLog
 
         protected override async Task OnInitializedAsync()
         {
+            Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Here's what's new...");
 
             try

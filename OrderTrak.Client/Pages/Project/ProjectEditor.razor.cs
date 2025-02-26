@@ -17,6 +17,7 @@ namespace OrderTrak.Client.Pages.Project
 
         protected override async Task OnInitializedAsync()
         {
+            Layout.ClearMessages();
             Layout.UpdateHeader("Project Admin", "Create and edit projects.");
 
             try
