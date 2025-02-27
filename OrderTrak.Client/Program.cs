@@ -1,8 +1,10 @@
+using AutoMapper;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using OrderTrak.Client;
+using OrderTrak.Client.Models;
 using OrderTrak.Client.Provider;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Auth;
@@ -13,6 +15,16 @@ using OrderTrak.Client.Services.Project;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+
+// Add AutoMapper
+// Auto Mapper Configurations
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+
+var mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 // Scope Services
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();

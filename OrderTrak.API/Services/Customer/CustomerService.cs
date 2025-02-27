@@ -19,14 +19,14 @@ namespace OrderTrak.API.Services.Customer
             // Create new customer
             var newCustomer = new UPL_Customer
             {
-                CustomerCode = customerCreateDTO.CustomerCode,
-                CustomerName = customerCreateDTO.CustomerName,
-                Address = customerCreateDTO.Address,
+                CustomerCode = customerCreateDTO.CustomerCode ?? throw new ValidationException("Customer Code is required"),
+                CustomerName = customerCreateDTO.CustomerName ?? throw new ValidationException("Customer Name is required"),
+                Address = customerCreateDTO.Address ?? throw new ValidationException("Address is required"),
                 Address2 = customerCreateDTO.Address2,
-                City = customerCreateDTO.City,
-                State = customerCreateDTO.State,
-                Zip = customerCreateDTO.Zip,
-                Phone = customerCreateDTO.Phone
+                City = customerCreateDTO.City ?? throw new ValidationException("City is required"),
+                State = customerCreateDTO.State ?? throw new ValidationException("State is required"),
+                Zip = customerCreateDTO.Zip ?? throw new ValidationException("Zip is required"),
+                Phone = customerCreateDTO.Phone ?? throw new ValidationException("Customer Code is required")
             };
 
             // Save
@@ -48,14 +48,14 @@ namespace OrderTrak.API.Services.Customer
                 throw new ValidationException("Customer already exists");
 
             // Update customer
-            customer.CustomerCode = customerUpdateDTO.CustomerCode;
-            customer.CustomerName = customerUpdateDTO.CustomerName;
-            customer.Address = customerUpdateDTO.Address;
+            customer.CustomerCode = customerUpdateDTO.CustomerCode ?? throw new ValidationException("Customer Code is required");
+            customer.CustomerName = customerUpdateDTO.CustomerName ?? throw new ValidationException("Customer Name is required");
+            customer.Address = customerUpdateDTO.Address ?? throw new ValidationException("Address is required");
             customer.Address2 = customerUpdateDTO.Address2;
-            customer.City = customerUpdateDTO.City;
-            customer.State = customerUpdateDTO.State;
-            customer.Zip = customerUpdateDTO.Zip;
-            customer.Phone = customerUpdateDTO.Phone;
+            customer.City = customerUpdateDTO.City ?? throw new ValidationException("City is required");
+            customer.State = customerUpdateDTO.State ?? throw new ValidationException("State is required");
+            customer.Zip = customerUpdateDTO.Zip ?? throw new ValidationException("Zip is required");
+            customer.Phone = customerUpdateDTO.Phone ?? throw new ValidationException("Phone is required");
 
             // Save
             await DB.SaveChangesAsync();

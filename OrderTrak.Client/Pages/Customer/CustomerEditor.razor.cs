@@ -1,13 +1,15 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Customer;
+using OrderTrak.Client.Shared;
 using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Customer
 {
-    public partial class CustomerEditor
+    public partial class CustomerEditor : OrderTrakBasePage
     {
         [Parameter]
         public Guid FormID { get; set; }
@@ -24,6 +26,7 @@ namespace OrderTrak.Client.Pages.Customer
         protected int SortOrder { get; set; }
 
         protected bool CanEditProjects { get; set; }
+        protected bool DeleteCustomer { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -51,6 +54,8 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected void ProjectSearch_Click()
         {
+            Layout.ClearMessages();
+
             if (IsLoading)
                 return;
 
@@ -82,6 +87,7 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected void SortSwitch_Click(int column)
         {
+            Layout.ClearMessages();
 
             if (FilteredProjectList.Count == 0)
                 return;
@@ -122,18 +128,7 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (Customer != null)
                 {
-                    await CustomerService.UpdateCustomerAsync(new CustomerUpdateDTO
-                    {
-                        FormID = Customer.FormID,
-                        CustomerCode = Customer.CustomerCode,
-                        CustomerName = Customer.CustomerName,
-                        Address = Customer.Address,
-                        Address2 = Customer.Address2,
-                        City = Customer.City,
-                        State = Customer.State,
-                        Zip = Customer.Zip,
-                        Phone = Customer.Phone
-                    });
+                    await CustomerService.UpdateCustomerAsync(MapperService.Map<CustomerUpdateDTO>(Customer));
 
                     Customer = await CustomerService.GetCustomerAsync(FormID);
                     ProjectSearch_Click();
@@ -149,6 +144,12 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }
+        }
+
+        protected void Delete_Toggle()
+        {
+            Layout.ClearMessages();
+            DeleteCustomer = !DeleteCustomer;
         }
     }
 }

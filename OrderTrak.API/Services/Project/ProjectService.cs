@@ -27,10 +27,10 @@ namespace OrderTrak.API.Services.Project
             // Create new Project
             var project = new UPL_Project
             {
-                ProjectCode = projectCreateDTO.ProjectCode,
-                ProjectName = projectCreateDTO.ProjectName,
-                ContactName = projectCreateDTO.ContactName,
-                ContactPhone = projectCreateDTO.ContactPhone,
+                ProjectCode = projectCreateDTO.ProjectCode ?? throw new ValidationException("Project Code is required."),
+                ProjectName = projectCreateDTO.ProjectName ?? throw new ValidationException("Project Name is required."),
+                ContactName = projectCreateDTO.ContactName ?? throw new ValidationException("Contact Name is required."),
+                ContactPhone = projectCreateDTO.ContactPhone ?? throw new ValidationException("Contact Phone is required."),
                 ContactEmail = projectCreateDTO.ContactEmail,
                 UDF1 = projectCreateDTO.UDF1,
                 UDF2 = projectCreateDTO.UDF2,
@@ -63,10 +63,10 @@ namespace OrderTrak.API.Services.Project
                 throw new ValidationException($"Project {projectUpdateDTO.ProjectCode} already exists.");
 
             // Update project
-            project.ProjectCode = projectUpdateDTO.ProjectCode;
-            project.ProjectName = projectUpdateDTO.ProjectName;
-            project.ContactName = projectUpdateDTO.ContactName;
-            project.ContactPhone = projectUpdateDTO.ContactPhone;
+            project.ProjectCode = projectUpdateDTO.ProjectCode ?? throw new ValidationException("Project Code is required.");
+            project.ProjectName = projectUpdateDTO.ProjectName ?? throw new ValidationException("Project Name is required.");
+            project.ContactName = projectUpdateDTO.ContactName ?? throw new ValidationException("Contact Name is required.");
+            project.ContactPhone = projectUpdateDTO.ContactPhone ?? throw new ValidationException("Contact Phone is required.");
             project.ContactEmail = projectUpdateDTO.ContactEmail;
             project.UDF1 = projectUpdateDTO.UDF1;
             project.UDF2 = projectUpdateDTO.UDF2;

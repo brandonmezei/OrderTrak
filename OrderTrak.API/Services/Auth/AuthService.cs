@@ -54,7 +54,7 @@ namespace OrderTrak.API.Services.Auth
                 throw new ValidationException("User already exists");
 
             // Password Check
-            PasswordCheck(registerDTO.Password);
+            PasswordCheck(registerDTO.Password ?? throw new ValidationException("Password Required."));
 
             // Hash the password using bcrypt
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDTO.Password);
@@ -62,9 +62,9 @@ namespace OrderTrak.API.Services.Auth
             // Create new user
             var user = new SYS_User
             {
-                UserName = registerDTO.Email.Split('@')[0],
-                FirstName = registerDTO.FirstName,
-                LastName = registerDTO.LastName,
+                UserName = registerDTO.Email?.Split('@')[0] ?? throw new ValidationException("Email Required."),
+                FirstName = registerDTO.FirstName ?? throw new ValidationException("First Name Required."),
+                LastName = registerDTO.LastName ?? throw new ValidationException("Last Name Required."),
                 Email = registerDTO.Email,
                 Password = hashedPassword,
                 CreateName = "System"

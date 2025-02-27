@@ -1,4 +1,5 @@
-﻿using Blazored.LocalStorage;
+﻿using AutoMapper;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Layout;
 
@@ -11,6 +12,9 @@ namespace OrderTrak.Client.Shared
 
         [Inject]
         public ILocalStorageService LocalStorage { get; set; } = default!;
+
+        [Inject]
+        public IMapper MapperService { get; set; } = default!;
 
         [CascadingParameter]
         public MainLayout Layout { get; set; } = default!;

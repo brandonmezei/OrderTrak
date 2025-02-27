@@ -1,0 +1,14 @@
+﻿using AutoMapper;
+using OrderTrak.Client.Services.API;
+
+namespace OrderTrak.Client.Models
+{
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<CustomerDTO, CustomerUpdateDTO>();
+            CreateMap<ProjectDTO, ProjectUpdateDTO>();
+        }
+    }
+}
