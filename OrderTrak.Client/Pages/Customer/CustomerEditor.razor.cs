@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Customer;
+using OrderTrak.Client.Services.Project;
 using OrderTrak.Client.Shared;
 using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
@@ -17,7 +18,12 @@ namespace OrderTrak.Client.Pages.Customer
         [Inject]
         private ICustomerService CustomerService { get; set; } = default!;
 
+        [Inject]
+        private IProjectService ProjectService { get; set; } = default!;
+
         protected CustomerDTO? Customer { get; set; }
+
+        protected ProjectCreateDTO? CreateProject { get; set; }
 
         protected List<CustomerProjectListDTO> FilteredProjectList { get; set; } = [];
 
@@ -28,10 +34,14 @@ namespace OrderTrak.Client.Pages.Customer
         protected bool CanEditProjects { get; set; }
         protected bool DeleteCustomer { get; set; }
 
+        protected Guid? DeleteProjectID { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
+
+            IsLoading = false;
 
             try
             {
@@ -149,7 +159,112 @@ namespace OrderTrak.Client.Pages.Customer
         protected void Delete_Toggle()
         {
             Layout.ClearMessages();
+
             DeleteCustomer = !DeleteCustomer;
+        }
+
+        protected async Task DeleteConfirm_Click()
+        {
+            Layout.ClearMessages();
+            try
+            {
+                if (Customer != null)
+                {
+                    await CustomerService.DeleteCustomerAsync(FormID);
+
+                    Navigation.NavigateTo($"/customer/search?Delete=true");
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected void DeleteProject_Click(Guid? projectID)
+        {
+            Layout.ClearMessages();
+
+            DeleteProjectID = projectID;
+        }
+
+        protected async Task DeleteProjectConfirm_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if (DeleteProjectID != null)
+                {
+                    await ProjectService.DeleteProjectAsync(DeleteProjectID.Value);
+                    Customer = await CustomerService.GetCustomerAsync(FormID);
+
+                    DeleteProjectID = null;
+
+                    ProjectSearch_Click();
+                    Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected void AddProject_Toggle()
+        {
+            Layout.ClearMessages();
+
+            if(CreateProject == null)
+                CreateProject = new ProjectCreateDTO();
+            else
+                CreateProject = null;
+        }
+
+        protected async Task AddProject_Submit()
+        {
+            if (IsLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsLoading = true;
+
+            try
+            {
+                if (Customer != null && CreateProject != null)
+                {
+                    CreateProject.CustID = Customer.FormID;
+                    await ProjectService.CreateProjectAsync(CreateProject);
+
+                    // Reload Customer
+                    Customer = await CustomerService.GetCustomerAsync(FormID);
+                    FilteredProjectList = Customer.ProjectList.ToList();
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                CreateProject = null;
+                IsLoading = false;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Layout;
+using OrderTrak.Client.Models;
 
 namespace OrderTrak.Client.Shared
 {

@@ -35,6 +35,7 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected async Task Login_Click()
         {
+            
             if (IsLoading)
                 return;
 

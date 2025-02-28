@@ -8,11 +8,89 @@
 
 @if (Customer != null)
 {
+    @if (DeleteCustomer)
+    {
+        <ModalPopup Title="Confirm Delete" OnClose="Delete_Toggle">
+            <Content>
+                <p class="subtitle">Are you sure you want to delete this customer?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="Delete_Toggle" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteConfirm_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
+    @if (DeleteProjectID.HasValue)
+    {
+        <ModalPopup Title="Confirm Delete" OnClose="() => DeleteProject_Click(null)">
+            <Content>
+                <p class="subtitle">Are you sure you want to delete this project?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => DeleteProject_Click(null)" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteProjectConfirm_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
+    @if (CreateProject != null)
+    {
+        <ModalPopup Title="Add Project" OnClose="AddProject_Toggle">
+            <Content>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <EditForm Model="@CreateProject" OnValidSubmit="AddProject_Submit">
+                            <CardComponent Title="Project Information" Icon="fa-project-diagram">
+                                <CardBody>
+                                    <DataAnnotationsValidator />
+                                    <FormField Icon="fa-project-diagram" Title="Project Code">
+                                        <Content>
+                                            <InputText class="input is-danger" Type="text" Placeholder="Project Code" @bind-Value="CreateProject.ProjectCode" />
+                                            <ValidationMessage For="@(() => CreateProject.ProjectCode)" />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-project-diagram" Title="Project Name">
+                                        <Content>
+                                            <InputText class="input is-danger" Type="text" Placeholder="Project Name" @bind-Value="CreateProject.ProjectName" />
+                                            <ValidationMessage For="@(() => CreateProject.ProjectName)" />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-user" Title="Contact Name">
+                                        <Content>
+                                            <InputText class="input is-danger" Type="text" Placeholder="Contact Name" @bind-Value="CreateProject.ContactName" />
+                                            <ValidationMessage For="@(() => CreateProject.ContactName)" />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-phone" Title="Contact Phone">
+                                        <Content>
+                                            <InputText class="input is-danger" Type="text" Placeholder="Contact Phone" @bind-Value="CreateProject.ContactPhone" />
+                                            <ValidationMessage For="@(() => CreateProject.ContactPhone)" />
+                                        </Content>
+                                    </FormField>
+                                </CardBody>
+                                <Footer>
+                                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                                        <span class="icon">
+                                            <i class="fas fa-floppy-disk" />
+                                        </span>
+                                        <span>Save</span>
+                                    </button>
+                                </Footer>
+                            </CardComponent>
+                        </EditForm>
+                    </div>
+                </div>
+            </Content>
+        </ModalPopup>
+
+    }
+
     <div class="box">
         <div class="columns is-centered">
             <div class="column">
                 <div class="buttons is-pulled-right">
-                    <FormButton Title="Delete" Style="is-danger" Icon="fa-trash" />
+                    <FormButton Title="Delete" Style="is-danger" Icon="fa-trash" OnClick="Delete_Toggle" />
                 </div>
             </div>
         </div>
@@ -78,7 +156,7 @@
         </div>
         <div class="columns is-centered">
             <div class="column is-10">
-                <CardComponent Title="Project(s)" Icon="fa-project-diagram">
+                <CardComponent Title="Project(s)" Icon="fa-project-diagram" RightTitle="@($"{ FilteredProjectList.Count } record(s)")">
                     <CardBody>
                         <div class="columns is-centered">
                             <div class="column is-half">
@@ -116,6 +194,7 @@
                                             <td>
                                                 <div class="buttons">
                                                     <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/project/{line.FormID}")" />
+                                                    <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => DeleteProject_Click(line.FormID)" />
                                                 </div>
                                             </td>
                                             <td>@line.ProjectCode</td>
@@ -126,6 +205,9 @@
                             </table>
                         }
                     </CardBody>
+                    <Footer>
+                        <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddProject_Toggle" />
+                    </Footer>
                 </CardComponent>
             </div>
         </div>

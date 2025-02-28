@@ -30,18 +30,7 @@ namespace OrderTrak.API.Services.Project
                 ProjectCode = projectCreateDTO.ProjectCode ?? throw new ValidationException("Project Code is required."),
                 ProjectName = projectCreateDTO.ProjectName ?? throw new ValidationException("Project Name is required."),
                 ContactName = projectCreateDTO.ContactName ?? throw new ValidationException("Contact Name is required."),
-                ContactPhone = projectCreateDTO.ContactPhone ?? throw new ValidationException("Contact Phone is required."),
-                ContactEmail = projectCreateDTO.ContactEmail,
-                UDF1 = projectCreateDTO.UDF1,
-                UDF2 = projectCreateDTO.UDF2,
-                UDF3 = projectCreateDTO.UDF3,
-                UDF4 = projectCreateDTO.UDF4,
-                UDF5 = projectCreateDTO.UDF5,
-                UDF6 = projectCreateDTO.UDF6,
-                UDF7 = projectCreateDTO.UDF7,
-                UDF8 = projectCreateDTO.UDF8,
-                UDF9 = projectCreateDTO.UDF9,
-                UDF10 = projectCreateDTO.UDF10
+                ContactPhone = projectCreateDTO.ContactPhone ?? throw new ValidationException("Contact Phone is required.")
             };
 
             // Save

@@ -1,0 +1,41 @@
+﻿@using OrderTrak.Client.Models
+<div class="modal is-active">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">@Title</p>
+            <button class="delete" aria-label="close" @onclick="OnClose_Handler"></button>
+        </header>
+        <section class="modal-card-body">
+            @Content
+        </section>
+        <footer class="modal-card-foot">
+            <div class="buttons">
+                @FooterButtons
+            </div>
+        </footer>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+
+    [Parameter]
+    public RenderFragment? FooterButtons { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+
+    private async Task OnClose_Handler()
+    {
+        await OnClose.InvokeAsync();
+
+        StateHasChanged();
+    }
+}

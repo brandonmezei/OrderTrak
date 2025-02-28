@@ -10,19 +10,27 @@
         <EditForm Model="@LoginModel" OnValidSubmit="@Login_Click">
             <CardComponent Title="Login" Icon="fa-lock">
                 <CardBody>
+                    <DataAnnotationsValidator />
                     <FormField Icon="fa-envelope">
                         <Content>
                             <InputText class="input is-danger" Type="text" Placeholder="Email" @bind-Value="LoginModel.Email" />
+                            <ValidationMessage For="@(() => LoginModel.Email)" />
                         </Content>
                     </FormField>
                     <FormField Icon="fa-lock">
                         <Content>
                             <InputText class="input is-danger" Type="password" Placeholder="Password" @bind-Value="LoginModel.Password" />
+                            <ValidationMessage For="@(() => LoginModel.Password)" />
                         </Content>
                     </FormField>
                 </CardBody>
                 <Footer>
-                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">Login</button>
+                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                        <span class="icon">
+                            <i class="fas fa-sign-in-alt" />
+                        </span>
+                        <span>Login</span>
+                    </button>
                 </Footer>
             </CardComponent>
         </EditForm>

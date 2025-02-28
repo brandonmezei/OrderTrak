@@ -26,6 +26,9 @@ else
 
 
 @code {
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; } = default!;
+
     [Parameter]
     public string? Style { get; set; }
 
@@ -48,6 +51,8 @@ else
         IsLoading = true;
 
         await OnClick.InvokeAsync();
+
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
 
         IsLoading = false;
 

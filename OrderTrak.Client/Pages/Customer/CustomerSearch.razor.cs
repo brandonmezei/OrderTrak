@@ -11,6 +11,9 @@ namespace OrderTrak.Client.Pages.Customer
         [Inject]
         private ICustomerService CustomerService { get; set; } = default!;
 
+        [SupplyParameterFromQuery]
+        public bool Delete { get; set; }
+
         protected CustomerSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
 
@@ -19,6 +22,7 @@ namespace OrderTrak.Client.Pages.Customer
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
+
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
 
             try
@@ -34,6 +38,9 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }
+
+            if (Delete)
+                Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
         }
 
         protected async Task Search_Click()
