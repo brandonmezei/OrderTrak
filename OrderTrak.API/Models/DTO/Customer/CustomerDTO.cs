@@ -1,4 +1,6 @@
-﻿namespace OrderTrak.API.Models.DTO.Customer
+﻿using OrderTrak.API.Models.DTO.Project;
+
+namespace OrderTrak.API.Models.DTO.Customer
 {
     public class CustomerDTO
     {
@@ -11,6 +13,5 @@
         public string State { get; set; } = string.Empty;
         public string Zip { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public List<CustomerProjectListDTO> ProjectList { get; set; } = [];
     }
 }

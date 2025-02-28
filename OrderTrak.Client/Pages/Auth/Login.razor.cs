@@ -22,8 +22,6 @@ namespace OrderTrak.Client.Pages.Auth
             Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Please login below.");
 
-            IsLoading = false;
-
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 

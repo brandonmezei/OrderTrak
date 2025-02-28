@@ -1,4 +1,5 @@
-﻿<div class="card">
+﻿@using OrderTrak.Client.Services
+<div class="card">
     <header class="card-header has-background-link" @onclick="Collase_Toggle">
         <span class="card-header-title has-text-white">
             @if (Icon != null)
@@ -7,10 +8,17 @@
                     <i class="fas @Icon"></i>
                 </span>
             }
-            @Title
+             <span>@Title</span>
         </span>
         <span class="card-header-icon has-text-white">
-            <span>@RightTitle</span>
+            @if (IsCardLoading)
+            {
+                <span>Loading...</span>
+            }
+            else
+            {
+                <span>@RightTitle</span>
+            }
             <span class="icon has-text-white">
                 <i class="fas @(IsCollapsed ? "fa-chevron-up" : "fa-chevron-down")"></i>
             </span>
@@ -18,19 +26,26 @@
     </header>
     @if (!IsCollapsed)
     {
-        @if (CardBody != null)
+        @if (IsCardLoading)
         {
-            <div class="card-content">
-                <div class="content">
-                    @CardBody
-                </div>
-            </div>
+            <OrderTrakLoading />
         }
-        @if (Footer != null)
+        else
         {
-            <footer class="card-footer">
-                @Footer
-            </footer>
+            @if (CardBody != null)
+            {
+                <div class="card-content">
+                    <div class="content">
+                        @CardBody
+                    </div>
+                </div>
+            }
+            @if (Footer != null)
+            {
+                <footer class="card-footer">
+                    @Footer
+                </footer>
+            }
         }
     }
 </div>
@@ -53,6 +68,9 @@
 
     [Parameter]
     public bool IsCollapsed { get; set; }
+
+    [Parameter]
+    public bool IsCardLoading { get; set; }
 
     public void Collase_Toggle()
     {

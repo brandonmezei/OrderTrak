@@ -26,6 +26,7 @@ namespace OrderTrak.Client.Pages.Customer
         protected ProjectCreateDTO? CreateProject { get; set; }
 
         protected List<CustomerProjectListDTO> FilteredProjectList { get; set; } = [];
+        protected List<CustomerProjectListDTO> ProjectListFromDB { get; set; } = [];
 
         protected TableSearch ProjectSearchFilter { get; set; } = new();
 
@@ -41,8 +42,6 @@ namespace OrderTrak.Client.Pages.Customer
             Layout.ClearMessages();
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
 
-            IsLoading = false;
-
             try
             {
                 var permission = await LocalStorage.GetItemAsync<List<string>>("permissions") ?? [];
@@ -50,7 +49,6 @@ namespace OrderTrak.Client.Pages.Customer
                 CanEditProjects = permission.Contains("Project");
 
                 Customer = await CustomerService.GetCustomerAsync(FormID);
-                FilteredProjectList = Customer.ProjectList.ToList();
             }
             catch (ApiException ex)
             {
@@ -59,6 +57,33 @@ namespace OrderTrak.Client.Pages.Customer
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+
+            IsCardLoading = true;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                try
+                {
+                    ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(FormID);
+                    FilteredProjectList = ProjectListFromDB;
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    IsCardLoading = false;
+                    StateHasChanged();
+                }
             }
         }
 
@@ -81,11 +106,11 @@ namespace OrderTrak.Client.Pages.Customer
 
             if (string.IsNullOrEmpty(ProjectSearchFilter.SearchText))
             {
-                FilteredProjectList = [.. Customer.ProjectList];
+                FilteredProjectList = [.. ProjectListFromDB];
             }
             else
             {
-                FilteredProjectList = [.. Customer.ProjectList
+                FilteredProjectList = [.. ProjectListFromDB
                     .Where(
                         p => p.ProjectName.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase) || p.ProjectCode.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase)
                     )
@@ -247,7 +272,7 @@ namespace OrderTrak.Client.Pages.Customer
 
                     // Reload Customer
                     Customer = await CustomerService.GetCustomerAsync(FormID);
-                    FilteredProjectList = Customer.ProjectList.ToList();
+                    FilteredProjectList = [.. ProjectListFromDB];
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }

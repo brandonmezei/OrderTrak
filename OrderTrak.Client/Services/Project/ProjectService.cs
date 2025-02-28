@@ -25,5 +25,10 @@ namespace OrderTrak.Client.Services.Project
         {
             await ApiService.UpdateProjectAsync(projectUpdateDTO);
         }
+
+        public async Task<List<CustomerProjectListDTO>> GetProjectListByCustomerID(Guid customerID)
+        {
+            return [.. await ApiService.GetProjectListByCustomerIDAsync(customerID)];
+        }
     }
 }

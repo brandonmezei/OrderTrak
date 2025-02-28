@@ -30,6 +30,23 @@ namespace OrderTrak.API.Controllers.Project
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("GetProjectListByCustomerID/{customerID}")]
+        public async Task<ActionResult<List<CustomerProjectListDTO>>> GetProjectListByCustomerID(Guid customerID)
+        {
+            try
+            {
+                return Ok(await ProjectService.GetProjectListByCustomerID(customerID));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region POST

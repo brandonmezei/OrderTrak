@@ -13,26 +13,39 @@ namespace OrderTrak.Client.Pages.ChangeLog
 
         private PagedTableOfChangeLogDTO? ChangeLogs { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Here's what's new...");
 
-            try
+            IsCardLoading = true;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
             {
-                ChangeLogs = await ChangeLogService.GetChangeLogsAsync(new SearchQueryDTO
+                try
                 {
-                    Page = 1,
-                    RecordSize = 3
-                });
-            }
-            catch (ApiException ex)
-            {
-                Layout.AddMessage(ex.Response, MessageType.Error);
-            }
-            catch (Exception ex)
-            {
-                Layout.AddMessage(ex.Message, MessageType.Error);
+                    ChangeLogs = await ChangeLogService.GetChangeLogsAsync(new SearchQueryDTO
+                    {
+                        Page = 1,
+                        RecordSize = 3
+                    });
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    IsCardLoading = false;
+                    StateHasChanged();
+                }
             }
         }
     }

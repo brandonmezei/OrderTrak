@@ -6,77 +6,71 @@
 
 <PageTitle>Customer - OrderTrak</PageTitle>
 
-@if (ReturnTable != null)
-{
-    <div class="columns is-centered">
-        <div class="column">
-            <CardComponent Title="Customer(s)" Icon="fas fa-users" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")">
-                <CardBody>
-                    <div class="columns is-centered">
-                        <div class="column is-half">
-                            <div class="box">
-                                <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
-                                    <div class="field has-addons">
-                                        <div class="control is-expanded">
-                                            <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
-                                        </div>
-                                        <div class="control">
-                                            <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
-                                                <span class="fa fa-search" style="margin-right: 5px;"></span>
-                                                <span>Search</span>
-                                            </button>
-                                        </div>
+
+<div class="columns is-centered">
+    <div class="column">
+        <CardComponent Title="Customer(s)" Icon="fas fa-users" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
+            <CardBody>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <div class="box">
+                            <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                <div class="field has-addons">
+                                    <div class="control is-expanded">
+                                        <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
                                     </div>
-                                    <hr />
-                                    <div class="field">
-                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.EmptyOnly" id="EmptyOnly" @onclick="EmptyCustomer_Change" />
-                                        <label for="EmptyOnly">Empty Customers Only</label>
+                                    <div class="control">
+                                        <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                            <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                            <span>Search</span>
+                                        </button>
                                     </div>
-                                </EditForm>
-                            </div>
+                                </div>
+                                <hr />
+                                <div class="field">
+                                    <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.EmptyOnly" id="EmptyOnly" @onclick="EmptyCustomer_Change" />
+                                    <label for="EmptyOnly">Empty Customers Only</label>
+                                </div>
+                            </EditForm>
                         </div>
                     </div>
-
-                    @if (ReturnTable?.Data.Count > 0)
-                    {
-                        <table class="table is-fullwidth is-striped is-hoverable">
-                            <thead>
+                </div>
+                @if (ReturnTable?.Data.Count > 0)
+                {
+                    <table class="table is-fullwidth is-striped is-hoverable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th><a @onclick="() => SortSwitch_Click(1)">Code</a></th>
+                                <th><a @onclick="() => SortSwitch_Click(2)">Name</a></th>
+                                <th><a @onclick="() => SortSwitch_Click(3)">Phone</a></th>
+                                <th><a @onclick="() => SortSwitch_Click(4)">Project(s)</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in ReturnTable.Data)
+                            {
                                 <tr>
-                                    <th></th>
-                                    <th><a @onclick="() => SortSwitch_Click(1)">Code</a></th>
-                                    <th><a @onclick="() => SortSwitch_Click(2)">Name</a></th>
-                                    <th><a @onclick="() => SortSwitch_Click(3)">Phone</a></th>
-                                    <th><a @onclick="() => SortSwitch_Click(4)">Project(s)</a></th>
+                                    <td>
+                                        <div class="buttons">
+                                            <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/customer/{line.FormID}")" />
+                                        </div>
+                                    </td>
+                                    <td>@line.CustomerCode</td>
+                                    <td>@line.CustomerName</td>
+                                    <td>@line.Phone</td>
+                                    <td>@line.ProjectCount</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var line in ReturnTable.Data)
-                                {
-                                    <tr>
-                                        <td>
-                                            <div class="buttons">
-                                                <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/customer/{line.FormID}")" />
-                                            </div>
-                                        </td>
-                                        <td>@line.CustomerCode</td>
-                                        <td>@line.CustomerName</td>
-                                        <td>@line.Phone</td>
-                                        <td>@line.ProjectCount</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
-                        {
-                            <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
-                        }
+                            }
+                        </tbody>
+                    </table>
+                    @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
+                    {
+                        <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
                     }
-                </CardBody>
-            </CardComponent>
-        </div>
+                }
+            </CardBody>
+        </CardComponent>
     </div>
-}
-else
-{
-    <OrderTrakLoading />
-}
+</div>
+

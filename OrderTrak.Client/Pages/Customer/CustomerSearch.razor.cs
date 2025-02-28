@@ -19,28 +19,40 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected PagedTableOfCustomerSearchReturnDTO? ReturnTable;
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             Layout.ClearMessages();
-
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
-
-            try
-            {
-                SearchFilters = await LocalStorage.GetItemAsync<CustomerSearchDTO>("search") ?? SearchFilters;
-                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
-            }
-            catch (ApiException ex)
-            {
-                Layout.AddMessage(ex.Response, MessageType.Error);
-            }
-            catch (Exception ex)
-            {
-                Layout.AddMessage(ex.Message, MessageType.Error);
-            }
 
             if (Delete)
                 Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
+
+            IsCardLoading = true;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if(firstRender)
+            {
+                try
+                {
+                    SearchFilters = await LocalStorage.GetItemAsync<CustomerSearchDTO>("search") ?? SearchFilters;
+                    ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);                 
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    IsCardLoading = false;
+                    StateHasChanged();
+                }
+            }
         }
 
         protected async Task Search_Click()

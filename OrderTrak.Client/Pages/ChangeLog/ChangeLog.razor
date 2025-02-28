@@ -6,14 +6,14 @@
 
 <PageTitle>Change Log - OrderTrak</PageTitle>
 
-@if (ChangeLogs != null)
-{
-    @if (ChangeLogs.TotalRecords > 0)
-    {
-        <div class="columns is-centered">
-            <div class="column is-three-quarters">
-                <CardComponent Title="Change Log" Icon="fas fa-history">
-                    <CardBody>
+
+
+    <div class="columns is-centered">
+        <div class="column is-three-quarters">
+            <CardComponent Title="Change Log" Icon="fas fa-history" IsCardLoading=IsCardLoading>
+                <CardBody>
+                    @if (ChangeLogs?.TotalRecords > 0)
+                    {
                         <div class="timeline">
                             @foreach (var changeLog in ChangeLogs.Data)
                             {
@@ -34,13 +34,10 @@
                                 }
                             }
                         </div>
-                    </CardBody>
-                </CardComponent>
-            </div>
+                    }
+                </CardBody>
+            </CardComponent>
         </div>
-    }
-}
-else
-{
-    <OrderTrakLoading />
-}
+    </div>
+
+

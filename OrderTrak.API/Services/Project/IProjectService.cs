@@ -8,5 +8,6 @@ namespace OrderTrak.API.Services.Project
         Task UpdateProjectAsync(ProjectUpdateDTO projectUpdateDTO);
         Task DeleteProjectAsync(Guid projectID);
         Task<ProjectDTO> GetProjectAsync(Guid projectID);
+        Task<List<CustomerProjectListDTO>> GetProjectListByCustomerID(Guid customerID);
     }
 }

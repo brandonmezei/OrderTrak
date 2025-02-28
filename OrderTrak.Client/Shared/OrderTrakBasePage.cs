@@ -21,5 +21,6 @@ namespace OrderTrak.Client.Shared
         public MainLayout Layout { get; set; } = default!;
 
         public bool IsLoading { get; set; }
+        public bool IsCardLoading { get; set; }
     }
 }

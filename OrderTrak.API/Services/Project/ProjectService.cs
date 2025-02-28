@@ -20,8 +20,8 @@ namespace OrderTrak.API.Services.Project
             if (customer.UPL_Projects.Count > 0)
                 throw new ValidationException($"Project {projectCreateDTO.ProjectCode} already exists in customer {customer.CustomerCode}.");
 
-            // Check if project will make 50 projects
-            if (customer.UPL_Projects.Count >= 50)
+            // Check if customer has 50 projects
+            if (await DB.UPL_Project.CountAsync(x => x.FormID == projectCreateDTO.CustID) >= 50)
                 throw new ValidationException("Customers have a 50 project max.");
 
             // Create new Project
@@ -114,6 +114,19 @@ namespace OrderTrak.API.Services.Project
                 })
                 .FirstOrDefaultAsync(x => x.FormID == projectID)
                 ?? throw new ValidationException("Project not found.");
+        }
+
+        public async Task<List<CustomerProjectListDTO>> GetProjectListByCustomerID(Guid customerID)
+        {
+            return await DB.UPL_Project
+                .Where(x => x.UPL_Customer.FormID == customerID)
+                .Select(x => new CustomerProjectListDTO
+                {
+                    FormID = x.FormID,
+                    ProjectCode = x.ProjectCode,
+                    ProjectName = x.ProjectName
+                })
+                .ToListAsync();
         }
     }
 }

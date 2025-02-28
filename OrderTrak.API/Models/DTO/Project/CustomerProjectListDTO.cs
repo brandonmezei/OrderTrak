@@ -1,4 +1,4 @@
-﻿namespace OrderTrak.API.Models.DTO.Customer
+﻿namespace OrderTrak.API.Models.DTO.Project
 {
     public class CustomerProjectListDTO
     {
