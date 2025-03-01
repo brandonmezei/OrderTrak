@@ -36,6 +36,9 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 try
                 {
+                    // Sleep for 500ms to allow the page to render before loading the data
+                    await Task.Delay(500);
+
                     SearchFilters = await LocalStorage.GetItemAsync<CustomerSearchDTO>("search") ?? SearchFilters;
                     ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);                 
                 }

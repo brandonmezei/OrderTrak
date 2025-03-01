@@ -27,6 +27,9 @@ namespace OrderTrak.Client.Pages.ChangeLog
             {
                 try
                 {
+                    // Sleep for 500ms to allow the page to render before loading the data
+                    await Task.Delay(500);
+
                     ChangeLogs = await ChangeLogService.GetChangeLogsAsync(new SearchQueryDTO
                     {
                         Page = 1,

@@ -17,6 +17,8 @@ namespace OrderTrak.Client.Pages.Project
 
         protected ProjectDTO? Project { get; set; }
 
+        protected bool DeleteProject { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -49,6 +51,36 @@ namespace OrderTrak.Client.Pages.Project
                     Project = await ProjectService.GetProjectAsync(FormID);
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected void Delete_Toggle()
+        {
+            Layout.ClearMessages();
+
+            DeleteProject = !DeleteProject;
+        }
+
+        protected async Task DeleteConfirm_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if (Project != null)
+                {
+                    await ProjectService.DeleteProjectAsync(Project.FormID);
+
+                    Navigation.NavigateTo($"/customer/{ Project.CustomerID }?Delete=true");
                 }
             }
             catch (ApiException ex)

@@ -15,6 +15,9 @@ namespace OrderTrak.Client.Pages.Customer
         [Parameter]
         public Guid FormID { get; set; }
 
+        [SupplyParameterFromQuery]
+        public bool Delete { get; set; }
+
         [Inject]
         private ICustomerService CustomerService { get; set; } = default!;
 
@@ -25,8 +28,8 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected ProjectCreateDTO? CreateProject { get; set; }
 
-        protected List<CustomerProjectListDTO> FilteredProjectList { get; set; } = [];
-        protected List<CustomerProjectListDTO> ProjectListFromDB { get; set; } = [];
+        protected List<CustomerProjectListDTO>? FilteredProjectList { get; set; }
+        protected List<CustomerProjectListDTO>? ProjectListFromDB { get; set; }
 
         protected TableSearch ProjectSearchFilter { get; set; } = new();
 
@@ -41,6 +44,9 @@ namespace OrderTrak.Client.Pages.Customer
         {
             Layout.ClearMessages();
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
+
+            if (Delete)
+                Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
 
             try
             {
@@ -68,6 +74,9 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 try
                 {
+                    // Sleep for 500ms to allow the page to render before loading the data
+                    await Task.Delay(500);
+
                     ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(FormID);
                     FilteredProjectList = ProjectListFromDB;
                 }
