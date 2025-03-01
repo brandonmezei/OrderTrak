@@ -66,7 +66,7 @@ namespace OrderTrak.API.Services.Customer
             // Get Customer
             var customer = await DB.UPL_Customer
                 .FirstOrDefaultAsync(x => x.FormID == customerId)
-                ?? throw new ValidationException("Customer not found");
+                ?? throw new ValidationException("Customer not found.");
 
             // Delete
             customer.IsDelete = true;
@@ -94,7 +94,7 @@ namespace OrderTrak.API.Services.Customer
                     Phone = x.Phone
                 })
                 .FirstOrDefaultAsync()
-                ?? throw new ValidationException("Customer not found");
+                ?? throw new ValidationException("Customer not found.");
         }
 
         public async Task<PagedTable<CustomerSearchReturnDTO>> SearchCustomersAsync(CustomerSearchDTO searchQuery)

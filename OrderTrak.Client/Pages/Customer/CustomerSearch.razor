@@ -6,7 +6,101 @@
 
 <PageTitle>Customer - OrderTrak</PageTitle>
 
+@if (CreateCustomer != null)
+{
+    <ModalPopup Title="Create Customer" OnClose="CreateCustomer_Toggle">
+        <Content>
+            <div class="columns is-centered">
+                <div class="column is-half">
+                    <EditForm Model="@CreateCustomer" OnValidSubmit="AddCreate_Submit">
+                        <CardComponent Title="Customer Information" Icon="fa-user">
+                            <CardBody>
+                                <DataAnnotationsValidator />
+                                <FormField Icon="fa-project-diagram" Title="Customer Code">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="CreateCustomer.CustomerCode" />
+                                        <ValidationMessage For="@(() => CreateCustomer.CustomerCode)" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-project-diagram" Title="Customer Name">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Customer Name" @bind-Value="CreateCustomer.CustomerName" />
+                                        <ValidationMessage For="@(() => CreateCustomer.CustomerName)" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-phone" Title="Phone">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Phone" @bind-Value="CreateCustomer.Phone" />
+                                        <ValidationMessage For="@(() => CreateCustomer.Phone)" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-map-marker-alt" Title="Address">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Address" @bind-Value="CreateCustomer.Address" />
+                                        <ValidationMessage For="@(() => CreateCustomer.Address)" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-map-marker-alt" Title="Address 2">
+                                    <Content>
+                                        <InputText class="input is-primary" Type="text" Placeholder="Address 2" @bind-Value="CreateCustomer.Address2" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-city" Title="City">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="City" @bind-Value="CreateCustomer.City" />
+                                        <ValidationMessage For="@(() => CreateCustomer.City)" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-flag" Title="State">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="State" @bind-Value="CreateCustomer.State" />
+                                        <ValidationMessage For="@(() => CreateCustomer.State)" />
+                                    </Content>
+                                </FormField>
+                                <FormField Icon="fa-envelope" Title="Zip">
+                                    <Content>
+                                        <InputText class="input is-danger" Type="text" Placeholder="Zip" @bind-Value="CreateCustomer.Zip" />
+                                        <ValidationMessage For="@(() => CreateCustomer.Zip)" />
+                                    </Content>
+                                </FormField>
+                            </CardBody>
+                            <Footer>
+                                <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                                    <span class="icon">
+                                        <i class="fas fa-floppy-disk" />
+                                    </span>
+                                    <span>Save</span>
+                                </button>
+                            </Footer>
+                        </CardComponent>
+                    </EditForm>
+                </div>
+            </div>
+        </Content>
+    </ModalPopup>
+}
 
+
+@if (DeleteID.HasValue)
+{
+    <ModalPopup Title="Confirm Delete" OnClose="() => Delete_Toggle(null)">
+        <Content>
+            <p class="subtitle">Are you sure you want to delete this customer?</p>
+        </Content>
+        <FooterButtons>
+            <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => Delete_Toggle(null)" />
+            <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteConfirm_Click" />
+        </FooterButtons>
+    </ModalPopup>
+}
+
+<div class="columns is-centered">
+    <div class="column">
+        <div class="buttons is-pulled-right">
+            <FormButton Title="Add" Style="is-success" Icon="fa-plus" OnClick="CreateCustomer_Toggle" />
+        </div>
+    </div>
+</div>
 <div class="columns is-centered">
     <div class="column">
         <CardComponent Title="Customer(s)" Icon="fas fa-users" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
@@ -54,6 +148,7 @@
                                     <td>
                                         <div class="buttons">
                                             <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/customer/{line.FormID}")" />
+                                            <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
                                         </div>
                                     </td>
                                     <td>@line.CustomerCode</td>
@@ -70,6 +165,9 @@
                     }
                 }
             </CardBody>
+            <Footer>
+                <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="CreateCustomer_Toggle" />
+            </Footer>
         </CardComponent>
     </div>
 </div>

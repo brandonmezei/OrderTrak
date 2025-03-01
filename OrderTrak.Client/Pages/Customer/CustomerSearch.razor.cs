@@ -16,8 +16,12 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected CustomerSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
+        protected CustomerCreateDTO? CreateCustomer { get; set; }
+
 
         protected PagedTableOfCustomerSearchReturnDTO? ReturnTable;
+
+        protected Guid? DeleteID { get; set; }
 
         protected override void OnInitialized()
         {
@@ -149,6 +153,83 @@ namespace OrderTrak.Client.Pages.Customer
         {
             SearchFilters.EmptyOnly = !SearchFilters.EmptyOnly;
             await Search_Click();
+        }
+
+        protected void CreateCustomer_Toggle()
+        {
+            if (CreateCustomer == null)
+                CreateCustomer = new();
+            else
+                CreateCustomer = null;
+        }
+
+        protected async Task AddCreate_Submit()
+        {
+            if (IsLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsLoading = true;
+
+            try
+            {
+                if(CreateCustomer != null)
+                {
+                    await CustomerService.CreateCustomerAsync(CreateCustomer);
+
+                    // Reload Customer List
+                    ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                CreateCustomer = null;
+                IsLoading = false;
+            }
+        }
+
+        protected void Delete_Toggle(Guid? FormID)
+        {
+            Layout.ClearMessages();
+
+            DeleteID = FormID;
+        }
+
+        protected async Task DeleteConfirm_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if(DeleteID.HasValue)
+                {
+                    await CustomerService.DeleteCustomerAsync(DeleteID.Value);
+
+                    DeleteID = null;
+
+                    // Reload Customer List
+                    ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                    Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
         }
     }
 }
