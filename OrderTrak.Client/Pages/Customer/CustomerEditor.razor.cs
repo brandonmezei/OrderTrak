@@ -46,7 +46,7 @@ namespace OrderTrak.Client.Pages.Customer
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
 
             if (Delete)
-                Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
+                Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
 
             try
             {
@@ -98,7 +98,7 @@ namespace OrderTrak.Client.Pages.Customer
             }
         }
 
-        protected async Task ProjectSearch_Click()
+        protected void ProjectSearch_Click()
         {
             Layout.ClearMessages();
 
@@ -113,11 +113,10 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (Customer != null)
                 {
-                    ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(Customer.FormID);
                     FilteredProjectList = ProjectListFromDB;
 
-                    if (!string.IsNullOrEmpty(ProjectSearchFilter.SearchText))
-                        FilteredProjectList = [.. ProjectListFromDB
+                    if (FilteredProjectList != null && !string.IsNullOrEmpty(ProjectSearchFilter.SearchText))
+                        FilteredProjectList = [.. FilteredProjectList
                         .Where(
                             p => p.ProjectName.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase) || p.ProjectCode.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase)
                         )
@@ -247,12 +246,10 @@ namespace OrderTrak.Client.Pages.Customer
                     await ProjectService.DeleteProjectAsync(DeleteProjectID.Value);
                     Customer = await CustomerService.GetCustomerAsync(FormID);
 
-                    DeleteProjectID = null;
-
                     ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(Customer.FormID);
                     FilteredProjectList = ProjectListFromDB;
 
-                    Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
+                    Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
                 }
             }
             catch (ApiException ex)
@@ -262,6 +259,10 @@ namespace OrderTrak.Client.Pages.Customer
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                DeleteProjectID = null;
             }
         }
 

@@ -13,5 +13,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public string RoleName { get; set; } = string.Empty;
 
         public virtual ICollection<SYS_RolesToFunction> SYS_RolesToFunction { get; set; } = [];
+        public virtual ICollection<SYS_User> SYS_User { get; set; } = [];
     }
 }

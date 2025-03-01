@@ -1,0 +1,80 @@
+﻿@page "/role/{FormID:guid}"
+@using OrderTrak.Client.Services
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Role - OrderTrak</PageTitle>
+
+@if (Role != null)
+{
+    <div class="box">
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <CardComponent Title="Information" Icon="fa-info-circle">
+                    <CardBody>
+                        <FormField Icon="fa-user-shield" Title="Role Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="Role.RoleName" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column is-one-third">
+                <CardComponent Title="Role to Function(s)" Icon="fa-project-diagram" RightTitle="@($"{ FilteredRoleToFunctionList?.Count } record(s)")" IsCardLoading=IsCardLoading>
+                    <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <div class="box">
+                                    <EditForm Model="@RoleToFunctionSearchFilter" OnValidSubmit="@RoleSearch_Click">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <InputText class="input" @bind-Value="RoleToFunctionSearchFilter.SearchText" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                    <span>Search</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        @if (FilteredRoleToFunctionList?.Count > 0)
+                        {
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th><a @onclick="() => SortSwitch_Click(1)">Function</a></th>
+                                        <th><a @onclick="() => SortSwitch_Click(2)">Can Access</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in FilteredRoleToFunctionList)
+                                    {
+                                        <tr>
+                                            <td>@line.FunctionName</td>
+                                            <td>@line.CanAccess</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/role/search" />
+            <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

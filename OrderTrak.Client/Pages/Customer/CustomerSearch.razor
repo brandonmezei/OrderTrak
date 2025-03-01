@@ -12,7 +12,7 @@
         <Content>
             <div class="columns is-centered">
                 <div class="column is-half">
-                    <EditForm Model="@CreateCustomer" OnValidSubmit="AddCreate_Submit">
+                    <EditForm Model="@CreateCustomer" OnValidSubmit="CreateCustomer_Submit">
                         <CardComponent Title="Customer Information" Icon="fa-user">
                             <CardBody>
                                 <DataAnnotationsValidator />
@@ -93,6 +93,7 @@
         </FooterButtons>
     </ModalPopup>
 }
+
 
 <div class="columns is-centered">
     <div class="column">

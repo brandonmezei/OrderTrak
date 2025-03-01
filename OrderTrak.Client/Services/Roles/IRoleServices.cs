@@ -1,7 +1,6 @@
-﻿using OrderTrak.API.Models.DTO;
-using OrderTrak.API.Models.DTO.Roles;
+﻿using OrderTrak.Client.Services.API;
 
-namespace OrderTrak.API.Services.Roles
+namespace OrderTrak.Client.Services.Roles
 {
     public interface IRoleServices
     {
@@ -9,7 +8,7 @@ namespace OrderTrak.API.Services.Roles
         Task UpdateRoleAsync(RoleUpdateDTO roleUpdateDTO);
         Task DeleteRoleAsync(Guid roleID);
         Task<RoleDTO> GetRoleAsync(Guid roleID);
-        Task<PagedTable<RoleSearchReturnDTO>> SearchRolesAsync(RoleSearchDTO searchQuery);
+        Task<PagedTableOfRoleSearchReturnDTO> SearchRolesAsync(RoleSearchDTO searchQuery);
         Task<List<RoleToFunctionDTO>> GetRoleToFunctionByRoleIDAsync(Guid roleID);
     }
 }

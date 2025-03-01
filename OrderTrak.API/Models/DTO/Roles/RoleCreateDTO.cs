@@ -4,7 +4,7 @@ namespace OrderTrak.API.Models.DTO.Roles
 {
     public class RoleCreateDTO
     {
-        [Required]
+        [Required(ErrorMessage = "Role Name is required.")]
         public string RoleName { get; set; } = string.Empty;
     }
 }
