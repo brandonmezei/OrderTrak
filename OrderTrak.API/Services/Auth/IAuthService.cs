@@ -7,5 +7,6 @@ namespace OrderTrak.API.Services.Auth
         Task RegisterAsync(RegisterDTO registerDTO);
         Task<AuthReturnDTO> LoginAsync(LoginDTO loginDTO);
         Task<List<string>> FetchPermissionsAsync();
+        void PasswordCheck(string password);
     }
 }

@@ -64,8 +64,10 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }
-
-            IsCardLoading = true;
+            finally
+            {
+                IsCardLoading = true;
+            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -96,7 +98,7 @@ namespace OrderTrak.Client.Pages.Customer
             }
         }
 
-        protected void ProjectSearch_Click()
+        protected async Task ProjectSearch_Click()
         {
             Layout.ClearMessages();
 
@@ -107,60 +109,71 @@ namespace OrderTrak.Client.Pages.Customer
 
             IsLoading = true;
 
-            if (Customer == null)
+            try
             {
-                FilteredProjectList = [];
-                return;
-            }
+                if (Customer != null)
+                {
+                    ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(Customer.FormID);
+                    FilteredProjectList = ProjectListFromDB;
 
-            if (string.IsNullOrEmpty(ProjectSearchFilter.SearchText))
-            {
-                FilteredProjectList = [.. ProjectListFromDB];
+                    if (!string.IsNullOrEmpty(ProjectSearchFilter.SearchText))
+                        FilteredProjectList = [.. ProjectListFromDB
+                        .Where(
+                            p => p.ProjectName.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase) || p.ProjectCode.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase)
+                        )
+                        ];
+                }
             }
-            else
+            catch (ApiException ex)
             {
-                FilteredProjectList = [.. ProjectListFromDB
-                    .Where(
-                        p => p.ProjectName.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase) || p.ProjectCode.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase)
-                    )
-                ];
+                Layout.AddMessage(ex.Response, MessageType.Error);
             }
-
-            IsLoading = false;
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+                StateHasChanged();
+            }
         }
 
         protected void SortSwitch_Click(int column)
         {
             Layout.ClearMessages();
 
-            if (FilteredProjectList.Count == 0)
-                return;
-
-            SortOrder = SortOrder == 1 ? 2 : 1;
-
-            switch (SortOrder)
+            if (FilteredProjectList != null)
             {
-                case 1:
-                    FilteredProjectList = [.. FilteredProjectList
+                if (FilteredProjectList.Count == 0)
+                    return;
+
+                SortOrder = SortOrder == 1 ? 2 : 1;
+
+                switch (SortOrder)
+                {
+                    case 1:
+                        FilteredProjectList = [.. FilteredProjectList
                         .OrderBy(x => column switch
                         {
                             0 => x.ProjectName,
                             1 => x.ProjectCode,
                             _ => x.ProjectName
                         })
-                    ];
-                    break;
+                        ];
+                        break;
 
-                case 2:
-                    FilteredProjectList = [.. FilteredProjectList
+                    case 2:
+                        FilteredProjectList = [.. FilteredProjectList
                         .OrderByDescending(x => column switch
                         {
                             0 => x.ProjectName,
                             1 => x.ProjectCode,
                             _ => x.ProjectName
                         })
-                    ];
-                    break;
+                        ];
+                        break;
+                }
             }
         }
 
@@ -173,9 +186,6 @@ namespace OrderTrak.Client.Pages.Customer
                 if (Customer != null)
                 {
                     await CustomerService.UpdateCustomerAsync(MapperService.Map<CustomerUpdateDTO>(Customer));
-
-                    Customer = await CustomerService.GetCustomerAsync(FormID);
-                    ProjectSearch_Click();
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }
@@ -239,7 +249,9 @@ namespace OrderTrak.Client.Pages.Customer
 
                     DeleteProjectID = null;
 
-                    ProjectSearch_Click();
+                    ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(Customer.FormID);
+                    FilteredProjectList = ProjectListFromDB;
+
                     Layout.AddMessage(Messages.DeleteSuccesful, MessageType.Success);
                 }
             }
@@ -279,9 +291,9 @@ namespace OrderTrak.Client.Pages.Customer
                     CreateProject.CustID = Customer.FormID;
                     await ProjectService.CreateProjectAsync(CreateProject);
 
-                    // Reload Customer
-                    Customer = await CustomerService.GetCustomerAsync(FormID);
-                    FilteredProjectList = [.. ProjectListFromDB];
+                    // Reload Project List
+                    ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(Customer.FormID);
+                    FilteredProjectList = ProjectListFromDB;
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }

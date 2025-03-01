@@ -8,6 +8,7 @@ using OrderTrak.API.Providers.AuthRequirements;
 using OrderTrak.API.Services.Auth;
 using OrderTrak.API.Services.ChangeLog;
 using OrderTrak.API.Services.Customer;
+using OrderTrak.API.Services.Profile;
 using OrderTrak.API.Services.Project;
 using OrderTrak.API.Services.StringHandlers;
 using Serilog;
@@ -76,6 +77,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IChangeLogService, ChangeLogService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 // Register custom authorization handler
 builder.Services.AddScoped<IAuthorizationHandler, FunctionAccessHandler>();

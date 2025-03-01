@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="columns is-centered">
-            <div class="column is-3">
+            <div class="column is-one-third">
                 <CardComponent Title="Information" Icon="fa-info-circle">
                     <CardBody>
                         <FormField Icon="fa-id-card" Title="Customer Code">
@@ -55,8 +55,27 @@
                         </FormField>
                     </CardBody>
                 </CardComponent>
+                <CardComponent Title="Contact" Icon="fa-address-book">
+                    <CardBody>
+                        <FormField Icon="fa-user" Title="Contact Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Contact Name" @bind-Value="Project.ContactName" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-phone" Title="Contact Phone">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Contact Phone" @bind-Value="Project.ContactPhone" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-envelope" Title="Contact Email">
+                            <Content>
+                                <InputText class="input is-primary" Type="text" Placeholder="Contact Email" @bind-Value="Project.ContactEmail" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
             </div>
-            <div class="column is-6">
+            <div class="column">
                 <CardComponent Title="UDF Labels(s)" Icon="fa-cogs">
                     <CardBody>
                         <div class="columns is-centered">
@@ -118,31 +137,11 @@
                     </CardBody>
                 </CardComponent>
             </div>
-            <div class="column is-3">
-                <CardComponent Title="Contact" Icon="fa-address-book">
-                    <CardBody>
-                        <FormField Icon="fa-user" Title="Contact Name">
-                            <Content>
-                                <InputText class="input is-danger" Type="text" Placeholder="Contact Name" @bind-Value="Project.ContactName" />
-                            </Content>
-                        </FormField>
-                        <FormField Icon="fa-phone" Title="Contact Phone">
-                            <Content>
-                                <InputText class="input is-danger" Type="text" Placeholder="Contact Phone" @bind-Value="Project.ContactPhone" />
-                            </Content>
-                        </FormField>
-                        <FormField Icon="fa-envelope" Title="Contact Email">
-                            <Content>
-                                <InputText class="input is-primary" Type="text" Placeholder="Contact Email" @bind-Value="Project.ContactEmail" />
-                            </Content>
-                        </FormField>
-                    </CardBody>
-                </CardComponent>
-            </div>
         </div>
         <hr />
         <div class="buttons">
             <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="@($"/customer/{Project.CustomerID}")" />
+            <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
         </div>
     </div>
 }

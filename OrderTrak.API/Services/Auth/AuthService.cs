@@ -26,25 +26,24 @@ namespace OrderTrak.API.Services.Auth
             JwtKey = Configuration["Jwt:Key"] ?? throw new Exception("JWT Key not found");
         }
 
-        private static void PasswordCheck(string password)
+        public void PasswordCheck(string password)
         {
             // Apply Basic Password Rules
             if (password.Length < 8)
-                throw new Exception("Password must be at least 8 characters long");
+                throw new ValidationException("Password must be at least 8 characters long");
 
             if (!password.Any(char.IsUpper))
-                throw new Exception("Password must contain at least one uppercase letter");
+                throw new ValidationException("Password must contain at least one uppercase letter");
 
             if (!password.Any(char.IsLower))
-                throw new Exception("Password must contain at least one lowercase letter");
+                throw new ValidationException("Password must contain at least one lowercase letter");
 
             if (!password.Any(char.IsDigit))
-                throw new Exception("Password must contain at least one digit");
+                throw new ValidationException("Password must contain at least one digit");
 
             // Special Character Check
             if (!password.Any(ch => !char.IsLetterOrDigit(ch)))
-                throw new Exception("Password must contain at least one special character");
-
+                throw new ValidationException("Password must contain at least one special character");
         }
 
         public async Task RegisterAsync(RegisterDTO registerDTO)
@@ -56,9 +55,6 @@ namespace OrderTrak.API.Services.Auth
             // Password Check
             PasswordCheck(registerDTO.Password ?? throw new ValidationException("Password Required."));
 
-            // Hash the password using bcrypt
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDTO.Password);
-
             // Create new user
             var user = new SYS_User
             {
@@ -66,7 +62,7 @@ namespace OrderTrak.API.Services.Auth
                 FirstName = registerDTO.FirstName ?? throw new ValidationException("First Name Required."),
                 LastName = registerDTO.LastName ?? throw new ValidationException("Last Name Required."),
                 Email = registerDTO.Email,
-                Password = hashedPassword,
+                Password = BCrypt.Net.BCrypt.HashPassword(registerDTO.Password),
                 CreateName = "System"
             };
 

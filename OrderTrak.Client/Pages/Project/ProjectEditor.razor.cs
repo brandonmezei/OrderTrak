@@ -48,8 +48,6 @@ namespace OrderTrak.Client.Pages.Project
                 {
                     await ProjectService.UpdateProjectAsync(MapperService.Map<ProjectUpdateDTO>(Project));
 
-                    Project = await ProjectService.GetProjectAsync(FormID);
-
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }
             }

@@ -14,13 +14,13 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public int POHeaderID { get; set; }
 
         [Required]
-        [ForeignKey("UPL_ProjectPart")]
-        public int ProjectPartID { get; set; }
+        [ForeignKey("UPL_PartInfo")]
+        public int PartID { get; set; }
 
         [Required]
         public int Quantity { get; set; }
 
         public virtual PO_Header PO_Header { get; set; } = null!;
-        public virtual UPL_ProjectPart UPL_ProjectPart { get; set; } = null!;
+        public virtual UPL_PartInfo UPL_PartInfo { get; set; } = null!;
     }
 }

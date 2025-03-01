@@ -6,3 +6,80 @@
 
 <PageTitle>Profile - OrderTrak</PageTitle>
 
+@if (Profile != null)
+{
+    <div class="columns is-centered">
+        <div class="column is-one-third">
+            <EditForm Model="@Profile" OnValidSubmit="Save_Click">
+                <CardComponent Title="Profile" Icon="fa-user-circle">
+                    <CardBody>
+                        <DataAnnotationsValidator />
+                        <FormField Icon="fa-user" Title="First Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="First Name" @bind-Value="Profile.FirstName" />
+                                <ValidationMessage For="@(() => Profile.FirstName)" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-user" Title="Last Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Last Name" @bind-Value="Profile.LastName" />
+                                <ValidationMessage For="@(() => Profile.LastName)" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-envelope" Title="Email">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Email" @bind-Value="Profile.Email" />
+                                <ValidationMessage For="@(() => Profile.Email)" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                    <Footer>
+                        <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                            <span class="icon">
+                                <i class="fas fa-save" />
+                            </span>
+                            <span>Save</span>
+                        </button>
+                    </Footer>
+                </CardComponent>
+            </EditForm>
+        </div>
+        <div class="column is-one-third">
+            <EditForm Model="@Profile" OnValidSubmit="ChangePassword_Click">
+                <CardComponent Title="Change Password" Icon="fa-key">
+                    <CardBody>
+                        <DataAnnotationsValidator />
+                        <FormField Icon="fa-lock">
+                            <Content>
+                                <InputText class="input is-primary" Type="password" Placeholder="Current Password" @bind-Value="CurrentPassword" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-lock">
+                            <Content>
+                                <InputText class="input is-danger" Type="password" Placeholder="New Password" @bind-Value="NewPassword" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-lock">
+                            <Content>
+                                <InputText class="input is-danger" Type="password" Placeholder="Retype Password" @bind-Value="ConfirmPassword" />
+                                <p class="help">Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.</p>
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                    <Footer>
+                        <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                            <span class="icon">
+                                <i class="fas fa-key" />
+                            </span>
+                            <span>Update Password</span>
+                        </button>
+                    </Footer>
+                </CardComponent>
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

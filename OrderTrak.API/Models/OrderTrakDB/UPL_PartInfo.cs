@@ -30,6 +30,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public bool IsStock { get; set; } = false;
 
-        public virtual ICollection<UPL_ProjectPart> UPL_ProjectPart { get; set; } = [];
+        public virtual ICollection<PO_Line> PO_Line { get; set; } = [];
+
     }
 }

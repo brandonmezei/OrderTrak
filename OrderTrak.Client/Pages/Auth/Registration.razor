@@ -35,6 +35,12 @@
                             <ValidationMessage For="@(() => RegisterModel.Password)" />
                         </Content>
                     </FormField>
+                    <FormField Icon="fa-lock">
+                        <Content>
+                            <InputText class="input is-danger" Type="password" Placeholder="Retype Password" @bind-Value="ConfirmPassword" />
+                            <p class="help">Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.</p>
+                        </Content>
+                    </FormField>
                 </CardBody>
                 <Footer>
                     <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
