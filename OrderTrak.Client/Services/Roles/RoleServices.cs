@@ -35,5 +35,10 @@ namespace OrderTrak.Client.Services.Roles
         {
              return [..await ApiService.GetRoleToFunctionByRoleIDAsync(roleID)];
         }
+
+        public async Task UpdateRoleToFunctionAsync(RoleUpdateRoleToFunctionDTO roleToFunctionUpdateDTO)
+        {
+            await ApiService.UpdateRoleToFunctionAsync(roleToFunctionUpdateDTO);
+        }
     }
 }

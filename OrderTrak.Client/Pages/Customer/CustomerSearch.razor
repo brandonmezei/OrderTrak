@@ -136,10 +136,50 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th><a @onclick="() => SortSwitch_Click(1)">Code</a></th>
-                                <th><a @onclick="() => SortSwitch_Click(2)">Name</a></th>
-                                <th><a @onclick="() => SortSwitch_Click(3)">Phone</a></th>
-                                <th><a @onclick="() => SortSwitch_Click(4)">Project(s)</a></th>
+                                <th>
+                                    <a @onclick="() => SortSwitch_Click(1)">
+                                        <span>Code</span>
+                                        @if (SearchFilters.SortColumn == 1)
+                                        {
+                                            <span class="icon">
+                                                <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                            </span>
+                                        }
+                                    </a>
+                                </th>
+                                <th>
+                                    <a @onclick="() => SortSwitch_Click(2)">
+                                        <span>Name</span>
+                                        @if (SearchFilters.SortColumn == 2)
+                                        {
+                                            <span class="icon">
+                                                <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                            </span>
+                                        }
+                                    </a>
+                                </th>
+                                <th>
+                                    <a @onclick="() => SortSwitch_Click(3)">
+                                        <span>Phone</span>
+                                        @if (SearchFilters.SortColumn == 3)
+                                        {
+                                            <span class="icon">
+                                                <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                            </span>
+                                        }
+                                    </a>
+                                </th>
+                                <th>
+                                    <a @onclick="() => SortSwitch_Click(4)">
+                                        <span>Project(s)</span>
+                                        @if (SearchFilters.SortColumn == 4)
+                                        {
+                                            <span class="icon">
+                                                <i class="fas @(SearchFilters.SortOrder == 4 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                            </span>
+                                        }
+                                    </a>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

@@ -48,16 +48,43 @@
                             <table class="table is-fullwidth is-striped is-hoverable">
                                 <thead>
                                     <tr>
-                                        <th><a @onclick="() => SortSwitch_Click(1)">Function</a></th>
-                                        <th><a @onclick="() => SortSwitch_Click(2)">Can Access</a></th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(1)">
+                                                <span>Function</span>
+                                                @if (SortColumn == 1)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th class="has-text-right">
+                                            <a @onclick="() => SortSwitch_Click(2)">
+                                                <span>Can Access</span>
+                                                @if (SortColumn == 2)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var line in FilteredRoleToFunctionList)
+                                    @for (int i = 0; i < FilteredRoleToFunctionList.Count; i++)
                                     {
+                                        var index = i;
+
                                         <tr>
-                                            <td>@line.FunctionName</td>
-                                            <td>@line.CanAccess</td>
+                                            <td>@FilteredRoleToFunctionList[index].FunctionName</td>
+                                            <td class="has-text-right">
+                                                <div class="field">
+                                                    <InputCheckbox class="is-checkradio" @bind-Value="FilteredRoleToFunctionList[index].CanAccess" id="@($"canaccess{index}")" />
+                                                    <label for="@($"canaccess{index}")"></label>
+                                                </div>
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>

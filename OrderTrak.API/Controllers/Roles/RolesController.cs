@@ -103,6 +103,24 @@ namespace OrderTrak.API.Controllers.Roles
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("UpdateRoleToFunction")]
+        public async Task<ActionResult> UpdateRoleToFunctionAsync([FromBody] RoleUpdateRoleToFunctionDTO roleToFunctionUpdateDTO)
+        {
+            try
+            {
+                await RoleServices.UpdateRoleToFunctionAsync(roleToFunctionUpdateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE

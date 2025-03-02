@@ -120,6 +120,7 @@ namespace OrderTrak.API.Services.Project
         {
             return await DB.UPL_Project
                 .Where(x => x.UPL_Customer.FormID == customerID)
+                .OrderBy(x => x.ProjectCode)
                 .Select(x => new CustomerProjectListDTO
                 {
                     FormID = x.FormID,

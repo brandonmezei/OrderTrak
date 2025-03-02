@@ -33,12 +33,14 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected TableSearch ProjectSearchFilter { get; set; } = new();
 
-        protected int SortOrder { get; set; }
+        protected int SortOrder { get; set; } = 1;
 
         protected bool CanEditProjects { get; set; }
         protected bool DeleteCustomer { get; set; }
 
         protected Guid? DeleteProjectID { get; set; }
+
+        protected int SortColumn { get; set; } = 1;
 
         protected override async Task OnInitializedAsync()
         {
@@ -141,6 +143,8 @@ namespace OrderTrak.Client.Pages.Customer
         protected void SortSwitch_Click(int column)
         {
             Layout.ClearMessages();
+
+            SortColumn = column;
 
             if (FilteredProjectList != null)
             {

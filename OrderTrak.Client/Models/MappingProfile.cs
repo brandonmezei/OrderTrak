@@ -11,6 +11,7 @@ namespace OrderTrak.Client.Models
             CreateMap<ProjectDTO, ProjectUpdateDTO>();
             CreateMap<ProfileDTO, ProfileUpdateDTO>();
             CreateMap<RoleDTO, RoleUpdateDTO>();
+            CreateMap<RoleToFunctionDTO, RoleUpdateRoleToFunctionListDTO>();
         }
     }
 }

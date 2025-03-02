@@ -44,7 +44,7 @@
 {
     <ModalPopup Title="Confirm Delete" OnClose="CreateRole_Toggle">
         <Content>
-            <p class="subtitle">Are you sure you want to delete this customer?</p>
+            <p class="subtitle">Are you sure you want to delete this role?</p>
         </Content>
         <FooterButtons>
             <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => Delete_Toggle(null)" />
@@ -94,8 +94,28 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th><a @onclick="() => SortSwitch_Click(1)">Role Name</a></th>
-                                <th><a @onclick="() => SortSwitch_Click(2)">User Count</a></th>
+                                <th>
+                                    <a @onclick="() => SortSwitch_Click(1)">
+                                        <span>Role Name</span>
+                                        @if (SearchFilters.SortColumn == 1)
+                                        {
+                                            <span class="icon">
+                                                <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                            </span>
+                                        }
+                                    </a>
+                                </th>
+                                <th>
+                                    <a @onclick="() => SortSwitch_Click(2)">
+                                        <span>User Count</span>
+                                        @if (SearchFilters.SortColumn == 2)
+                                        {
+                                            <span class="icon">
+                                                <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                            </span>
+                                        }
+                                    </a>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

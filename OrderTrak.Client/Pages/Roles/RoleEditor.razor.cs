@@ -22,7 +22,8 @@ namespace OrderTrak.Client.Pages.Roles
 
         protected TableSearch RoleToFunctionSearchFilter { get; set; } = new();
 
-        protected int SortOrder { get; set; }
+        protected int SortOrder { get; set; } = 1;
+        protected int SortColumn { get; set; } = 1;
 
         protected override async Task OnInitializedAsync()
         {
@@ -85,6 +86,20 @@ namespace OrderTrak.Client.Pages.Roles
                 {
                     await RoleServices.UpdateRoleAsync(MapperService.Map<RoleUpdateDTO>(Role));
 
+                    if(FilteredRoleToFunctionList?.Count > 0)
+                    {
+                        var roletoFunctionUpdate = new RoleUpdateRoleToFunctionDTO
+                        {
+                            RoleID = Role.FormID
+                        };
+
+                        foreach (var roleToFunction in FilteredRoleToFunctionList)
+                            roletoFunctionUpdate.UpdateList.Add(MapperService.Map<RoleUpdateRoleToFunctionListDTO>(roleToFunction));
+                        
+
+                        await RoleServices.UpdateRoleToFunctionAsync(roletoFunctionUpdate);
+                    }
+
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }
             }
@@ -141,6 +156,8 @@ namespace OrderTrak.Client.Pages.Roles
         protected void SortSwitch_Click(int column)
         {
             Layout.ClearMessages();
+
+            SortColumn = column;
 
             if (FilteredRoleToFunctionList != null)
             {

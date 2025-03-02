@@ -183,8 +183,28 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th><a @onclick="() => SortSwitch_Click(1)">Code</a></th>
-                                        <th><a @onclick="() => SortSwitch_Click(2)">Name</a></th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(1)">
+                                                <span>Code</span>
+                                                @if (SortColumn == 1)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(2)">
+                                                <span>Name</span>
+                                                @if (SortColumn == 2)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>

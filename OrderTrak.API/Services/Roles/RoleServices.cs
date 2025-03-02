@@ -145,6 +145,7 @@ namespace OrderTrak.API.Services.Roles
             return await DB.SYS_RolesToFunction
                 .Include(x => x.SYS_Function)
                 .Where(x => x.SYS_Roles.FormID == roleID)
+                .OrderBy(x => x.SYS_Function.FunctionName)
                 .Select(x => new RoleToFunctionDTO
                 {
                     FormID = x.FormID,
@@ -152,6 +153,28 @@ namespace OrderTrak.API.Services.Roles
                     CanAccess = x.CanAccess
                 })
                 .ToListAsync();
+        }
+
+        public async Task UpdateRoleToFunctionAsync(RoleUpdateRoleToFunctionDTO roleToFunctionUpdateDTO)
+        {
+            // Get Role
+            var role = await DB.SYS_Roles
+                .Include(x => x.SYS_RolesToFunction)
+                .FirstOrDefaultAsync(x => x.FormID == roleToFunctionUpdateDTO.RoleID)
+                ?? throw new ValidationException("Role not found.");
+
+            // Update Role To Function
+            foreach (var roleToFunction in roleToFunctionUpdateDTO.UpdateList)
+            {
+                var update = role.SYS_RolesToFunction
+                    .FirstOrDefault(x => x.FormID == roleToFunction.FormID);
+
+                if (update != null)
+                    update.CanAccess = roleToFunction.CanAccess;
+            }
+
+            // Save
+            await DB.SaveChangesAsync();
         }
     }
 }
