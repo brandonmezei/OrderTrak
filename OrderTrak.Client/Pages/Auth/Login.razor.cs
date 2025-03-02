@@ -19,12 +19,15 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected override async Task OnInitializedAsync()
         {
+            // Reset Header
             Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Please login below.");
 
+            // Get Auth State
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
+            // Redirect if already logged in
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
                 Navigation.NavigateTo("/changelog");
@@ -43,6 +46,7 @@ namespace OrderTrak.Client.Pages.Auth
 
             try
             {
+                // Login and Redirect
                 await AuthService.Login(LoginModel);
                 Navigation.NavigateTo("/changelog");
             }

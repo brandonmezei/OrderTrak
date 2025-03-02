@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OrderTrak.API.Models.OrderTrakDB;
@@ -8,6 +9,7 @@ using OrderTrak.API.Providers.AuthRequirements;
 using OrderTrak.API.Services.Auth;
 using OrderTrak.API.Services.ChangeLog;
 using OrderTrak.API.Services.Customer;
+using OrderTrak.API.Services.Filters;
 using OrderTrak.API.Services.Profile;
 using OrderTrak.API.Services.Project;
 using OrderTrak.API.Services.Roles;
@@ -80,6 +82,8 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IRoleServices, RoleServices>();
+builder.Services.AddScoped<IDropDownFilterFactory, DropDownFilterFactory>();
+
 
 // Register custom authorization handler
 builder.Services.AddScoped<IAuthorizationHandler, FunctionAccessHandler>();

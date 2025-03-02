@@ -44,18 +44,22 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected override async Task OnInitializedAsync()
         {
+            // Reset Headers
             Layout.ClearMessages();
             Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
 
+            // Delete Message
             if (Delete)
                 Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
 
             try
             {
+                // Check Project Permissions
                 var permission = await LocalStorage.GetItemAsync<List<string>>("permissions") ?? [];
 
                 CanEditProjects = permission.Contains("Project");
 
+                // Load Customer Data
                 Customer = await CustomerService.GetCustomerAsync(FormID);
             }
             catch (ApiException ex)
@@ -81,8 +85,12 @@ namespace OrderTrak.Client.Pages.Customer
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
-                    ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(FormID);
-                    FilteredProjectList = ProjectListFromDB;
+                    // Get Project Info if Can Edit
+                    if (CanEditProjects)
+                    {
+                        ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(FormID);
+                        FilteredProjectList = ProjectListFromDB;
+                    }
                 }
                 catch (ApiException ex)
                 {
@@ -102,12 +110,8 @@ namespace OrderTrak.Client.Pages.Customer
 
         protected void ProjectSearch_Click()
         {
-            Layout.ClearMessages();
-
             if (IsLoading)
                 return;
-
-            Layout.ClearMessages();
 
             IsLoading = true;
 
@@ -115,14 +119,31 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (Customer != null)
                 {
+
+                    // Get Project by filter
                     FilteredProjectList = ProjectListFromDB;
 
-                    if (FilteredProjectList != null && !string.IsNullOrEmpty(ProjectSearchFilter.SearchText))
-                        FilteredProjectList = [.. FilteredProjectList
-                        .Where(
-                            p => p.ProjectName.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase) || p.ProjectCode.Contains(ProjectSearchFilter.SearchText, StringComparison.OrdinalIgnoreCase)
-                        )
-                        ];
+                    if (!string.IsNullOrEmpty(ProjectSearchFilter.SearchText) && FilteredProjectList != null)
+                    {
+                        var searchFilter = ProjectSearchFilter.SearchText
+                           .Split(',')
+                           .Select(x => x.Trim())
+                           .Where(x => !string.IsNullOrEmpty(x))
+                           .ToList();
+
+                        var query = FilteredProjectList
+                            .AsQueryable();
+
+                        foreach (var filter in searchFilter)
+                        {
+                            query = query.Where(
+                                 x => x.ProjectName.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                                    || x.ProjectCode.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                            );
+                        }
+
+                        FilteredProjectList = [.. query];
+                    }
                 }
             }
             catch (ApiException ex)
@@ -148,6 +169,8 @@ namespace OrderTrak.Client.Pages.Customer
 
             if (FilteredProjectList != null)
             {
+                // Sort Locally No API
+
                 if (FilteredProjectList.Count == 0)
                     return;
 
@@ -188,6 +211,8 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (Customer != null)
                 {
+
+                    // Save Upper Level Info
                     await CustomerService.UpdateCustomerAsync(MapperService.Map<CustomerUpdateDTO>(Customer));
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
@@ -213,10 +238,12 @@ namespace OrderTrak.Client.Pages.Customer
         protected async Task DeleteConfirm_Click()
         {
             Layout.ClearMessages();
+
             try
             {
                 if (Customer != null)
                 {
+                    // Delete Customer
                     await CustomerService.DeleteCustomerAsync(FormID);
 
                     Navigation.NavigateTo($"/customer/search?Delete=true");
@@ -229,6 +256,10 @@ namespace OrderTrak.Client.Pages.Customer
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                DeleteCustomer = false;
             }
         }
 
@@ -247,11 +278,15 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (DeleteProjectID != null)
                 {
+                    // Delete Project
                     await ProjectService.DeleteProjectAsync(DeleteProjectID.Value);
                     Customer = await CustomerService.GetCustomerAsync(FormID);
 
+                    // Reload from API
                     ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(Customer.FormID);
                     FilteredProjectList = ProjectListFromDB;
+                    ProjectSearch_Click();
+
 
                     Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
                 }
@@ -274,7 +309,7 @@ namespace OrderTrak.Client.Pages.Customer
         {
             Layout.ClearMessages();
 
-            if(CreateProject == null)
+            if (CreateProject == null)
                 CreateProject = new ProjectCreateDTO();
             else
                 CreateProject = null;
@@ -293,12 +328,14 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (Customer != null && CreateProject != null)
                 {
+                    // Add Project
                     CreateProject.CustID = Customer.FormID;
                     await ProjectService.CreateProjectAsync(CreateProject);
 
                     // Reload Project List
                     ProjectListFromDB = await ProjectService.GetProjectListByCustomerID(Customer.FormID);
                     FilteredProjectList = ProjectListFromDB;
+                    ProjectSearch_Click();
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }

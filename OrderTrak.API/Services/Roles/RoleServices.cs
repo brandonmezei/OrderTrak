@@ -22,6 +22,18 @@ namespace OrderTrak.API.Services.Roles
                 RoleName = roleCreateDTO.RoleName ?? throw new ValidationException("Role Name is required.")
             };
 
+            // Get Functions
+            var functions = await DB.SYS_Function
+                .ToListAsync();
+
+            // Add Functions to Role
+            foreach (var function in functions)
+                role.SYS_RolesToFunction.Add(new SYS_RolesToFunction
+                {
+                    FunctionID = function.Id,
+                    CanAccess = false
+                });
+
             DB.SYS_Roles.Add(role);
 
             // Save
@@ -174,6 +186,97 @@ namespace OrderTrak.API.Services.Roles
             }
 
             // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task<PagedTable<RoleToUserReturnDTO>> GetUserByRolesAsync(RoleToUserSearchDTO searchQuery)
+        {
+            var query = DB.SYS_Users
+                .Where(x => x.SYS_Roles.FormID == searchQuery.FormID && x.Approved);
+
+            // Filters
+            if (!string.IsNullOrEmpty(searchQuery.SearchFilter))
+            {
+                var searchFilter = searchQuery.SearchFilter
+                    .Split(',')
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
+
+                foreach (var filter in searchFilter)
+                    query = query.Where(x => 
+                        x.UserName.Contains(filter)
+                        || x.FirstName.Contains(filter)
+                        || x.LastName.Contains(filter)
+                    );
+            }
+
+            // Apply Order By
+            switch (searchQuery.SortColumn)
+            {
+                case 1:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.FirstName)
+                        : query.OrderByDescending(x => x.FirstName);
+                    break;
+                case 2:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.Email)
+                        : query.OrderByDescending(x => x.Email);
+                    break;
+                default:
+                    query = query.OrderBy(x => x.FirstName);
+                    break;
+            }
+
+            // Apply pagination and projection
+            var userList = await query
+                .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
+                .Take(searchQuery.RecordSize)
+                .Select(x => new RoleToUserReturnDTO
+                {
+                    FormID = x.FormID,
+                    FullName = $"{x.FirstName} {x.LastName}",
+                    Email = x.Email
+                })
+                .ToListAsync();
+
+            // Return Object
+            return new PagedTable<RoleToUserReturnDTO>
+            {
+                Data = userList,
+                TotalRecords = await query.CountAsync(),
+                PageIndex = searchQuery.Page
+            };
+        }
+
+        public async Task DeleteUserFromRoleAsync(RoleToUserSelectDTO deleteDTO)
+        {
+            // Get User in Role
+            var user = await DB.SYS_Users
+                .FirstOrDefaultAsync(x => x.FormID == deleteDTO.UserID && x.SYS_Roles.FormID == deleteDTO.RoleID)
+                ?? throw new ValidationException("User not found in role.");
+
+            // Remove User from Role
+            user.RoleID = null;
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task AddUserToRoleAsync(RoleToUserSelectDTO addDTO)
+        {
+            var user = await DB.SYS_Users
+                .FirstOrDefaultAsync(x => x.FormID == addDTO.UserID && !x.RoleID.HasValue)
+                ?? throw new ValidationException("User not found or already assigned to another role.");
+
+            var role = await DB.SYS_Roles
+                .FirstOrDefaultAsync(x => x.FormID == addDTO.RoleID)
+                ?? throw new ValidationException("Role not found.");
+
+            // Update
+            user.RoleID = role.Id;
+
             await DB.SaveChangesAsync();
         }
     }

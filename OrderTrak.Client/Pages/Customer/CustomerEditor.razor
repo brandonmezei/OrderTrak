@@ -1,5 +1,4 @@
 ﻿@page "/customer/{FormID:guid}"
-@using OrderTrak.Client.Services
 @using OrderTrak.Client.Shared
 @using OrderTrak.Client.Shared.FormComponents
 @inherits OrderTrakBasePage
@@ -154,6 +153,8 @@
                 </CardComponent>
             </div>
         </div>
+        @if(CanEditProjects)
+        {
         <div class="columns is-centered">
             <div class="column is-10">
                 <CardComponent Title="Project(s)" Icon="fa-project-diagram" RightTitle="@($"{ FilteredProjectList?.Count } record(s)")" IsCardLoading=IsCardLoading>
@@ -231,6 +232,7 @@
                 </CardComponent>
             </div>
         </div>
+        }
         <hr />
         <div class="buttons">
             <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/customer/search" />

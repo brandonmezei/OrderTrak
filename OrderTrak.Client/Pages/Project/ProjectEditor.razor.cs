@@ -21,11 +21,13 @@ namespace OrderTrak.Client.Pages.Project
 
         protected override async Task OnInitializedAsync()
         {
+            // Reset Headers
             Layout.ClearMessages();
             Layout.UpdateHeader("Project Admin", "Create and edit projects.");
 
             try
             {
+                // Get Project from API
                 Project = await ProjectService.GetProjectAsync(FormID);
             }
             catch (ApiException ex)
@@ -46,6 +48,7 @@ namespace OrderTrak.Client.Pages.Project
             {
                 if (Project != null)
                 {
+                    // Save Project
                     await ProjectService.UpdateProjectAsync(MapperService.Map<ProjectUpdateDTO>(Project));
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
@@ -76,6 +79,7 @@ namespace OrderTrak.Client.Pages.Project
             {
                 if (Project != null)
                 {
+                    // Delete Project
                     await ProjectService.DeleteProjectAsync(Project.FormID);
 
                     Navigation.NavigateTo($"/customer/{ Project.CustomerID }?Delete=true");

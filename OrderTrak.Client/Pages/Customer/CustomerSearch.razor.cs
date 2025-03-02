@@ -43,6 +43,8 @@ namespace OrderTrak.Client.Pages.Customer
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
+
+                    // Get Customers from API
                     SearchFilters = await LocalStorage.GetItemAsync<CustomerSearchDTO>("search") ?? SearchFilters;
                     ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);                 
                 }
@@ -75,8 +77,10 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 SearchFilters.Page = 1;
 
+                // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
+                // Get Customer from API
                 ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
@@ -105,8 +109,10 @@ namespace OrderTrak.Client.Pages.Customer
 
             try
             {
+                // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
-
+                
+                // Get Customer from API
                 ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
@@ -130,8 +136,10 @@ namespace OrderTrak.Client.Pages.Customer
 
             try
             {
+                // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
+                // Get Customer from API
                 ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
@@ -176,6 +184,7 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if(CreateCustomer != null)
                 {
+                    // Create the Customer
                     await CustomerService.CreateCustomerAsync(CreateCustomer);
 
                     // Reload Customer List
@@ -213,6 +222,7 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (DeleteID.HasValue)
                 {
+                    // Delete the Customer
                     await CustomerService.DeleteCustomerAsync(DeleteID.Value);
 
                     // Reload Customer List

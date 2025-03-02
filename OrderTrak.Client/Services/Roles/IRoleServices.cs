@@ -11,5 +11,8 @@ namespace OrderTrak.Client.Services.Roles
         Task<PagedTableOfRoleSearchReturnDTO> SearchRolesAsync(RoleSearchDTO searchQuery);
         Task<List<RoleToFunctionDTO>> GetRoleToFunctionByRoleIDAsync(Guid roleID);
         Task UpdateRoleToFunctionAsync(RoleUpdateRoleToFunctionDTO roleToFunctionUpdateDTO);
+        Task<PagedTableOfRoleToUserReturnDTO> GetUserByRolesAsync(RoleToUserSearchDTO searchQuery);
+        Task DeleteUserFromRoleAsync(RoleToUserSelectDTO deleteDTO);
+        Task AddUserToRoleAsync(RoleToUserSelectDTO addDTO);
     }
 }

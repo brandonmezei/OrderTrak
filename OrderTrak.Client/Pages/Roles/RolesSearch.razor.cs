@@ -168,9 +168,9 @@ namespace OrderTrak.Client.Pages.Roles
             {
                 if (DeleteID.HasValue)
                 {
+                    // Delete Role and Reload
                     await RoleServices.DeleteRoleAsync(DeleteID.Value);
 
-                    // Reload Customer List
                     ReturnTable = await RoleServices.SearchRolesAsync(SearchFilters);
                     Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
                 }

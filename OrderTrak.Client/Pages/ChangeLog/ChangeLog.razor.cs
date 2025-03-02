@@ -15,6 +15,7 @@ namespace OrderTrak.Client.Pages.ChangeLog
 
         protected override void OnInitialized()
         {
+            // Clear Headers
             Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Here's what's new...");
 
@@ -30,6 +31,7 @@ namespace OrderTrak.Client.Pages.ChangeLog
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
+                    // Get Change Log
                     ChangeLogs = await ChangeLogService.GetChangeLogsAsync(new SearchQueryDTO
                     {
                         Page = 1,

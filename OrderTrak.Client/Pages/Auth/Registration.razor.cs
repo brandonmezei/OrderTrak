@@ -21,12 +21,15 @@ namespace OrderTrak.Client.Pages.Auth
 
         protected override async Task OnInitializedAsync()
         {
+            // Reset Headers
             Layout.ClearMessages();
             Layout.UpdateHeader("Welcome to OrderTrak", "Please register below.");
 
+            // Get Auth State
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
+            // Redirect if Authenticated
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
                 Navigation.NavigateTo("/changelog");
@@ -47,6 +50,7 @@ namespace OrderTrak.Client.Pages.Auth
                 // Check if Passwords Match
                 if (!string.IsNullOrEmpty(RegisterModel.Password) && !string.IsNullOrEmpty(ConfirmPassword) && string.Compare(RegisterModel.Password, ConfirmPassword) == 0)
                 {
+                    // Call Registration and Redirect
                     await AuthService.Register(RegisterModel);
                     Layout.AddMessage("Registration Successful", MessageType.Success);
 

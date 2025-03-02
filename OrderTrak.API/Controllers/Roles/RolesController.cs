@@ -121,6 +121,41 @@ namespace OrderTrak.API.Controllers.Roles
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("SearchUserByRoles")]
+        public async Task<ActionResult<PagedTable<RoleToUserReturnDTO>>> SearchUserByRoles([FromBody] RoleToUserSearchDTO roleToUserSearchDTO)
+        {
+            try
+            {
+                return Ok(await RoleServices.GetUserByRolesAsync(roleToUserSearchDTO));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("AddUserToRole")]
+        public async Task<ActionResult> AddUserToRoleAsync([FromBody] RoleToUserSelectDTO roleToUserSelectDTO)
+        {
+            try
+            {
+                await RoleServices.AddUserToRoleAsync(roleToUserSelectDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE
@@ -130,6 +165,24 @@ namespace OrderTrak.API.Controllers.Roles
             try
             {
                 await RoleServices.DeleteRoleAsync(roleID);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteUserFromRole")]
+        public async Task<ActionResult> DeleteUserFromRoleAsync([FromBody] RoleToUserSelectDTO deleteDTO)
+        {
+            try
+            {
+                await RoleServices.DeleteUserFromRoleAsync(deleteDTO);
                 return Ok();
             }
             catch (ValidationException ex)

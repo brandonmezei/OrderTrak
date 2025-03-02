@@ -40,5 +40,20 @@ namespace OrderTrak.Client.Services.Roles
         {
             await ApiService.UpdateRoleToFunctionAsync(roleToFunctionUpdateDTO);
         }
+
+        public async Task<PagedTableOfRoleToUserReturnDTO> GetUserByRolesAsync(RoleToUserSearchDTO searchQuery)
+        {
+            return await ApiService.SearchUserByRolesAsync(searchQuery);
+        }
+
+        public async Task DeleteUserFromRoleAsync(RoleToUserSelectDTO deleteDTO)
+        {
+            await ApiService.DeleteUserFromRoleAsync(deleteDTO);
+        }
+
+        public async Task AddUserToRoleAsync(RoleToUserSelectDTO addDTO)
+        {
+            await ApiService.AddUserToRoleAsync(addDTO);
+        }
     }
 }

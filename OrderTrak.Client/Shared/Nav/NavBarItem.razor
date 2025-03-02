@@ -1,5 +1,4 @@
-﻿@using Blazored.LocalStorage
-<a class="navbar-item" @onclick="NavigateTo">
+﻿<a class="navbar-item" @onclick="NavigateTo">
     @if (!string.IsNullOrEmpty(Icon))
     {
         <span class="icon">
@@ -9,29 +8,4 @@
     <span>@Label</span>
 </a>
 
-@code {
 
-    [Inject]
-    public NavigationManager Navigation { get; set; } = default!;
-
-    [Inject]
-    private ILocalStorageService LocalStorageService { get; set; } = default!;
-
-    [Parameter]
-    public string? Icon { get; set; }
-
-    [Parameter]
-    public string Label { get; set; } = string.Empty;
-
-    [Parameter]
-    public string URL { get; set; } = string.Empty;
-
-    protected void NavigateTo()
-    {
-        if (!string.IsNullOrEmpty(URL))
-        {
-            LocalStorageService.RemoveItemAsync("search");
-            Navigation.NavigateTo(URL);
-        }
-    }
-}

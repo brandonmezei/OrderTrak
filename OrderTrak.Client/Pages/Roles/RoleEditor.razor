@@ -1,6 +1,6 @@
 ﻿@page "/role/{FormID:guid}"
-@using OrderTrak.Client.Services
 @using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
 @using OrderTrak.Client.Shared.FormComponents
 @inherits OrderTrakBasePage
 
@@ -8,7 +8,60 @@
 
 @if (Role != null)
 {
+    @if (UserDeleteID.HasValue)
+    {
+        <ModalPopup Title="Confirm Delete" OnClose="() => UserDelete_Toggle(null)">
+            <Content>
+                <p class="subtitle">Are you sure you want to remove this user from this role?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => UserDelete_Toggle(null)" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteUserFromRole_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
+    @if (AddUserShow)
+    {
+        <ModalPopup Title="Add User" OnClose="AddUser_Toggle">
+            <Content>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <CardComponent Title="Unassigned Users" Icon="fa-users">
+                            <CardBody>
+                                <UserDropDown UnassignedUsersOnly=true SelectedValueChanged="AddUserDropDown_Change" />
+                            </CardBody>
+                            <Footer>
+                                <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddUserToRole_Click" />
+                            </Footer>
+                        </CardComponent>
+                    </div>
+                </div>
+            </Content>
+        </ModalPopup>
+    }
+
+    @if (DeleteRole)
+    {
+        <ModalPopup Title="Confirm Delete" OnClose="DeleteRole_Toggle">
+            <Content>
+                <p class="subtitle">Are you sure you want to delete this role?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="DeleteRole_Toggle" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteRoleConfirm_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
     <div class="box">
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="buttons is-pulled-right">
+                    <FormButton Title="Delete" Style="is-danger" Icon="fa-trash" OnClick="DeleteRole_Toggle" />
+                </div>
+            </div>
+        </div>
         <div class="columns is-centered">
             <div class="column is-one-third">
                 <CardComponent Title="Information" Icon="fa-info-circle">
@@ -91,6 +144,88 @@
                             </table>
                         }
                     </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column is-one-third">
+                <CardComponent Title="Users(s)" Icon="fa-users" RightTitle="@($"{ RoleToUserList?.TotalRecords } record(s)")" IsCardLoading=IsUserToRoleCardLoading>
+                    <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <div class="box">
+                                    <EditForm Model="@SearchFilters" OnValidSubmit="UserToRolesSearch_Click">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                    <span>Search</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        @if (RoleToUserList?.Data.Count > 0)
+                        {
+                            <table class="table is-fullwidth is-striped is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>
+                                            <a @onclick="() => SortSwitchRoleToUser_Click(1)">
+                                                <span>Name</span>
+                                                @if (SearchFilters.SortColumn == 1)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th class="has-text-right">
+                                            <a @onclick="() => SortSwitchRoleToUser_Click(2)">
+                                                <span>Email</span>
+                                                @if (SearchFilters.SortColumn == 2)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in RoleToUserList.Data)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="buttons">
+                                                    <FormButton Title="Remove" Style="is-small" Icon="fa-trash" OnClick="() => UserDelete_Toggle(line.FormID)" />
+                                                </div>
+                                            </td>
+                                            <td>@line.FullName</td>
+                                            <td class="has-text-right">
+                                                <a href="mailto:@line.Email">
+                                                    @line.Email
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            @if (RoleToUserList.TotalRecords > SearchFilters.RecordSize)
+                            {
+                                <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@RoleToUserList.TotalRecords" OnPageChanged="PageSwitch_Click" />
+                            }
+                        }
+                    </CardBody>
+                    <Footer>
+                        <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddUser_Toggle" />
+                    </Footer>
                 </CardComponent>
             </div>
         </div>
