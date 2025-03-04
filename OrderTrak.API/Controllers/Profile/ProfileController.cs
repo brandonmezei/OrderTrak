@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Profile;
 using OrderTrak.API.Services.Profile;
 using System.ComponentModel.DataAnnotations;
@@ -41,6 +42,24 @@ namespace OrderTrak.API.Controllers.Profile
             {
                 await ProfileSettings.UpdateProfileAsync(profileUpdateDTO);
                 return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "UserManager")]
+        [HttpPost("SearchUserProfile")]
+        public async Task<ActionResult<PagedTable<ProfileDTO>>> SearchUserProfileAsync([FromBody] SearchQueryDTO searchQuery)
+        {
+            try
+            {
+                return Ok(await ProfileSettings.SearchUserProfileAsync(searchQuery));
             }
             catch (ValidationException ex)
             {

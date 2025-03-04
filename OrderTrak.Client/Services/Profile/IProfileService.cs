@@ -6,5 +6,6 @@ namespace OrderTrak.Client.Services.Profile
     {
         Task UpdateProfileAsync(ProfileUpdateDTO profileUpdateDTO);
         Task<ProfileDTO> GetUserProfileAsync();
+        Task<PagedTableOfProfileDTO> SearchUserProfileAsync(SearchQueryDTO searchQuery);
     }
 }

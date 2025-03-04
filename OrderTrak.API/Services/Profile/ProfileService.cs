@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Profile;
 using OrderTrak.API.Models.OrderTrakDB;
 using OrderTrak.API.Services.Auth;
@@ -22,7 +23,8 @@ namespace OrderTrak.API.Services.Profile
                     FormID = x.FormID,
                     FirstName = x.FirstName,
                     LastName = x.LastName,
-                    Email = x.Email
+                    Email = x.Email,
+                    Approved = x.Approved
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException(Messages.UserNotFound);
@@ -53,6 +55,79 @@ namespace OrderTrak.API.Services.Profile
 
             // Save Changes
             await DB.SaveChangesAsync();
+        }
+
+        public async Task<PagedTable<ProfileDTO>> SearchUserProfileAsync(SearchQueryDTO searchQuery)
+        {
+            var query = DB.SYS_Users
+                .AsQueryable();
+
+            // Filters
+            if (!string.IsNullOrEmpty(searchQuery.SearchFilter))
+            {
+                var searchFilter = searchQuery.SearchFilter
+                    .Split(',')
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
+
+                foreach (var filter in searchFilter)
+                {
+                    query = query.Where(x => 
+                        x.Email.Contains(filter) 
+                        || x.FirstName.Contains(filter) 
+                        || x.LastName.Contains(filter)
+                    );
+                }
+            }
+
+            // Apply Order By
+            switch (searchQuery.SortColumn)
+            {
+                case 1:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.FirstName)
+                        : query.OrderByDescending(x => x.FirstName);
+                    break;
+                case 2:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.LastName)
+                        : query.OrderByDescending(x => x.LastName);
+                    break;
+                case 3:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.Email)
+                        : query.OrderByDescending(x => x.Email);
+                    break;
+                case 4:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.Approved)
+                        : query.OrderByDescending(x => x.Approved);
+                    break;
+                default:
+                    query = query.OrderBy(x => x.Id);
+                    break;
+            }
+
+            var profileList = await query
+               .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
+               .Take(searchQuery.RecordSize)
+                .Select(x => new ProfileDTO
+                {
+                    FormID = x.FormID,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email,
+                    Approved = x.Approved
+                })
+                .ToListAsync();
+
+            return new PagedTable<ProfileDTO>
+            {
+                Data = profileList,
+                TotalRecords = await query.CountAsync(),
+                PageIndex = searchQuery.Page
+            };
         }
     }
 }

@@ -15,5 +15,10 @@ namespace OrderTrak.Client.Services.Profile
         {
             await ApiService.UpdateProfileAsync(profileUpdateDTO);
         }
+
+        public async Task<PagedTableOfProfileDTO> SearchUserProfileAsync(SearchQueryDTO searchQuery)
+        {
+            return await ApiService.SearchUserProfileAsync(searchQuery);
+        }
     }
 }
