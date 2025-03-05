@@ -160,6 +160,7 @@ namespace OrderTrak.API.Services.Customer
             var customerList = await query
                 .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                 .Take(searchQuery.RecordSize)
+                .AsNoTracking()
                 .Select(x => new CustomerSearchReturnDTO
                 {
                     FormID = x.FormID,

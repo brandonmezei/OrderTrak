@@ -1,4 +1,4 @@
-﻿@page "/profile/search"
+﻿@page "/useradmin/search"
 @using OrderTrak.Client.Shared
 @using OrderTrak.Client.Shared.FormComponents
 @inherits OrderTrakBasePage
@@ -99,7 +99,7 @@
                                 <tr>
                                     <td>
                                         <div class="buttons">
-                                            @* <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/role/{line.FormID}")" /> *@
+                                            <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/useradmin/{line.FormID}")" />
                                             <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
                                         </div>
                                     </td>

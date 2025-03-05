@@ -135,6 +135,7 @@ namespace OrderTrak.API.Services.Roles
             var roleList = await query
                 .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                 .Take(searchQuery.RecordSize)
+                .AsNoTracking()
                 .Select(x => new RoleSearchReturnDTO
                 {
                     FormID = x.FormID,
@@ -233,6 +234,7 @@ namespace OrderTrak.API.Services.Roles
             var userList = await query
                 .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                 .Take(searchQuery.RecordSize)
+                .AsNoTracking()
                 .Select(x => new RoleToUserReturnDTO
                 {
                     FormID = x.FormID,

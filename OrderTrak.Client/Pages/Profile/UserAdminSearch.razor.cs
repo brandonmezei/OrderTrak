@@ -163,7 +163,7 @@ namespace OrderTrak.Client.Pages.Profile
                 if (DeleteID.HasValue)
                 {
                     // Delete Role and Reload
-                    //await RoleServices.DeleteRoleAsync(DeleteID.Value);
+                    await ProfileService.DeleteUserAdminAsync(DeleteID.Value);
 
                     ReturnTable = await ProfileService.SearchUserProfileAsync(SearchFilters);
                     Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);

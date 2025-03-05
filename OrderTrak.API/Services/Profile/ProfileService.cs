@@ -112,6 +112,7 @@ namespace OrderTrak.API.Services.Profile
             var profileList = await query
                .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                .Take(searchQuery.RecordSize)
+               .AsNoTracking()
                 .Select(x => new ProfileDTO
                 {
                     FormID = x.FormID,
@@ -128,6 +129,60 @@ namespace OrderTrak.API.Services.Profile
                 TotalRecords = await query.CountAsync(),
                 PageIndex = searchQuery.Page
             };
+        }
+
+        public async Task UpdateUserAdminAsync(UserAdminUpdateDTO userAdminUpdateDTO)
+        {
+            // Get User
+            var user = await DB.SYS_Users
+                .FirstOrDefaultAsync(x => x.FormID == userAdminUpdateDTO.FormID && !x.IsDelete)
+                ?? throw new ValidationException(Messages.UserNotFound);
+
+            if(user.UserName == DB.GetLoggedInUsername() && !userAdminUpdateDTO.Approved)
+                throw new ValidationException("You cannot revoke approval on your own profile.");
+
+            // Update User Fields
+            user.FirstName = userAdminUpdateDTO.FirstName ?? throw new ValidationException("First Name is required");
+            user.LastName = userAdminUpdateDTO.LastName ?? throw new ValidationException("Last Name is required");
+            user.Email = userAdminUpdateDTO.Email ?? throw new ValidationException("Email Address is required");
+
+            // Update Approved
+            user.Approved = userAdminUpdateDTO.Approved;
+
+            // Save Changes
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task<ProfileDTO> GetUserProfileAsync(Guid FormID)
+        {
+            return await DB.SYS_Users
+                .Where(x => x.FormID == FormID && !x.IsDelete)
+                .Select(x => new ProfileDTO
+                {
+                    FormID = x.FormID,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email,
+                    Approved = x.Approved
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new ValidationException(Messages.UserNotFound);
+        }
+
+        public async Task DeleteUserAdminAsync(Guid FormID)
+        {
+            // Get User
+            var user = await DB.SYS_Users
+                .FirstOrDefaultAsync(x => x.FormID == FormID && !x.IsDelete)
+                ?? throw new ValidationException(Messages.UserNotFound);
+
+            if (user.UserName == DB.GetLoggedInUsername())
+                throw new ValidationException("You cannot delete your own profile.");
+
+            // Soft Delete
+            user.IsDelete = true;
+
+            await DB.SaveChangesAsync();
         }
     }
 }

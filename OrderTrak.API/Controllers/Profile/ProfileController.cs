@@ -32,6 +32,23 @@ namespace OrderTrak.API.Controllers.Profile
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("GetUserProfileByID/{FormID}")]
+        public async Task<ActionResult<ProfileDTO>> GetUserProfileAsync(Guid FormID)
+        {
+            try
+            {
+                return Ok(await ProfileSettings.GetUserProfileAsync(FormID));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region POST
@@ -60,6 +77,46 @@ namespace OrderTrak.API.Controllers.Profile
             try
             {
                 return Ok(await ProfileSettings.SearchUserProfileAsync(searchQuery));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "UserManager")]
+        [HttpPost("UpdateUserAdmin")]
+        public async Task<ActionResult> UpdateUserAdminAsync([FromBody] UserAdminUpdateDTO userAdminUpdateDTO)
+        {
+            try
+            {
+                await ProfileSettings.UpdateUserAdminAsync(userAdminUpdateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        #endregion
+
+        #region DELETE
+        [Authorize(Policy = "UserManager")]
+        [HttpDelete("DeleteUserAdmin/{FormID}")]
+        public async Task<ActionResult> DeleteUserAdminAsync(Guid FormID)
+        {
+            try
+            {
+                await ProfileSettings.DeleteUserAdminAsync(FormID);
+                return Ok();
             }
             catch (ValidationException ex)
             {

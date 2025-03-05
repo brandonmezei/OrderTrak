@@ -14,12 +14,14 @@ namespace OrderTrak.API.Services.ChangeLog
             // Get Change Logs
             var query = DB.SYS_ChangeLog
                 .Include(x => x.SYS_ChangeLogDetails)
-                .OrderByDescending(x => x.CreateDate);
+                .AsQueryable();
 
             // Apply pagination and projection
             var changeLogList = await query
+                .OrderByDescending(x => x.CreateDate)
                 .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                 .Take(searchQuery.RecordSize)
+                .AsNoTracking()
                 .Select(x => new ChangeLogDTO
                 {
                     RollOutDate = x.CreateDate,

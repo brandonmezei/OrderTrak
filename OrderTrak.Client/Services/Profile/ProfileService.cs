@@ -20,5 +20,20 @@ namespace OrderTrak.Client.Services.Profile
         {
             return await ApiService.SearchUserProfileAsync(searchQuery);
         }
+
+        public async Task UpdateUserAdminAsync(UserAdminUpdateDTO userAdminUpdateDTO)
+        {
+            await ApiService.UpdateUserAdminAsync(userAdminUpdateDTO);
+        }
+
+        public async Task<ProfileDTO> GetUserProfileAsync(Guid FormID)
+        {
+            return await ApiService.GetUserProfileByIDAsync(FormID);
+        }
+
+        public async Task DeleteUserAdminAsync(Guid FormID)
+        {
+            await ApiService.DeleteUserAdminAsync(FormID);
+        }
     }
 }
