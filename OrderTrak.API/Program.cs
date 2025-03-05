@@ -10,6 +10,7 @@ using OrderTrak.API.Services.Auth;
 using OrderTrak.API.Services.ChangeLog;
 using OrderTrak.API.Services.Customer;
 using OrderTrak.API.Services.Filters;
+using OrderTrak.API.Services.Parts;
 using OrderTrak.API.Services.Profile;
 using OrderTrak.API.Services.Project;
 using OrderTrak.API.Services.Roles;
@@ -83,6 +84,7 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IRoleServices, RoleServices>();
 builder.Services.AddScoped<IDropDownFilterFactory, DropDownFilterFactory>();
+builder.Services.AddScoped<IPartService, PartService>();
 
 
 // Register custom authorization handler
