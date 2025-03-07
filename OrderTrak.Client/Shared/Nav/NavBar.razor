@@ -1,5 +1,4 @@
-﻿@using Blazored.LocalStorage
-<nav class="navbar is-link" role="navigation" aria-label="main navigation">
+﻿<nav class="navbar is-link" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
             <img src="./images/navbarimg.png" alt="OrderTrak Logo" />
@@ -31,7 +30,7 @@
                 </div>
                 <div class="navbar-item has-dropdown @(IsSettingOpen ? "is-active" : string.Empty)">
                     <button class="navbar-link" @onclick="Toggle_Setting">
-                        <i class="fas fa-cogs"></i>
+                        <i class="fas fa-tools"></i>
                         Settings
                     </button>
                     <div class="navbar-dropdown">
