@@ -1,30 +1,31 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
-using OrderTrak.Client.Services.Profile;
+using OrderTrak.Client.Services.Parts;
 using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
-namespace OrderTrak.Client.Pages.Profile
+namespace OrderTrak.Client.Pages.Parts
 {
-    public partial class UserAdminSearch
+    public partial class PartSearch
     {
-
         [Inject]
-        private IProfileService ProfileService { get; set; } = default!;
+        private IPartService PartService { get; set; } = default!;
 
         [SupplyParameterFromQuery]
         public bool Delete { get; set; }
 
-        protected SearchQueryDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        protected PartSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
-        protected PagedTableOfProfileDTO? ReturnTable;
+        protected PartCreateDTO? CreatePart { get; set; }
 
-        public Guid? DeleteID { get; set; }
+        protected PagedTableOfPartSearchReturnDTO? ReturnTable;
+
+        protected Guid? DeleteID { get; set; }
 
         protected override void OnInitialized()
         {
             Layout.ClearMessages();
-            Layout.UpdateHeader("User Admin", "Edit user information. Approve / Deny users.");
+            Layout.UpdateHeader("Part Admin", "Create and edit parts.");
 
             if (Delete)
                 Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
@@ -41,8 +42,9 @@ namespace OrderTrak.Client.Pages.Profile
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
-                    SearchFilters = await LocalStorage.GetItemAsync<SearchQueryDTO>("search") ?? SearchFilters;
-                    ReturnTable = await ProfileService.SearchUserProfileAsync(SearchFilters);
+                    // Get Parts from API
+                    SearchFilters = await LocalStorage.GetItemAsync<PartSearchDTO>("search") ?? SearchFilters;
+                    ReturnTable = await PartService.SearchPartsAsync(SearchFilters);
                 }
                 catch (ApiException ex)
                 {
@@ -73,9 +75,11 @@ namespace OrderTrak.Client.Pages.Profile
             {
                 SearchFilters.Page = 1;
 
+                // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                ReturnTable = await ProfileService.SearchUserProfileAsync(SearchFilters);
+                // Get Parts from API
+                ReturnTable = await PartService.SearchPartsAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -103,9 +107,11 @@ namespace OrderTrak.Client.Pages.Profile
 
             try
             {
+                // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                ReturnTable = await ProfileService.SearchUserProfileAsync(SearchFilters);
+                // Get Parts from API
+                ReturnTable = await PartService.SearchPartsAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -128,9 +134,11 @@ namespace OrderTrak.Client.Pages.Profile
 
             try
             {
+                // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                ReturnTable = await ProfileService.SearchUserProfileAsync(SearchFilters);
+                // Get Parts from API
+                ReturnTable = await PartService.SearchPartsAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -144,6 +152,50 @@ namespace OrderTrak.Client.Pages.Profile
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected void CreatePart_Toggle()
+        {
+            if (CreatePart == null)
+                CreatePart = new();
+            else
+                CreatePart = null;
+        }
+
+        protected async Task CreatePart_Submit()
+        {
+            if (IsLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsLoading = true;
+
+            try
+            {
+                if (CreatePart != null)
+                {
+                    // Create the Part
+                    await PartService.CreatePartAsync(CreatePart);
+
+                    // Reload Part List
+                    ReturnTable = await PartService.SearchPartsAsync(SearchFilters);
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                CreatePart = null;
+                IsLoading = false;
             }
         }
 
@@ -162,10 +214,11 @@ namespace OrderTrak.Client.Pages.Profile
             {
                 if (DeleteID.HasValue)
                 {
-                    // Delete User and Reload
-                    await ProfileService.DeleteUserAdminAsync(DeleteID.Value);
+                    // Delete the Part
+                    await PartService.DeletePartAsync(DeleteID.Value);
 
-                    ReturnTable = await ProfileService.SearchUserProfileAsync(SearchFilters);
+                    // Reload Part List
+                    ReturnTable = await PartService.SearchPartsAsync(SearchFilters);
                     Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
                 }
             }
@@ -181,6 +234,12 @@ namespace OrderTrak.Client.Pages.Profile
             {
                 DeleteID = null;
             }
+        }
+
+        protected async Task StockOnly_Change()
+        {
+            SearchFilters.IsStockOnly = !SearchFilters.IsStockOnly;
+            await Search_Click();
         }
     }
 }

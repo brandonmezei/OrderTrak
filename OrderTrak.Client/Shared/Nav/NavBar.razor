@@ -17,6 +17,18 @@
         <div class="navbar-start">
             @if (Permissions.Count > 0)
             {
+                <div class="navbar-item has-dropdown @(IsWarehouseOpen ? "is-active" : string.Empty)">
+                    <button class="navbar-link" @onclick="Toggle_Warehouse">
+                        <i class="fas fa-warehouse"></i>
+                        Warehouse
+                    </button>
+                    <div class="navbar-dropdown">
+                        @if (Permissions.Any(x => x == "Parts"))
+                        {
+                            <NavBarItem Label="Part Manager" Icon="fa-cogs" URL="/part/search" />
+                        }
+                    </div>
+                </div>
                 <div class="navbar-item has-dropdown @(IsSettingOpen ? "is-active" : string.Empty)">
                     <button class="navbar-link" @onclick="Toggle_Setting">
                         <i class="fas fa-cogs"></i>

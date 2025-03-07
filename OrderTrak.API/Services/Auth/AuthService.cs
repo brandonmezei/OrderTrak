@@ -49,7 +49,7 @@ namespace OrderTrak.API.Services.Auth
         public async Task RegisterAsync(RegisterDTO registerDTO)
         {
             // Check if user already exists
-            if (await DB.SYS_Users.AnyAsync(x => x.Email == registerDTO.Email && !x.IsDelete))
+            if (await DB.SYS_Users.AnyAsync(x => x.Email == registerDTO.Email))
                 throw new ValidationException("User already exists");
 
             // Password Check

@@ -1,67 +1,61 @@
-﻿@page "/customer/search"
+﻿@page "/part/search"
 @using OrderTrak.Client.Shared
 @using OrderTrak.Client.Shared.FormComponents
 @inherits OrderTrakBasePage
 
-<PageTitle>Customer - OrderTrak</PageTitle>
+<PageTitle>Part - OrderTrak</PageTitle>
 
-@if (CreateCustomer != null)
+@if (CreatePart != null)
 {
-    <ModalPopup Title="Create Customer" OnClose="CreateCustomer_Toggle">
+    <ModalPopup Title="Create Part" OnClose="CreatePart_Toggle">
         <Content>
             <div class="columns is-centered">
                 <div class="column is-half">
-                    <EditForm Model="@CreateCustomer" OnValidSubmit="CreateCustomer_Submit">
-                        <CardComponent Title="Customer Information" Icon="fa-user">
+                    <EditForm Model="@CreatePart" OnValidSubmit="CreatePart_Submit">
+                        <CardComponent Title="Part Information" Icon="fa-cogs">
                             <CardBody>
                                 <DataAnnotationsValidator />
-                                <FormField Icon="fa-project-diagram" Title="Customer Code">
+                                <FormField Icon="fa-cogs" Title="Part Number">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="CreateCustomer.CustomerCode" />
-                                        <ValidationMessage For="@(() => CreateCustomer.CustomerCode)" />
+                                        <InputText class="input is-danger" Type="text" Placeholder="Part Number" @bind-Value="CreatePart.PartNumber" />
+                                        <ValidationMessage For="@(() => CreatePart.PartNumber)" />
                                     </Content>
                                 </FormField>
-                                <FormField Icon="fa-project-diagram" Title="Customer Name">
+                                <FormField Icon="fa-align-left" Title="Description">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Customer Name" @bind-Value="CreateCustomer.CustomerName" />
-                                        <ValidationMessage For="@(() => CreateCustomer.CustomerName)" />
+                                        <InputText class="input is-danger" Type="text" Placeholder="Part Description" @bind-Value="CreatePart.PartDescription" />
+                                        <ValidationMessage For="@(() => CreatePart.PartDescription)" />
                                     </Content>
                                 </FormField>
-                                <FormField Icon="fa-phone" Title="Phone">
+                                <FormField Icon="fa-tags" Title="Type">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Phone" @bind-Value="CreateCustomer.Phone" />
-                                        <ValidationMessage For="@(() => CreateCustomer.Phone)" />
+                                        <InputText class="input is-danger" Type="text" Placeholder="Part Type" @bind-Value="CreatePart.PartType" />
+                                        <ValidationMessage For="@(() => CreatePart.PartType)" />
                                     </Content>
                                 </FormField>
-                                <FormField Icon="fa-map-marker-alt" Title="Address">
+                                <FormField Icon="fa-industry" Title="Vendor">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Address" @bind-Value="CreateCustomer.Address" />
-                                        <ValidationMessage For="@(() => CreateCustomer.Address)" />
+                                        <InputText class="input is-danger" Type="text" Placeholder="Vendor" @bind-Value="CreatePart.PartVendor" />
+                                        <ValidationMessage For="@(() => CreatePart.PartVendor)" />
                                     </Content>
                                 </FormField>
-                                <FormField Icon="fa-map-marker-alt" Title="Address 2">
+                                <FormField Icon="fa-dollar-sign" Title="Cost">
                                     <Content>
-                                        <InputText class="input is-primary" Type="text" Placeholder="Address 2" @bind-Value="CreateCustomer.Address2" />
+                                        <InputNumber class="input is-primary" Type="text" Placeholder="Cost" @bind-Value="CreatePart.PartCost" />
+                                        <ValidationMessage For="@(() => CreatePart.PartCost)" />
                                     </Content>
                                 </FormField>
-                                <FormField Icon="fa-city" Title="City">
+                                <FormField Icon="fa-ruler" Title="Unit of Measurment">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="City" @bind-Value="CreateCustomer.City" />
-                                        <ValidationMessage For="@(() => CreateCustomer.City)" />
+                                        <InputText class="input is-danger" Type="text" Placeholder="Unit of Measurment" @bind-Value="CreatePart.PartUnit" />
+                                        <ValidationMessage For="@(() => CreatePart.PartUnit)" />
                                     </Content>
                                 </FormField>
-                                <FormField Icon="fa-flag" Title="State">
-                                    <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="State" @bind-Value="CreateCustomer.State" />
-                                        <ValidationMessage For="@(() => CreateCustomer.State)" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-envelope" Title="Zip">
-                                    <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Zip" @bind-Value="CreateCustomer.Zip" />
-                                        <ValidationMessage For="@(() => CreateCustomer.Zip)" />
-                                    </Content>
-                                </FormField>
+                                <hr />
+                                <div class="field">
+                                    <InputCheckbox class="is-checkradio" @bind-Value="CreatePart.IsStock" id="EmptyOnly" />
+                                    <label for="EmptyOnly">Is Stock?</label>
+                                </div>
                             </CardBody>
                             <Footer>
                                 <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
@@ -84,7 +78,7 @@
 {
     <ModalPopup Title="Confirm Delete" OnClose="() => Delete_Toggle(null)">
         <Content>
-            <p class="subtitle">Are you sure you want to delete this customer?</p>
+            <p class="subtitle">Are you sure you want to delete this part?</p>
         </Content>
         <FooterButtons>
             <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => Delete_Toggle(null)" />
@@ -98,13 +92,13 @@
     <div class="columns is-centered">
         <div class="column">
             <div class="buttons is-pulled-right">
-                <FormButton Title="Add" Style="is-success" Icon="fa-plus" OnClick="CreateCustomer_Toggle" />
+                <FormButton Title="Add" Style="is-success" Icon="fa-plus" OnClick="CreatePart_Toggle" />
             </div>
         </div>
     </div>
     <div class="columns is-centered">
         <div class="column">
-            <CardComponent Title="Customer(s)" Icon="fa-users" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
+            <CardComponent Title="Part(s)" Icon="fa-cogs" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
                 <CardBody>
                     <div class="columns is-centered">
                         <div class="column is-half">
@@ -123,8 +117,8 @@
                                     </div>
                                     <hr />
                                     <div class="field">
-                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.EmptyOnly" id="EmptyOnly" @onclick="EmptyCustomer_Change" />
-                                        <label for="EmptyOnly">Empty Customers Only</label>
+                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.IsStockOnly" id="StockOnly" @onclick="StockOnly_Change" />
+                                        <label for="StockOnly">Show Stock Only</label>
                                     </div>
                                 </EditForm>
                             </div>
@@ -138,7 +132,7 @@
                                     <th></th>
                                     <th>
                                         <a @onclick="() => SortSwitch_Click(1)">
-                                            <span>Code</span>
+                                            <span>Part</span>
                                             @if (SearchFilters.SortColumn == 1)
                                             {
                                                 <span class="icon">
@@ -149,7 +143,7 @@
                                     </th>
                                     <th>
                                         <a @onclick="() => SortSwitch_Click(2)">
-                                            <span>Name</span>
+                                            <span>Description</span>
                                             @if (SearchFilters.SortColumn == 2)
                                             {
                                                 <span class="icon">
@@ -160,7 +154,7 @@
                                     </th>
                                     <th>
                                         <a @onclick="() => SortSwitch_Click(3)">
-                                            <span>Phone</span>
+                                            <span>Type</span>
                                             @if (SearchFilters.SortColumn == 3)
                                             {
                                                 <span class="icon">
@@ -171,11 +165,11 @@
                                     </th>
                                     <th>
                                         <a @onclick="() => SortSwitch_Click(4)">
-                                            <span>Project(s)</span>
+                                            <span>Stock / Tangible</span>
                                             @if (SearchFilters.SortColumn == 4)
                                             {
                                                 <span class="icon">
-                                                    <i class="fas @(SearchFilters.SortOrder == 4 ? "fa-chevron-up" : "fa-chevron-down")"></i>
+                                                    <i class="fas @(SearchFilters.SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
                                                 </span>
                                             }
                                         </a>
@@ -188,14 +182,14 @@
                                     <tr>
                                         <td>
                                             <div class="buttons">
-                                                <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/customer/{line.FormID}")" />
+                                                <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/part/{line.FormID}")" />
                                                 <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
                                             </div>
                                         </td>
-                                        <td>@line.CustomerCode</td>
-                                        <td>@line.CustomerName</td>
-                                        <td>@line.Phone</td>
-                                        <td>@line.ProjectCount</td>
+                                        <td>@line.PartNumber</td>
+                                        <td>@line.PartDescription</td>
+                                        <td>@line.PartType</td>
+                                        <td>@(line.IsStock ? "Stock" : "Tangible ")</td>
                                     </tr>
                                 }
                             </tbody>
@@ -207,7 +201,7 @@
                     }
                 </CardBody>
                 <Footer>
-                    <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="CreateCustomer_Toggle" />
+                    <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="CreatePart_Toggle" />
                 </Footer>
             </CardComponent>
         </div>

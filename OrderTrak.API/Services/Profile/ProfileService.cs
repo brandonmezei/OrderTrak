@@ -17,7 +17,7 @@ namespace OrderTrak.API.Services.Profile
         public async Task<ProfileDTO> GetUserProfileAsync()
         {
             return await DB.SYS_Users
-                .Where(x => x.UserName == DB.GetLoggedInUsername() && !x.IsDelete && x.Approved)
+                .Where(x => x.UserName == DB.GetLoggedInUsername() && x.Approved)
                 .Select(x => new ProfileDTO
                 {
                     FormID = x.FormID,
@@ -34,7 +34,7 @@ namespace OrderTrak.API.Services.Profile
         {
             // Get User
             var user = await DB.SYS_Users
-                .FirstOrDefaultAsync(x => x.UserName == DB.GetLoggedInUsername() && !x.IsDelete && x.Approved)
+                .FirstOrDefaultAsync(x => x.UserName == DB.GetLoggedInUsername() && x.Approved)
                 ?? throw new ValidationException(Messages.UserNotFound);
 
             // Update User Fields
@@ -135,7 +135,7 @@ namespace OrderTrak.API.Services.Profile
         {
             // Get User
             var user = await DB.SYS_Users
-                .FirstOrDefaultAsync(x => x.FormID == userAdminUpdateDTO.FormID && !x.IsDelete)
+                .FirstOrDefaultAsync(x => x.FormID == userAdminUpdateDTO.FormID)
                 ?? throw new ValidationException(Messages.UserNotFound);
 
             if(user.UserName == DB.GetLoggedInUsername() && !userAdminUpdateDTO.Approved)
@@ -156,7 +156,7 @@ namespace OrderTrak.API.Services.Profile
         public async Task<ProfileDTO> GetUserProfileAsync(Guid FormID)
         {
             return await DB.SYS_Users
-                .Where(x => x.FormID == FormID && !x.IsDelete)
+                .Where(x => x.FormID == FormID)
                 .Select(x => new ProfileDTO
                 {
                     FormID = x.FormID,
@@ -173,7 +173,7 @@ namespace OrderTrak.API.Services.Profile
         {
             // Get User
             var user = await DB.SYS_Users
-                .FirstOrDefaultAsync(x => x.FormID == FormID && !x.IsDelete)
+                .FirstOrDefaultAsync(x => x.FormID == FormID)
                 ?? throw new ValidationException(Messages.UserNotFound);
 
             if (user.UserName == DB.GetLoggedInUsername())

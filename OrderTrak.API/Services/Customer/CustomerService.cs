@@ -99,7 +99,7 @@ namespace OrderTrak.API.Services.Customer
 
         public async Task<PagedTable<CustomerSearchReturnDTO>> SearchCustomersAsync(CustomerSearchDTO searchQuery)
         {
-            // Get Change Logs
+            // Get Customers
             var query = DB.UPL_Customer
                 .Include(x => x.UPL_Projects)
                 .AsQueryable();

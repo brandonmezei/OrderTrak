@@ -102,6 +102,9 @@ builder.Services.AddAuthorization(options =>
     
     options.AddPolicy("UserManager", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("UserManager")));
+    
+    options.AddPolicy("Parts", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Parts")));
 });
 
 builder.Services.AddCors(options =>
