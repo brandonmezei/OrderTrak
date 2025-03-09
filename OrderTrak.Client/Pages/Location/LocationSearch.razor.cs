@@ -1,32 +1,31 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
-using OrderTrak.Client.Services.Customer;
+using OrderTrak.Client.Services.Location;
 using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
-namespace OrderTrak.Client.Pages.Customer
+namespace OrderTrak.Client.Pages.Location
 {
-    public partial class CustomerSearch
+    public partial class LocationSearch
     {
         [Inject]
-        private ICustomerService CustomerService { get; set; } = default!;
+        private ILocationService LocationService { get; set; } = default!;
 
         [SupplyParameterFromQuery]
         public bool Delete { get; set; }
 
-        protected CustomerSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        protected SearchQueryDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
-        protected CustomerCreateDTO? CreateCustomer { get; set; }
+        protected LocationCreateDTO? CreateLocation { get; set; }
 
-
-        protected PagedTableOfCustomerSearchReturnDTO? ReturnTable;
+        protected PagedTableOfLocationSearchReturnDTO? ReturnTable;
 
         protected Guid? DeleteID { get; set; }
 
         protected override void OnInitialized()
         {
             Layout.ClearMessages();
-            Layout.UpdateHeader("Customer Admin", "Create and edit customers. Add projects to customers.");
+            Layout.UpdateHeader("Location Admin", "Create and edit locations.");
 
             if (Delete)
                 Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
@@ -43,10 +42,9 @@ namespace OrderTrak.Client.Pages.Customer
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
-
-                    // Get Customers from API
-                    SearchFilters = await LocalStorage.GetItemAsync<CustomerSearchDTO>("search") ?? SearchFilters;
-                    ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                    // Get Locations from API
+                    SearchFilters = await LocalStorage.GetItemAsync<SearchQueryDTO>("search") ?? SearchFilters;
+                    ReturnTable = await LocationService.SearchLocationAsync(SearchFilters);
                 }
                 catch (ApiException ex)
                 {
@@ -80,8 +78,8 @@ namespace OrderTrak.Client.Pages.Customer
                 // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                // Get Customer from API
-                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                // Get Location from API
+                ReturnTable = await LocationService.SearchLocationAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -112,8 +110,8 @@ namespace OrderTrak.Client.Pages.Customer
                 // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                // Get Customer from API
-                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                // Get Location from API
+                ReturnTable = await LocationService.SearchLocationAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -139,8 +137,8 @@ namespace OrderTrak.Client.Pages.Customer
                 // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                // Get Customer from API
-                ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                // Get Location from API
+                ReturnTable = await LocationService.SearchLocationAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -157,21 +155,15 @@ namespace OrderTrak.Client.Pages.Customer
             }
         }
 
-        protected async Task EmptyCustomer_Change()
+        protected void CreateLocation_Toggle()
         {
-            SearchFilters.EmptyOnly = !SearchFilters.EmptyOnly;
-            await Search_Click();
-        }
-
-        protected void CreateCustomer_Toggle()
-        {
-            if (CreateCustomer == null)
-                CreateCustomer = new();
+            if (CreateLocation == null)
+                CreateLocation = new();
             else
-                CreateCustomer = null;
+                CreateLocation = null;
         }
 
-        protected async Task CreateCustomer_Submit()
+        protected async Task CreateLocation_Submit()
         {
             if (IsLoading)
                 return;
@@ -182,13 +174,13 @@ namespace OrderTrak.Client.Pages.Customer
 
             try
             {
-                if (CreateCustomer != null)
+                if (CreateLocation != null)
                 {
-                    // Create the Customer
-                    await CustomerService.CreateCustomerAsync(CreateCustomer);
+                    // Create the Location
+                    await LocationService.CreateLocationAsync(CreateLocation);
 
-                    // Reload Customer List
-                    ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                    // Reload Location List
+                    ReturnTable = await LocationService.SearchLocationAsync(SearchFilters);
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }
             }
@@ -202,7 +194,7 @@ namespace OrderTrak.Client.Pages.Customer
             }
             finally
             {
-                CreateCustomer = null;
+                CreateLocation = null;
                 IsLoading = false;
             }
         }
@@ -222,11 +214,11 @@ namespace OrderTrak.Client.Pages.Customer
             {
                 if (DeleteID.HasValue)
                 {
-                    // Delete the Customer
-                    await CustomerService.DeleteCustomerAsync(DeleteID.Value);
+                    // Delete the Location
+                    await LocationService.DeleteLocationAsync(DeleteID.Value);
 
-                    // Reload Customer List
-                    ReturnTable = await CustomerService.SearchCustomersAsync(SearchFilters);
+                    // Reload Location List
+                    ReturnTable = await LocationService.SearchLocationAsync(SearchFilters);
                     Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
                 }
             }

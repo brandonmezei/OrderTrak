@@ -1,6 +1,4 @@
-﻿using OrderTrak.API.Models.DTO.Project;
-
-namespace OrderTrak.API.Models.DTO.Customer
+﻿namespace OrderTrak.API.Models.DTO.Customer
 {
     public class CustomerDTO
     {

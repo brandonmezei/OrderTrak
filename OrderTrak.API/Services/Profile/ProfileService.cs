@@ -73,9 +73,9 @@ namespace OrderTrak.API.Services.Profile
 
                 foreach (var filter in searchFilter)
                 {
-                    query = query.Where(x => 
-                        x.Email.Contains(filter) 
-                        || x.FirstName.Contains(filter) 
+                    query = query.Where(x =>
+                        x.Email.Contains(filter)
+                        || x.FirstName.Contains(filter)
                         || x.LastName.Contains(filter)
                     );
                 }
@@ -138,7 +138,7 @@ namespace OrderTrak.API.Services.Profile
                 .FirstOrDefaultAsync(x => x.FormID == userAdminUpdateDTO.FormID)
                 ?? throw new ValidationException(Messages.UserNotFound);
 
-            if(user.UserName == DB.GetLoggedInUsername() && !userAdminUpdateDTO.Approved)
+            if (user.UserName == DB.GetLoggedInUsername() && !userAdminUpdateDTO.Approved)
                 throw new ValidationException("You cannot revoke approval on your own profile.");
 
             // Update User Fields

@@ -1,5 +1,4 @@
 ﻿using OrderTrak.Client.Services.API;
-using System.Threading.Tasks;
 
 namespace OrderTrak.Client.Services.Project
 {

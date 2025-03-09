@@ -11,6 +11,7 @@ using OrderTrak.Client.Services.Auth;
 using OrderTrak.Client.Services.ChangeLog;
 using OrderTrak.Client.Services.Customer;
 using OrderTrak.Client.Services.Filters;
+using OrderTrak.Client.Services.Location;
 using OrderTrak.Client.Services.Parts;
 using OrderTrak.Client.Services.Profile;
 using OrderTrak.Client.Services.Project;
@@ -41,6 +42,7 @@ builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IRoleServices, RoleServices>();
 builder.Services.AddScoped<IDropDownFactoryService, DropDownFactoryService>();
 builder.Services.AddScoped<IPartService, PartService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 
 builder.Services.AddTransient<TokenHttpClientHandler>();
 

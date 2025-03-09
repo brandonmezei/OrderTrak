@@ -82,7 +82,7 @@ namespace OrderTrak.Client.Pages.Project
                     // Delete Project
                     await ProjectService.DeleteProjectAsync(Project.FormID);
 
-                    Navigation.NavigateTo($"/customer/{ Project.CustomerID }?Delete=true");
+                    Navigation.NavigateTo($"/customer/{Project.CustomerID}?Delete=true");
                 }
             }
             catch (ApiException ex)

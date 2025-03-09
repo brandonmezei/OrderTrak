@@ -205,7 +205,7 @@ namespace OrderTrak.API.Services.Roles
                     .ToList();
 
                 foreach (var filter in searchFilter)
-                    query = query.Where(x => 
+                    query = query.Where(x =>
                         x.UserName.Contains(filter)
                         || x.FirstName.Contains(filter)
                         || x.LastName.Contains(filter)

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OrderTrak.API.Models.OrderTrakDB;
@@ -10,6 +9,7 @@ using OrderTrak.API.Services.Auth;
 using OrderTrak.API.Services.ChangeLog;
 using OrderTrak.API.Services.Customer;
 using OrderTrak.API.Services.Filters;
+using OrderTrak.API.Services.Location;
 using OrderTrak.API.Services.Parts;
 using OrderTrak.API.Services.Profile;
 using OrderTrak.API.Services.Project;
@@ -85,6 +85,7 @@ builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IRoleServices, RoleServices>();
 builder.Services.AddScoped<IDropDownFilterFactory, DropDownFilterFactory>();
 builder.Services.AddScoped<IPartService, PartService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 
 
 // Register custom authorization handler
@@ -99,12 +100,15 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("Role", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Role")));
-    
+
     options.AddPolicy("UserManager", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("UserManager")));
-    
+
     options.AddPolicy("Parts", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Parts")));
+    
+    options.AddPolicy("Location", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Location")));
 });
 
 builder.Services.AddCors(options =>

@@ -3,7 +3,6 @@ using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Parts;
 using OrderTrak.API.Models.OrderTrakDB;
 using System.ComponentModel.DataAnnotations;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OrderTrak.API.Services.Parts
 {
@@ -14,8 +13,12 @@ namespace OrderTrak.API.Services.Parts
         public async Task<Guid> CreatePartAsync(PartCreateDTO partCreateDTO)
         {
             // Check if part already exists
-            if(await DB.UPL_PartInfo.AnyAsync(x => x.PartNumber == partCreateDTO.PartNumber))
+            if (await DB.UPL_PartInfo.AnyAsync(x => x.PartNumber == partCreateDTO.PartNumber))
                 throw new ValidationException("Part already exists");
+
+            // Check if PartCost is greater than 0
+            if (partCreateDTO.PartCost <= 0)
+                throw new ValidationException("Part Cost must be greater than 0");
 
             // Create new part
             var newPart = new UPL_PartInfo
@@ -41,6 +44,10 @@ namespace OrderTrak.API.Services.Parts
             var part = await DB.UPL_PartInfo
                 .FirstOrDefaultAsync(x => x.FormID == partUpdateDTO.FormID)
                 ?? throw new ValidationException("Part not found");
+
+            // Check if PartCost is greater than 0
+            if (partUpdateDTO.PartCost <= 0)
+                throw new ValidationException("Part Cost must be greater than 0");
 
             // Update Fields
             part.PartNumber = partUpdateDTO.PartNumber ?? throw new ValidationException("Part Number is required.");
@@ -111,7 +118,7 @@ namespace OrderTrak.API.Services.Parts
             }
 
             // Stock Only Filter
-            if(searchQuery.IsStockOnly)
+            if (searchQuery.IsStockOnly)
                 query = query.Where(x => x.IsStock);
 
             // Apply Order By

@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;

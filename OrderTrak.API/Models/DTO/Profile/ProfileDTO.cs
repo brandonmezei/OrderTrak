@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OrderTrak.API.Models.DTO.Profile
+﻿namespace OrderTrak.API.Models.DTO.Profile
 {
     public class ProfileDTO
     {

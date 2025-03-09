@@ -22,7 +22,7 @@ namespace OrderTrak.Client.Shared.DropDowns
 
         protected override async Task OnInitializedAsync()
         {
-            if(UnassignedUsersOnly)
+            if (UnassignedUsersOnly)
                 DropDownFilters = await DropDownFilterFactory.GetUnassignedUsers();
         }
 
@@ -32,7 +32,7 @@ namespace OrderTrak.Client.Shared.DropDowns
                 await SelectedValueChanged.InvokeAsync(value);
             else
                 await SelectedValueChanged.InvokeAsync(null);
-            
+
             StateHasChanged();
         }
     }

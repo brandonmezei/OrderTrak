@@ -1,4 +1,3 @@
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Profile;

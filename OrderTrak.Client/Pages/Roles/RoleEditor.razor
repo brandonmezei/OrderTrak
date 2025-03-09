@@ -98,7 +98,7 @@
                         </div>
                         @if (FilteredRoleToFunctionList?.Count > 0)
                         {
-                            <table class="table is-fullwidth is-striped is-hoverable">
+                            <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                 <thead>
                                     <tr>
                                         <th>
@@ -112,7 +112,7 @@
                                                 }
                                             </a>
                                         </th>
-                                        <th class="has-text-right">
+                                        <th>
                                             <a @onclick="() => SortSwitch_Click(2)">
                                                 <span>Can Access</span>
                                                 @if (SortColumn == 2)
@@ -132,7 +132,7 @@
 
                                         <tr>
                                             <td>@FilteredRoleToFunctionList[index].FunctionName</td>
-                                            <td class="has-text-right">
+                                            <td>
                                                 <div class="field">
                                                     <InputCheckbox class="is-checkradio" @bind-Value="FilteredRoleToFunctionList[index].CanAccess" id="@($"canaccess{index}")" />
                                                     <label for="@($"canaccess{index}")"></label>
@@ -170,7 +170,7 @@
                         </div>
                         @if (RoleToUserList?.Data.Count > 0)
                         {
-                            <table class="table is-fullwidth is-striped is-hoverable">
+                            <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -185,7 +185,7 @@
                                                 }
                                             </a>
                                         </th>
-                                        <th class="has-text-right">
+                                        <th>
                                             <a @onclick="() => SortSwitchRoleToUser_Click(2)">
                                                 <span>Email</span>
                                                 @if (SearchFilters.SortColumn == 2)
@@ -208,7 +208,7 @@
                                                 </div>
                                             </td>
                                             <td>@line.FullName</td>
-                                            <td class="has-text-right">
+                                            <td>
                                                 <a href="mailto:@line.Email">
                                                     @line.Email
                                                 </a>

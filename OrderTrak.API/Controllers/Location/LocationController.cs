@@ -1,26 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderTrak.API.Models.DTO;
-using OrderTrak.API.Models.DTO.Parts;
-using OrderTrak.API.Services.Parts;
+using OrderTrak.API.Models.DTO.Location;
+using OrderTrak.API.Services.Location;
 using System.ComponentModel.DataAnnotations;
 
-namespace OrderTrak.API.Controllers.Parts
+namespace OrderTrak.API.Controllers.Location
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "Parts")]
-    public class PartsController(IPartService partService) : ControllerBase
+    [Authorize(Policy = "Location")]
+    public class LocationController(ILocationService locationService) : ControllerBase
     {
-        private readonly IPartService PartService = partService;
+        private readonly ILocationService LocationService = locationService;
 
         #region GET
-        [HttpGet("GetPart/{partID}")]
-        public async Task<ActionResult<PartDTO>> GetPartAsync(Guid partID)
+        [HttpGet("GetLocation/{locationId}")]
+        public async Task<ActionResult<LocationDTO>> GetLocationAsync(Guid locationId)
         {
             try
             {
-                return Ok(await PartService.GetPartAsync(partID));
+                return Ok(await LocationService.GetLocationAsync(locationId));
             }
             catch (ValidationException ex)
             {
@@ -34,12 +35,12 @@ namespace OrderTrak.API.Controllers.Parts
         #endregion
 
         #region POST
-        [HttpPost("CreatePart")]
-        public async Task<ActionResult<Guid>> CreatePartAsync([FromBody] PartCreateDTO partCreateDTO)
+        [HttpPost("CreateLocation")]
+        public async Task<ActionResult<Guid>> CreateLocationAsync([FromBody] LocationCreateDTO locationCreateDTO)
         {
             try
             {
-                return Ok(await PartService.CreatePartAsync(partCreateDTO));
+                return Ok(await LocationService.CreateLocationAsync(locationCreateDTO));
             }
             catch (ValidationException ex)
             {
@@ -51,12 +52,12 @@ namespace OrderTrak.API.Controllers.Parts
             }
         }
 
-        [HttpPost("UpdatePart")]
-        public async Task<ActionResult> UpdatePartAsync([FromBody] PartUpdateDTO partUpdateDTO)
+        [HttpPost("UpdateLocation")]
+        public async Task<ActionResult> UpdateLocationAsync([FromBody] LocationUpdateDTO locationUpdateDTO)
         {
             try
             {
-                await PartService.UpdatePartAsync(partUpdateDTO);
+                await LocationService.UpdateLocationAsync(locationUpdateDTO);
                 return Ok();
             }
             catch (ValidationException ex)
@@ -69,12 +70,12 @@ namespace OrderTrak.API.Controllers.Parts
             }
         }
 
-        [HttpPost("SearchPart")]
-        public async Task<ActionResult<PagedTable<PartSearchReturnDTO>>> SearchPartAsync([FromBody] PartSearchDTO searchQuery)
+        [HttpPost("SearchLocation")]
+        public async Task<ActionResult<PagedTable<LocationSearchReturnDTO>>> SearchLocationAsync([FromBody] SearchQueryDTO searchQuery)
         {
             try
             {
-                return Ok(await PartService.SearchPartsAsync(searchQuery));
+                return Ok(await LocationService.SearchLocationAsync(searchQuery));
             }
             catch (ValidationException ex)
             {
@@ -88,12 +89,12 @@ namespace OrderTrak.API.Controllers.Parts
         #endregion
 
         #region DELETE
-        [HttpDelete("DeletePart/{partID}")]
-        public async Task<ActionResult> DeletePartAsync(Guid partID)
+        [HttpDelete("DeleteLocation/{locationId}")]
+        public async Task<ActionResult> DeleteLocationAsync(Guid locationId)
         {
             try
             {
-                await PartService.DeletePartAsync(partID);
+                await LocationService.DeleteLocationAsync(locationId);
                 return Ok();
             }
             catch (ValidationException ex)

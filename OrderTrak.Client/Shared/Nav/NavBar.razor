@@ -22,10 +22,14 @@
                         Warehouse
                     </button>
                     <div class="navbar-dropdown">
+                        @if (Permissions.Any(x => x == "Location"))
+                        {
+                            <NavBarItem Label="Location Manager" Icon="fa-warehouse" URL="/location/search" />
+                        }
                         @if (Permissions.Any(x => x == "Parts"))
                         {
                             <NavBarItem Label="Part Manager" Icon="fa-cogs" URL="/part/search" />
-                        }
+                        }                       
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown @(IsSettingOpen ? "is-active" : string.Empty)">

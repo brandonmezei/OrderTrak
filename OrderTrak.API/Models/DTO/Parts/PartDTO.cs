@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OrderTrak.API.Models.DTO.Parts
+﻿namespace OrderTrak.API.Models.DTO.Parts
 {
     public class PartDTO
     {

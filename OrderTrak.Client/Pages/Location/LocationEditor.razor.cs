@@ -1,31 +1,31 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
-using OrderTrak.Client.Services.Parts;
+using OrderTrak.Client.Services.Location;
 using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
-namespace OrderTrak.Client.Pages.Parts
+namespace OrderTrak.Client.Pages.Location
 {
-    public partial class PartEditor
+    public partial class LocationEditor
     {
         [Parameter]
         public Guid FormID { get; set; }
 
         [Inject]
-        private IPartService PartService { get; set; } = default!;
+        private ILocationService LocationService { get; set; } = default!;
 
-        protected PartDTO? Part { get; set; }
+        protected LocationDTO? Location { get; set; }
 
-        public bool DeletePart { get; set; }
+        public bool DeleteLocation { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
-            Layout.UpdateHeader("Part Admin", "Create and edit parts.");
+            Layout.UpdateHeader("Location Admin", "Create and edit locations.");
 
             try
             {
-                Part = await PartService.GetPartAsync(FormID);
+                Location = await LocationService.GetLocationAsync(FormID);
             }
             catch (ApiException ex)
             {
@@ -48,9 +48,9 @@ namespace OrderTrak.Client.Pages.Parts
 
             try
             {
-                if (Part != null)
+                if (Location != null)
                 {
-                    await PartService.UpdatePartAsync(MapperService.Map<PartUpdateDTO>(Part));
+                    await LocationService.UpdateLocationAsync(MapperService.Map<LocationUpdateDTO>(Location));
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }
@@ -73,7 +73,7 @@ namespace OrderTrak.Client.Pages.Parts
         {
             Layout.ClearMessages();
 
-            DeletePart = !DeletePart;
+            DeleteLocation = !DeleteLocation;
         }
 
         protected async Task DeleteConfirm_Click()
@@ -82,12 +82,12 @@ namespace OrderTrak.Client.Pages.Parts
 
             try
             {
-                if (Part != null)
+                if (Location != null)
                 {
-                    // Delete Part
-                    await PartService.DeletePartAsync(FormID);
+                    // Delete Location
+                    await LocationService.DeleteLocationAsync(FormID);
 
-                    Navigation.NavigateTo($"/part/search?Delete=true");
+                    Navigation.NavigateTo($"/location/search?Delete=true");
                 }
             }
             catch (ApiException ex)
@@ -100,7 +100,7 @@ namespace OrderTrak.Client.Pages.Parts
             }
             finally
             {
-                DeletePart = false;
+                DeleteLocation = false;
             }
         }
     }

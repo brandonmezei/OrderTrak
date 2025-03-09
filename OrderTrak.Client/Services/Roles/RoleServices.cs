@@ -8,7 +8,7 @@ namespace OrderTrak.Client.Services.Roles
 
         public async Task<Guid> CreateRoleAsync(RoleCreateDTO roleCreateDTO)
         {
-           return await ApiService.CreateRoleAsync(roleCreateDTO);
+            return await ApiService.CreateRoleAsync(roleCreateDTO);
         }
 
         public async Task DeleteRoleAsync(Guid roleID)
@@ -33,7 +33,7 @@ namespace OrderTrak.Client.Services.Roles
 
         public async Task<List<RoleToFunctionDTO>> GetRoleToFunctionByRoleIDAsync(Guid roleID)
         {
-             return [..await ApiService.GetRoleToFunctionByRoleIDAsync(roleID)];
+            return [.. await ApiService.GetRoleToFunctionByRoleIDAsync(roleID)];
         }
 
         public async Task UpdateRoleToFunctionAsync(RoleUpdateRoleToFunctionDTO roleToFunctionUpdateDTO)

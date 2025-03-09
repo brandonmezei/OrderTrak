@@ -28,7 +28,7 @@ namespace OrderTrak.Client.Services.Parts
 
         public async Task UpdatePartAsync(PartUpdateDTO partUpdateDTO)
         {
-           await ApiService.UpdatePartAsync(partUpdateDTO);
+            await ApiService.UpdatePartAsync(partUpdateDTO);
         }
     }
 }

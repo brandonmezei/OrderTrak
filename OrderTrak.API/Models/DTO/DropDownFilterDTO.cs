@@ -3,6 +3,6 @@
     public class DropDownFilterDTO
     {
         public Guid FormID { get; set; }
-        public string Label { get; set; }  = string.Empty;
+        public string Label { get; set; } = string.Empty;
     }
 }
