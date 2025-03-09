@@ -95,5 +95,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public DbSet<SYS_RolesToFunction> SYS_RolesToFunction { get; set; }
         public DbSet<SYS_Function> SYS_Function { get; set; }
         public DbSet<UPL_Location> UPL_Location { get; set; }
+        public DbSet<UPL_StockGroup> UPL_StockGroup { get; set; }
     }
 }

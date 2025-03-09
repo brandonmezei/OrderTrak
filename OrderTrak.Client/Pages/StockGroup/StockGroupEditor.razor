@@ -1,0 +1,54 @@
+﻿@page "/stockgroup/{FormID:guid}"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Stock Group - OrderTrak</PageTitle>
+
+@if (StockGroup != null)
+{
+    @if (DeleteStockGroup)
+    {
+        <ModalPopup Title="Confirm Delete" OnClose="Delete_Toggle">
+            <Content>
+                <p class="subtitle">Are you sure you want to delete this stock group?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="Delete_Toggle" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteConfirm_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
+    <div class="box">
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="buttons is-pulled-right">
+                    <FormButton Title="Delete" Style="is-danger" Icon="fa-trash" OnClick="Delete_Toggle" />
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <CardComponent Title="Stock Group Information" Icon="fa-boxes">
+                    <CardBody>
+                        <FormField Icon="fa-warehouse" Title="Stock Group Name">
+                            <Content>
+                                <InputText class="input is-danger" Type="text" Placeholder="Location Name" @bind-Value="StockGroup.StockGroupTitle" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/stockgroup/search" />
+            <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

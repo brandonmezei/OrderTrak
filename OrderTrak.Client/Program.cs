@@ -16,6 +16,7 @@ using OrderTrak.Client.Services.Parts;
 using OrderTrak.Client.Services.Profile;
 using OrderTrak.Client.Services.Project;
 using OrderTrak.Client.Services.Roles;
+using OrderTrak.Client.Services.StockGroup;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -43,6 +44,7 @@ builder.Services.AddScoped<IRoleServices, RoleServices>();
 builder.Services.AddScoped<IDropDownFactoryService, DropDownFactoryService>();
 builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IStockGroupService, StockGroupService>();
 
 builder.Services.AddTransient<TokenHttpClientHandler>();
 

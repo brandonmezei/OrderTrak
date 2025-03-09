@@ -29,6 +29,10 @@
                         @if (Permissions.Any(x => x == "Parts"))
                         {
                             <NavBarItem Label="Part Manager" Icon="fa-cogs" URL="/part/search" />
+                        }
+                        @if (Permissions.Any(x => x == "StockGroup"))
+                        {
+                            <NavBarItem Label="Stock Group Manager" Icon="fa-boxes" URL="/stockgroup/search" />
                         }                       
                     </div>
                 </div>

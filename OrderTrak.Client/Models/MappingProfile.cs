@@ -15,6 +15,7 @@ namespace OrderTrak.Client.Models
             CreateMap<ProfileDTO, UserAdminUpdateDTO>();
             CreateMap<PartDTO, PartUpdateDTO>();
             CreateMap<LocationDTO, LocationUpdateDTO>();
+            CreateMap<StockGroupDTO, StockGroupUpdateDTO>();
         }
     }
 }
