@@ -18,6 +18,11 @@ namespace OrderTrak.Client.Pages.Location
 
         public bool DeleteLocation { get; set; }
 
+        public readonly List<string> UOMList = [
+            UOM.Feet,
+            UOM.Inches
+        ];
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -102,6 +107,12 @@ namespace OrderTrak.Client.Pages.Location
             {
                 DeleteLocation = false;
             }
+        }
+
+        protected void UOMDropDown_Change(Guid? FormID)
+        {
+            if (Location != null && FormID.HasValue)
+                Location.Uomid = FormID.Value;
         }
     }
 }

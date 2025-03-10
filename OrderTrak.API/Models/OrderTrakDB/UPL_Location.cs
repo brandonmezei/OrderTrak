@@ -10,6 +10,11 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey("UPL_UOM")]
+        public int UOMID { get; set; }
+
+
+        [Required]
         public string LocationNumber { get; set; } = string.Empty;
 
         [Required]
@@ -21,7 +26,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public decimal Depth { get; set; } = 0;
 
-        [Required]
-        public string UnitOfMeasure { get; set; } = string.Empty;
+        public virtual UPL_UOM UPL_UOM { get; set; } = null!;
+
     }
 }

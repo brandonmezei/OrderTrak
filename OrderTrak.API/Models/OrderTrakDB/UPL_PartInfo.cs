@@ -10,6 +10,10 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey("UPL_UOM")]
+        public int UOMID { get; set; }
+
+        [Required]
         public string PartNumber { get; set; } = string.Empty;
 
         [Required]
@@ -24,13 +28,18 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public decimal PartCost { get; set; } = 0;
 
-        [Required]
-        public string PartUnit { get; set; } = "EA";
+        public decimal? Height { get; set; }
+
+        public decimal? Width { get; set; }
+
+        public decimal? Depth { get; set; }
 
         [Required]
         public bool IsStock { get; set; } = false;
 
         public virtual ICollection<PO_Line> PO_Line { get; set; } = [];
+
+        public virtual UPL_UOM UPL_UOM { get; set; } = null!;
 
     }
 }

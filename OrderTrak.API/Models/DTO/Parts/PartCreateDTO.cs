@@ -4,6 +4,9 @@ namespace OrderTrak.API.Models.DTO.Parts
 {
     public class PartCreateDTO
     {
+        [Required(ErrorMessage = "Unit of Measurement is required.")]
+        public Guid UOMID { get; set; }
+
         [Required(ErrorMessage = "Part Number is required.")]
         public string PartNumber { get; set; } = string.Empty;
 
@@ -20,10 +23,13 @@ namespace OrderTrak.API.Models.DTO.Parts
         [DataType(DataType.Currency)]
         public decimal PartCost { get; set; } = 0;
 
-        [Required(ErrorMessage = "Part Unit is required.")]
-        public string PartUnit { get; set; } = "EA";
-
         [Required]
         public bool IsStock { get; set; } = false;
+
+        public decimal? Height { get; set; }
+
+        public decimal? Width { get; set; }
+
+        public decimal? Depth { get; set; }
     }
 }

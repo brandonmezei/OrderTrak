@@ -19,7 +19,24 @@ namespace OrderTrak.API.Controllers.Filters
         {
             try
             {
-                return Ok(await DropDownService.GetUnassignedUsers());
+                return Ok(await DropDownService.GetUnassignedUsersAsync());
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("GetUOMDropDown")]
+        public async Task<ActionResult<List<DropDownFilterDTO>>> GetUOMAsync()
+        {
+            try
+            {
+                return Ok(await DropDownService.GetUOMAsync());
             }
             catch (ValidationException ex)
             {

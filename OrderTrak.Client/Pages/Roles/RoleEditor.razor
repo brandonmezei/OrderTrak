@@ -29,7 +29,11 @@
                     <div class="column is-half">
                         <CardComponent Title="Unassigned Users" Icon="fa-users">
                             <CardBody>
-                                <UserDropDown UnassignedUsersOnly=true SelectedValueChanged="AddUserDropDown_Change" />
+                                <FormField Icon="fa-users" Title="Users">
+                                    <Content>
+                                        <UserDropDown UnassignedUsersOnly=true SelectedValueChanged="AddUserDropDown_Change" />
+                                    </Content>
+                                </FormField>
                             </CardBody>
                             <Footer>
                                 <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddUserToRole_Click" />

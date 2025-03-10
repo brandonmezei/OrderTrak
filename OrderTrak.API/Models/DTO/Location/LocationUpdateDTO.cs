@@ -7,6 +7,9 @@ namespace OrderTrak.API.Models.DTO.Location
         [Required]
         public Guid? FormID { get; set; }
 
+        [Required(ErrorMessage = "Unit of Measurement is required.")]
+        public Guid? UOMID { get; set; }
+
         [Required(ErrorMessage = "Location Number is required.")]
         public string? LocationNumber { get; set; } = string.Empty;
 
@@ -18,8 +21,5 @@ namespace OrderTrak.API.Models.DTO.Location
 
         [Required(ErrorMessage = "Depth is required.")]
         public decimal? Depth { get; set; } = 0;
-
-        [Required(ErrorMessage = "Unit of Measurement is required.")]
-        public string? UnitOfMeasure { get; set; } = string.Empty;
     }
 }

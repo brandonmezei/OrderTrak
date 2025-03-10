@@ -1,5 +1,6 @@
 ﻿@page "/part/{FormID:guid}"
 @using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
 @using OrderTrak.Client.Shared.FormComponents
 @inherits OrderTrakBasePage
 
@@ -57,9 +58,32 @@
                                 <InputNumber class="input is-primary" Type="text" Placeholder="Cost" @bind-Value="Part.PartCost" />
                             </Content>
                         </FormField>
-                        <FormField Icon="fa-ruler" Title="Unit of Measurment">
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <FormField Icon="fa-ruler-vertical" Title="Height">
+                                    <Content>
+                                        <InputNumber class="input is-primary" Type="text" Placeholder="Height" @bind-Value="Part.Height" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column">
+                                <FormField Icon="fa-ruler-horizontal" Title="Width">
+                                    <Content>
+                                        <InputNumber class="input is-primary" Type="text" Placeholder="Width" @bind-Value="Part.Width" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column">
+                                <FormField Icon="fa-ruler-combined" Title="Depth">
+                                    <Content>
+                                        <InputNumber class="input is-primary" Type="text" Placeholder="Depth" @bind-Value="Part.Depth" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                        </div>
+                        <FormField Icon="fa-balance-scale" Title="Unit of Measurement">
                             <Content>
-                                <InputText class="input is-danger" Type="text" Placeholder="Unit of Measurment" @bind-Value="Part.PartUnit" />
+                                <UOMDropDown SelectedValue="Part.Uomid" SelectedValueChanged="UOMDropDown_Change" />
                             </Content>
                         </FormField>
                         <hr />

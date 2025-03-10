@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250310224518_UPL_PartUOM")]
+    partial class UPL_PartUOM
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -479,8 +482,9 @@ namespace OrderTrak.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UOMID")
-                        .HasColumnType("int");
+                    b.Property<string>("UnitOfMeasure")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -493,8 +497,6 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UOMID");
 
                     b.ToTable("UPL_Location");
                 });
@@ -567,6 +569,44 @@ namespace OrderTrak.API.Migrations
                     b.HasIndex("UOMID");
 
                     b.ToTable("UPL_PartInfo");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_PartUOM", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("FormID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UnitOfMeasurement")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UPL_PartUOM");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Project", b =>
@@ -696,44 +736,6 @@ namespace OrderTrak.API.Migrations
                     b.ToTable("UPL_StockGroup");
                 });
 
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_UOM", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("FormID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UnitOfMeasurement")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdateName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UPL_UOM");
-                });
-
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
                 {
                     b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_Project", "UPL_Project")
@@ -803,26 +805,15 @@ namespace OrderTrak.API.Migrations
                     b.Navigation("SYS_Roles");
                 });
 
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Location", b =>
-                {
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_UOM", "UPL_UOM")
-                        .WithMany("UPL_Location")
-                        .HasForeignKey("UOMID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UPL_UOM");
-                });
-
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_PartInfo", b =>
                 {
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_UOM", "UPL_UOM")
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_PartUOM", "UPL_PartUOM")
                         .WithMany("UPL_PartInfo")
                         .HasForeignKey("UOMID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UPL_UOM");
+                    b.Navigation("UPL_PartUOM");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Project", b =>
@@ -868,10 +859,8 @@ namespace OrderTrak.API.Migrations
                     b.Navigation("PO_Line");
                 });
 
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_UOM", b =>
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_PartUOM", b =>
                 {
-                    b.Navigation("UPL_Location");
-
                     b.Navigation("UPL_PartInfo");
                 });
 #pragma warning restore 612, 618

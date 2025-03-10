@@ -10,5 +10,10 @@ namespace OrderTrak.Client.Services.Filters
         {
             return [.. await ApiService.GetUnassignedUsersDropDownAsync()];
         }
+
+        public async Task<List<DropDownFilterDTO>> GetUOMAsync()
+        {
+            return [.. await ApiService.GetUOMDropDownAsync()];
+        }
     }
 }

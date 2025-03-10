@@ -20,14 +20,19 @@ namespace OrderTrak.API.Services.Location
             if (locationCreateDTO.Height <= 0 || locationCreateDTO.Width <= 0 || locationCreateDTO.Depth <= 0)
                 throw new ValidationException("Height, Width, and Depth must be greater than 0");
 
+            // Check if UOM is valid
+            var UOM = await DB.UPL_UOM
+                .FirstOrDefaultAsync(x => x.FormID == locationCreateDTO.UOMID)
+                ?? throw new ValidationException("Unit of Measurement not found.");
+
             // Create new location
             var newLocation = new UPL_Location
             {
+                UPL_UOM = UOM,
                 LocationNumber = locationCreateDTO.LocationNumber ?? throw new ValidationException("Location Number is required"),
                 Height = locationCreateDTO.Height,
                 Width = locationCreateDTO.Width,
                 Depth = locationCreateDTO.Depth,
-                UnitOfMeasure = locationCreateDTO.UnitOfMeasure ?? throw new ValidationException("Unit of Measurement is required")
             };
 
             // Save
@@ -54,24 +59,26 @@ namespace OrderTrak.API.Services.Location
         public async Task<LocationDTO> GetLocationAsync(Guid locationID)
         {
             return await DB.UPL_Location
+                .Include(x => x.UPL_UOM)
                 .Where(x => x.FormID == locationID)
                 .Select(x => new LocationDTO
                 {
+                    UOMID = x.UPL_UOM.FormID,
                     FormID = x.FormID,
                     LocationNumber = x.LocationNumber,
                     Height = x.Height,
                     Width = x.Width,
                     Depth = x.Depth,
-                    UnitOfMeasure = x.UnitOfMeasure
                 })
                 .FirstOrDefaultAsync()
-                ?? throw new ValidationException("Location not found");
+                ?? throw new ValidationException("Location not found.");
         }
 
         public async Task<PagedTable<LocationSearchReturnDTO>> SearchLocationAsync(SearchQueryDTO searchQuery)
         {
             // Get Location Query
             var query = DB.UPL_Location
+                .Include(x => x.UPL_UOM)
                 .AsQueryable();
 
             // Filters
@@ -86,7 +93,7 @@ namespace OrderTrak.API.Services.Location
                 foreach (var filter in searchFilter)
                 {
                     query = query.Where(x => x.LocationNumber.Contains(filter) ||
-                                             x.UnitOfMeasure.Contains(filter)
+                                             x.UPL_UOM.UnitOfMeasurement.Contains(filter)
                                             );
                 }
             }
@@ -106,8 +113,8 @@ namespace OrderTrak.API.Services.Location
                     break;
                 case 3:
                     query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.UnitOfMeasure)
-                        : query.OrderByDescending(x => x.UnitOfMeasure);
+                        ? query.OrderBy(x => x.UPL_UOM.UnitOfMeasurement)
+                        : query.OrderByDescending(x => x.UPL_UOM.UnitOfMeasurement);
                     break;
                 default:
                     query = query.OrderBy(x => x.Id);
@@ -123,7 +130,7 @@ namespace OrderTrak.API.Services.Location
                     FormID = x.FormID,
                     LocationNumber = x.LocationNumber,
                     Volume = x.Height * x.Width * x.Depth,
-                    UnitOfMeasure = x.UnitOfMeasure
+                    UnitOfMeasure = x.UPL_UOM.UnitOfMeasurement
                 })
                 .ToListAsync();
 
@@ -151,12 +158,17 @@ namespace OrderTrak.API.Services.Location
             if (locationUpdateDTO.Height <= 0 || locationUpdateDTO.Width <= 0 || locationUpdateDTO.Depth <= 0)
                 throw new ValidationException("Height, Width, and Depth must be greater than 0");
 
+            // Check if UOM is valid
+            var UOM = await DB.UPL_UOM
+                .FirstOrDefaultAsync(x => x.FormID == locationUpdateDTO.UOMID)
+                ?? throw new ValidationException("Unit of Measurement not found.");
+
             // Update Location
+            location.UPL_UOM = UOM;
             location.LocationNumber = locationUpdateDTO.LocationNumber ?? throw new ValidationException("Location Number is required");
             location.Height = locationUpdateDTO.Height ?? throw new ValidationException("Height is required");
             location.Width = locationUpdateDTO.Width ?? throw new ValidationException("Width is required");
             location.Depth = locationUpdateDTO.Depth ?? throw new ValidationException("Depth is required");
-            location.UnitOfMeasure = locationUpdateDTO.UnitOfMeasure ?? throw new ValidationException("Unit of Measurement is required");
 
             // Save
             await DB.SaveChangesAsync();

@@ -103,5 +103,11 @@ namespace OrderTrak.Client.Pages.Parts
                 DeletePart = false;
             }
         }
+
+        protected void UOMDropDown_Change(Guid? FormID)
+        {
+            if(Part != null && FormID.HasValue)
+                Part.Uomid = FormID.Value;
+        }
     }
 }

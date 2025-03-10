@@ -4,6 +4,7 @@ namespace OrderTrak.API.Services.Filters
 {
     public interface IDropDownFilterFactory
     {
-        public Task<List<DropDownFilterDTO>> GetUnassignedUsers();
+        Task<List<DropDownFilterDTO>> GetUnassignedUsersAsync();
+        Task<List<DropDownFilterDTO>> GetUOMAsync();
     }
 }

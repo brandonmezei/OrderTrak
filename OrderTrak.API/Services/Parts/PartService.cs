@@ -2,6 +2,7 @@
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Parts;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Static;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrak.API.Services.Parts
@@ -20,16 +21,31 @@ namespace OrderTrak.API.Services.Parts
             if (partCreateDTO.PartCost <= 0)
                 throw new ValidationException("Part Cost must be greater than 0");
 
+            // Check if UOM is valid
+            var unit = await DB.UPL_UOM
+                .FirstOrDefaultAsync(x => x.FormID == partCreateDTO.UOMID)
+                ?? throw new ValidationException("Unit of Measurement not found");
+
+            // Check if UOM is valid for stock type
+            if(partCreateDTO.IsStock && (unit.UnitOfMeasurement != UOM.Feet && unit.UnitOfMeasurement != UOM.Inches))
+                throw new ValidationException("Unit of Measurement must be Feet or Inches for stock parts");
+
+            if (!partCreateDTO.IsStock && (unit.UnitOfMeasurement != UOM.Hours && unit.UnitOfMeasurement != UOM.Minutes))
+                throw new ValidationException("Unit of Measurement must be Hours or Minutes for non-stock parts");
+
             // Create new part
             var newPart = new UPL_PartInfo
             {
+                UPL_UOM = unit,
                 PartNumber = partCreateDTO.PartNumber,
                 PartDescription = partCreateDTO.PartDescription,
                 PartType = partCreateDTO.PartType,
                 PartVendor = partCreateDTO.PartVendor,
                 PartCost = partCreateDTO.PartCost,
-                PartUnit = partCreateDTO.PartUnit,
-                IsStock = partCreateDTO.IsStock
+                IsStock = partCreateDTO.IsStock,
+                Height = partCreateDTO.Height,
+                Width = partCreateDTO.Width,
+                Depth = partCreateDTO.Depth
             };
 
             // Save
@@ -49,14 +65,29 @@ namespace OrderTrak.API.Services.Parts
             if (partUpdateDTO.PartCost <= 0)
                 throw new ValidationException("Part Cost must be greater than 0");
 
+            // Check if UOM is valid
+            var unit = await DB.UPL_UOM
+                .FirstOrDefaultAsync(x => x.FormID == partUpdateDTO.UOMID)
+                ?? throw new ValidationException("Unit of Measurement not found");
+
+            // Check if UOM is valid for stock type
+            if (partUpdateDTO.IsStock && (unit.UnitOfMeasurement != UOM.Feet && unit.UnitOfMeasurement != UOM.Inches))
+                throw new ValidationException("Unit of Measurement must be Feet or Inches for stock parts");
+
+            if (!partUpdateDTO.IsStock && (unit.UnitOfMeasurement != UOM.Hours && unit.UnitOfMeasurement != UOM.Minutes))
+                throw new ValidationException("Unit of Measurement must be Hours or Minutes for non-stock parts");
+
             // Update Fields
+            part.UPL_UOM = unit;
             part.PartNumber = partUpdateDTO.PartNumber ?? throw new ValidationException("Part Number is required.");
             part.PartDescription = partUpdateDTO.PartDescription ?? throw new ValidationException("Part Description is required.");
             part.PartType = partUpdateDTO.PartType ?? throw new ValidationException("Part Type is required.");
             part.PartVendor = partUpdateDTO.PartVendor ?? throw new ValidationException("Part Vendor is required.");
             part.PartCost = partUpdateDTO.PartCost ?? throw new ValidationException("Part Cost is required.");
-            part.PartUnit = partUpdateDTO.PartUnit ?? throw new ValidationException("Part Unit is required.");
             part.IsStock = partUpdateDTO.IsStock;
+            part.Height = partUpdateDTO.Height;
+            part.Width = partUpdateDTO.Width;
+            part.Depth = partUpdateDTO.Depth;
 
             // Save
             await DB.SaveChangesAsync();
@@ -78,17 +109,21 @@ namespace OrderTrak.API.Services.Parts
         public async Task<PartDTO> GetPartAsync(Guid partID)
         {
             return await DB.UPL_PartInfo
+                .Include(x => x.UPL_UOM)
                 .Where(x => x.FormID == partID)
                 .Select(x => new PartDTO
                 {
                     FormID = x.FormID,
+                    UOMID = x.UPL_UOM.FormID,
                     PartNumber = x.PartNumber,
                     PartDescription = x.PartDescription,
                     PartType = x.PartType,
                     PartVendor = x.PartVendor,
                     PartCost = x.PartCost,
-                    PartUnit = x.PartUnit,
-                    IsStock = x.IsStock
+                    IsStock = x.IsStock,
+                    Height = x.Height,
+                    Width = x.Width,
+                    Depth = x.Depth
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Part not found");

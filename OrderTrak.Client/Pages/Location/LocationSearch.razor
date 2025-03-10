@@ -1,5 +1,6 @@
 ﻿@page "/location/search"
 @using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
 @using OrderTrak.Client.Shared.FormComponents
 @inherits OrderTrakBasePage
 
@@ -49,8 +50,9 @@
                                 </div>
                                 <FormField Icon="fa-balance-scale" Title="Unit of Measurement">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Unit of Measurement" @bind-Value="CreateLocation.UnitOfMeasure" />
-                                        <ValidationMessage For="@(() => CreateLocation.UnitOfMeasure)" />
+                                        <UOMDropDown SelectedValue="CreateLocation.Uomid"
+                                                     SelectedValueChanged="UOMDropDown_Change"
+                                                     IncludeList="UOMList" />
                                     </Content>
                                 </FormField>
                             </CardBody>
