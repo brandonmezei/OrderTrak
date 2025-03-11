@@ -1,6 +1,5 @@
 ﻿using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Location;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OrderTrak.API.Services.Location
 {

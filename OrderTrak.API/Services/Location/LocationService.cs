@@ -61,6 +61,7 @@ namespace OrderTrak.API.Services.Location
             return await DB.UPL_Location
                 .Include(x => x.UPL_UOM)
                 .Where(x => x.FormID == locationID)
+                 .AsNoTracking()
                 .Select(x => new LocationDTO
                 {
                     UOMID = x.UPL_UOM.FormID,

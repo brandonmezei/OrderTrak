@@ -46,6 +46,7 @@ namespace OrderTrak.API.Services.StockGroup
         {
             return await DB.UPL_StockGroup
                 .Where(x => x.FormID == stockGroupID)
+                 .AsNoTracking()
                 .Select(x => new StockGroupDTO
                 {
                     FormID = x.FormID,

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250311231641_StockTablesCommon")]
+    partial class StockTablesCommon
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -599,15 +602,13 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Depth")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("FormID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Height")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
@@ -627,8 +628,7 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Width")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -654,15 +654,13 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal?>("Depth")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("FormID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal?>("Height")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
@@ -671,8 +669,7 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("PartCost")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PartDescription")
                         .IsRequired()
@@ -701,8 +698,7 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal?>("Width")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

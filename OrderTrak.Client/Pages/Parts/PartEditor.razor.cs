@@ -106,7 +106,7 @@ namespace OrderTrak.Client.Pages.Parts
 
         protected void UOMDropDown_Change(Guid? FormID)
         {
-            if(Part != null && FormID.HasValue)
+            if (Part != null && FormID.HasValue)
                 Part.Uomid = FormID.Value;
         }
     }

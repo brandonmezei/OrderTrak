@@ -27,7 +27,7 @@ namespace OrderTrak.API.Services.Parts
                 ?? throw new ValidationException("Unit of Measurement not found");
 
             // Check if UOM is valid for stock type
-            if(partCreateDTO.IsStock && (unit.UnitOfMeasurement != UOM.Feet && unit.UnitOfMeasurement != UOM.Inches))
+            if (partCreateDTO.IsStock && (unit.UnitOfMeasurement != UOM.Feet && unit.UnitOfMeasurement != UOM.Inches))
                 throw new ValidationException("Unit of Measurement must be Feet or Inches for stock parts");
 
             if (!partCreateDTO.IsStock && (unit.UnitOfMeasurement != UOM.Hours && unit.UnitOfMeasurement != UOM.Minutes))
@@ -111,6 +111,7 @@ namespace OrderTrak.API.Services.Parts
             return await DB.UPL_PartInfo
                 .Include(x => x.UPL_UOM)
                 .Where(x => x.FormID == partID)
+                 .AsNoTracking()
                 .Select(x => new PartDTO
                 {
                     FormID = x.FormID,

@@ -34,11 +34,65 @@ namespace OrderTrak.API.Models.OrderTrakDB
                 }
             }
 
+            // Configure Precision
+            modelBuilder.Entity<UPL_Location>()
+               .Property(l => l.Depth)
+               .HasPrecision(10, 3); // 10 total digits, 3 decimal places
+
+            modelBuilder.Entity<UPL_Location>()
+               .Property(l => l.Height)
+               .HasPrecision(10, 3); // 10 total digits, 3 decimal places
+
+            modelBuilder.Entity<UPL_Location>()
+              .Property(l => l.Width)
+              .HasPrecision(10, 3); // 10 total digits, 3 decimal places
+
+            modelBuilder.Entity<UPL_PartInfo>()
+              .Property(l => l.Height)
+              .HasPrecision(10, 3); // 10 total digits, 3 decimal places
+
+            modelBuilder.Entity<UPL_PartInfo>()
+              .Property(l => l.Width)
+              .HasPrecision(10, 3); // 10 total digits, 3 decimal places
+
+            modelBuilder.Entity<UPL_PartInfo>()
+              .Property(l => l.Depth)
+              .HasPrecision(10, 3); // 10 total digits, 3 decimal places
+
+            modelBuilder.Entity<UPL_PartInfo>()
+             .Property(l => l.PartCost)
+             .HasPrecision(10, 3); // 10 total digits, 3 decimal places
+
             // Configure foreign key constraint for SYS_RolesToFunction
             modelBuilder.Entity<SYS_RolesToFunction>()
                 .HasOne(pl => pl.SYS_Function)
                 .WithMany(pp => pp.SYS_RolesToFunction)
                 .HasForeignKey(pl => pl.FunctionID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure foreign key constraint for INV_Stock
+            modelBuilder.Entity<INV_Stock>()
+                .HasOne(pl => pl.INV_Receipt)
+                .WithMany(pp => pp.INV_Stock)
+                .HasForeignKey(pl => pl.ReceiptID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<INV_Stock>()
+                .HasOne(pl => pl.PO_Line)
+                .WithMany(pp => pp.INV_Stock)
+                .HasForeignKey(pl => pl.POLineID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<INV_Stock>()
+                .HasOne(pl => pl.UPL_StockGroup)
+                .WithMany(pp => pp.INV_Stock)
+                .HasForeignKey(pl => pl.StockGroupID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<INV_Stock>()
+                .HasOne(pl => pl.UPL_Location)
+                .WithMany(pp => pp.INV_Stock)
+                .HasForeignKey(pl => pl.LocationID)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
@@ -97,5 +151,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public DbSet<UPL_Location> UPL_Location { get; set; }
         public DbSet<UPL_StockGroup> UPL_StockGroup { get; set; }
         public DbSet<UPL_UOM> UPL_UOM { get; set; }
+        public DbSet<INV_Receipt> INV_Receipt { get; set; }
+        public DbSet<INV_Stock> INV_Stock { get; set; }
     }
 }

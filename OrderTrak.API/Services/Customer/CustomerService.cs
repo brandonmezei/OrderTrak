@@ -81,6 +81,7 @@ namespace OrderTrak.API.Services.Customer
             return await DB.UPL_Customer
                 .Include(x => x.UPL_Projects)
                 .Where(x => x.FormID == customerId)
+                .AsNoTracking()
                 .Select(x => new CustomerDTO
                 {
                     FormID = x.FormID,

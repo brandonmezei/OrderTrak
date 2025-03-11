@@ -3,14 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OrderTrak.API.Models.OrderTrakDB
 {
-    public class UPL_StockGroup : CommonObject
+    public class INV_Receipt : CommonObject
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
-        public string StockGroupTitle { get; set; } = string.Empty;
+        public string TrackingNumber { get; set; } = string.Empty;
+
+        [Required]
+        public string Carrier { get; set; } = string.Empty;
 
         public virtual ICollection<INV_Stock> INV_Stock { get; set; } = [];
     }

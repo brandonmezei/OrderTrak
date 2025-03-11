@@ -9,7 +9,7 @@ namespace OrderTrak.Client.Services.StockGroup
 
         public async Task<Guid> CreateStockGroupAsync(StockGroupCreateDTO stockGroupCreateDTO)
         {
-           return await ApiClient.CreateStockGroupAsync(stockGroupCreateDTO);
+            return await ApiClient.CreateStockGroupAsync(stockGroupCreateDTO);
         }
 
         public async Task DeleteStockGroupAsync(Guid stockGroupID)

@@ -82,6 +82,7 @@ namespace OrderTrak.API.Services.Roles
         {
             return await DB.SYS_Roles
                 .Where(x => x.FormID == roleID)
+                 .AsNoTracking()
                 .Select(x => new RoleDTO
                 {
                     FormID = x.FormID,
@@ -159,6 +160,7 @@ namespace OrderTrak.API.Services.Roles
                 .Include(x => x.SYS_Function)
                 .Where(x => x.SYS_Roles.FormID == roleID)
                 .OrderBy(x => x.SYS_Function.FunctionName)
+                 .AsNoTracking()
                 .Select(x => new RoleToFunctionDTO
                 {
                     FormID = x.FormID,

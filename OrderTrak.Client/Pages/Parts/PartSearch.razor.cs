@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using OrderTrak.Client.Pages.Profile;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Parts;
 using OrderTrak.Client.Statics;
@@ -246,7 +245,7 @@ namespace OrderTrak.Client.Pages.Parts
         protected void UOMDropDown_Change(Guid? FormID)
         {
 
-            if(CreatePart != null && FormID.HasValue)
+            if (CreatePart != null && FormID.HasValue)
                 CreatePart.Uomid = FormID.Value;
         }
     }

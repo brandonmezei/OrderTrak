@@ -157,6 +157,7 @@ namespace OrderTrak.API.Services.Profile
         {
             return await DB.SYS_Users
                 .Where(x => x.FormID == FormID)
+                 .AsNoTracking()
                 .Select(x => new ProfileDTO
                 {
                     FormID = x.FormID,

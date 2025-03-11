@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.OrderTrakDB;
-using System.Runtime.Serialization;
 
 namespace OrderTrak.API.Services.Filters
 {
@@ -15,6 +14,7 @@ namespace OrderTrak.API.Services.Filters
                 .Where(x => !x.RoleID.HasValue && x.Approved)
                 .OrderBy(x => x.FirstName)
                     .ThenBy(x => x.LastName)
+                .AsNoTracking()
                 .Select(x => new DropDownFilterDTO
                 {
                     FormID = x.FormID,
@@ -27,6 +27,7 @@ namespace OrderTrak.API.Services.Filters
         {
             return await DB.UPL_UOM
                 .OrderBy(x => x.UnitOfMeasurement)
+                .AsNoTracking()
                 .Select(x => new DropDownFilterDTO
                 {
                     FormID = x.FormID,

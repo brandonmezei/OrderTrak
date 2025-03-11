@@ -90,6 +90,7 @@ namespace OrderTrak.API.Services.Project
             // Get Project
             return await DB.UPL_Project
                 .Include(x => x.UPL_Customer)
+                 .AsNoTracking()
                 .Select(x => new ProjectDTO
                 {
                     FormID = x.FormID,
@@ -121,6 +122,7 @@ namespace OrderTrak.API.Services.Project
             return await DB.UPL_Project
                 .Where(x => x.UPL_Customer.FormID == customerID)
                 .OrderBy(x => x.ProjectCode)
+                 .AsNoTracking()
                 .Select(x => new CustomerProjectListDTO
                 {
                     FormID = x.FormID,

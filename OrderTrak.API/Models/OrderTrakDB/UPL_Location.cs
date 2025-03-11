@@ -28,5 +28,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         public virtual UPL_UOM UPL_UOM { get; set; } = null!;
 
+        public virtual ICollection<INV_Stock> INV_Stock { get; set; } = [];
+
     }
 }

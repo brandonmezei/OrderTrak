@@ -11,6 +11,7 @@ using OrderTrak.API.Services.Customer;
 using OrderTrak.API.Services.Filters;
 using OrderTrak.API.Services.Location;
 using OrderTrak.API.Services.Parts;
+using OrderTrak.API.Services.PO;
 using OrderTrak.API.Services.Profile;
 using OrderTrak.API.Services.Project;
 using OrderTrak.API.Services.Roles;
@@ -88,6 +89,7 @@ builder.Services.AddScoped<IDropDownFilterFactory, DropDownFilterFactory>();
 builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IStockGroupService, StockGroupService>();
+builder.Services.AddScoped<IPOService, POService>();
 
 
 // Register custom authorization handler
@@ -108,10 +110,10 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("Parts", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Parts")));
-    
+
     options.AddPolicy("Location", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Location")));
-    
+
     options.AddPolicy("StockGroup", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("StockGroup")));
 });

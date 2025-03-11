@@ -24,7 +24,7 @@ namespace OrderTrak.Client.Shared.DropDowns
         {
             DropDownFilters = await DropDownFilterFactory.GetUOMAsync();
 
-            if(IncludeList.Count > 0)
+            if (IncludeList.Count > 0)
                 DropDownFilters = [.. DropDownFilters.Where(x => IncludeList.Contains(x.Label))];
         }
 
