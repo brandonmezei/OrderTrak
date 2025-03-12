@@ -116,6 +116,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("StockGroup", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("StockGroup")));
+    
+    options.AddPolicy("PurchaseOrder", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("PurchaseOrder")));
 });
 
 builder.Services.AddCors(options =>

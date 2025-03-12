@@ -1,7 +1,6 @@
-﻿using OrderTrak.API.Models.DTO;
-using OrderTrak.API.Models.DTO.PO;
+﻿using OrderTrak.Client.Services.API;
 
-namespace OrderTrak.API.Services.PO
+namespace OrderTrak.Client.Services.PO
 {
     public interface IPOService
     {
@@ -9,6 +8,6 @@ namespace OrderTrak.API.Services.PO
         Task UpdatePOAsync(POUpdateDTO pOUpdateDTO);
         Task DeletePOAsync(Guid poID);
         Task<PoDTO> GetPOAsync(Guid poID);
-        Task<PagedTable<POSearchReturnDTO>> SearchPOAsync(POSearchDTO searchQuery);
+        Task<PagedTableOfPOSearchReturnDTO> SearchPOAsync(POSearchDTO searchQuery);
     }
 }

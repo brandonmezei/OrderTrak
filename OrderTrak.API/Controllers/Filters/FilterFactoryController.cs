@@ -47,6 +47,40 @@ namespace OrderTrak.API.Controllers.Filters
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("GetCustomersDropDown")]
+        public async Task<ActionResult<List<DropDownFilterDTO>>> GetCustomersAsync()
+        {
+            try
+            {
+                return Ok(await DropDownService.GetCustomersAsync());
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("GetProjectsDropDown/{CustomerID}")]
+        public async Task<ActionResult<List<DropDownFilterDTO>>> GetProjectsAsync(Guid CustomerID)
+        {
+            try
+            {
+                return Ok(await DropDownService.GetProjectsAsync(CustomerID));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
     }
 }

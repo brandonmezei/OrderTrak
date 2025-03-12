@@ -1,0 +1,48 @@
+﻿@using OrderTrak.Client.Shared.FormComponents
+@if (CustomerDropDownFilters.Count > 0)
+{
+    <FormField Icon="fa-users" Title="Customer">
+        <Content>
+            <div class="select is-fullwidth">
+                <select @onchange="CustomerSelectedValue_Changed">
+                    <option value="">-- Customer --</option>
+                    @foreach (var line in CustomerDropDownFilters)
+                    {
+                        if (line.FormID == CustomerID)
+                        {
+                            <option value="@line.FormID" selected>@line.Label</option>
+                        }
+                        else
+                        {
+                            <option value="@line.FormID">@line.Label</option>
+                        }
+                    }
+                </select>
+            </div>
+        </Content>
+    </FormField>
+}
+@if (ProjectDropDownFilters.Count > 0)
+{
+    <FormField Icon="fa-project-diagram" Title="Project">
+        <Content>
+            <div class="select is-fullwidth">
+                <select @onchange="ProjectSelectedValue_Changed">
+                    <option value="">-- Project --</option>
+                    @foreach (var line in ProjectDropDownFilters)
+                    {
+                        if (line.FormID == ProjectID)
+                        {
+                            <option value="@line.FormID" selected>@line.Label</option>
+                        }
+                        else
+                        {
+                            <option value="@line.FormID">@line.Label</option>
+                        }
+                    }
+                </select>
+            </div>
+        </Content>
+    </FormField>
+
+}

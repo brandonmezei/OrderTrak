@@ -35,5 +35,34 @@ namespace OrderTrak.API.Services.Filters
                 })
                 .ToListAsync();
         }
+
+        public async Task<List<DropDownFilterDTO>> GetCustomersAsync()
+        {
+            return await DB.UPL_Customer
+                 .Include(x => x.UPL_Projects)
+                 .Where(x => x.UPL_Projects.Count != 0)
+                 .OrderBy(x => x.CustomerCode)
+                 .AsNoTracking()
+                 .Select(x => new DropDownFilterDTO
+                 {
+                     FormID = x.FormID,
+                     Label = $"{x.CustomerCode} - {x.CustomerName}"
+                 })
+                 .ToListAsync();
+        }
+
+        public async Task<List<DropDownFilterDTO>> GetProjectsAsync(Guid CustomerID)
+        {
+            return await DB.UPL_Project
+                .Where(x => x.UPL_Customer.FormID == CustomerID)
+                .OrderBy(x => x.ProjectCode)
+                .AsNoTracking()
+                .Select(x => new DropDownFilterDTO
+                {
+                    FormID = x.FormID,
+                    Label = $"{x.ProjectCode} - {x.ProjectName}"
+                })
+                .ToListAsync();
+        }
     }
 }

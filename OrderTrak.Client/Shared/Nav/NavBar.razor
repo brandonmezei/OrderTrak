@@ -16,6 +16,18 @@
         <div class="navbar-start">
             @if (Permissions.Count > 0)
             {
+                <div class="navbar-item has-dropdown @(IsOrdersOpen ? "is-active" : string.Empty)">
+                    <button class="navbar-link" @onclick="Toggle_Orders">
+                        <i class="fas fa-boxes-stacked"></i>
+                        Orders
+                    </button>
+                    <div class="navbar-dropdown">
+                        @if (Permissions.Any(x => x == "PurchaseOrder"))
+                        {
+                            <NavBarItem Label="Purchase Order Manager" Icon="fa-file-invoice" URL="/po/search" />
+                        }
+                    </div>
+                </div>
                 <div class="navbar-item has-dropdown @(IsWarehouseOpen ? "is-active" : string.Empty)">
                     <button class="navbar-link" @onclick="Toggle_Warehouse">
                         <i class="fas fa-warehouse"></i>

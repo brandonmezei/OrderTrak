@@ -15,5 +15,15 @@ namespace OrderTrak.Client.Services.Filters
         {
             return [.. await ApiService.GetUOMDropDownAsync()];
         }
+
+        public async Task<List<DropDownFilterDTO>> GetCustomersAsync()
+        {
+            return [.. await ApiService.GetCustomersDropDownAsync()];
+        }
+
+        public async Task<List<DropDownFilterDTO>> GetProjectsAsync(Guid CustomerID)
+        {
+            return [.. await ApiService.GetProjectsDropDownAsync(CustomerID)];
+        }
     }
 }

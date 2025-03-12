@@ -18,6 +18,7 @@ namespace OrderTrak.Client.Shared.Nav
         protected bool IsSettingOpen { get; set; }
         protected bool IsUserOpen { get; set; }
         protected bool IsWarehouseOpen { get; set; }
+        protected bool IsOrdersOpen { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -29,6 +30,7 @@ namespace OrderTrak.Client.Shared.Nav
                 IsSettingOpen = false;
                 IsUserOpen = false;
                 IsWarehouseOpen = false;
+                IsOrdersOpen = false;
                 StateHasChanged();
             };
         }
@@ -37,6 +39,7 @@ namespace OrderTrak.Client.Shared.Nav
             IsSettingOpen = !IsSettingOpen;
             IsWarehouseOpen = false;
             IsUserOpen = false;
+            IsOrdersOpen = false;
         }
 
         protected void Toggle_Warehouse()
@@ -44,6 +47,7 @@ namespace OrderTrak.Client.Shared.Nav
             IsWarehouseOpen = !IsWarehouseOpen;
             IsSettingOpen = false;
             IsUserOpen = false;
+            IsOrdersOpen = false;
         }
 
         protected void Toggle_User()
@@ -51,6 +55,15 @@ namespace OrderTrak.Client.Shared.Nav
             IsUserOpen = !IsUserOpen;
             IsSettingOpen = false;
             IsWarehouseOpen = false;
+            IsOrdersOpen = false;
+        }
+
+        protected void Toggle_Orders()
+        {
+            IsOrdersOpen = !IsOrdersOpen;
+            IsSettingOpen = false;
+            IsWarehouseOpen = false;
+            IsUserOpen = false; 
         }
     }
 }

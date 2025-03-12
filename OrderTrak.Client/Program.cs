@@ -13,6 +13,7 @@ using OrderTrak.Client.Services.Customer;
 using OrderTrak.Client.Services.Filters;
 using OrderTrak.Client.Services.Location;
 using OrderTrak.Client.Services.Parts;
+using OrderTrak.Client.Services.PO;
 using OrderTrak.Client.Services.Profile;
 using OrderTrak.Client.Services.Project;
 using OrderTrak.Client.Services.Roles;
@@ -45,6 +46,7 @@ builder.Services.AddScoped<IDropDownFactoryService, DropDownFactoryService>();
 builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IStockGroupService, StockGroupService>();
+builder.Services.AddScoped<IPOService, POService>();
 
 builder.Services.AddTransient<TokenHttpClientHandler>();
 

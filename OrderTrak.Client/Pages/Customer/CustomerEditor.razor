@@ -153,85 +153,85 @@
                 </CardComponent>
             </div>
         </div>
-        @if(CanEditProjects)
+        @if (CanEditProjects)
         {
-        <div class="columns is-centered">
-            <div class="column is-10">
-                <CardComponent Title="Project(s)" Icon="fa-project-diagram" RightTitle="@($"{ FilteredProjectList?.Count } record(s)")" IsCardLoading=IsCardLoading>
-                    <CardBody>
-                        <div class="columns is-centered">
-                            <div class="column is-half">
-                                <div class="box">
-                                    <EditForm Model="@ProjectSearchFilter" OnValidSubmit="@ProjectSearch_Click">
-                                        <div class="field has-addons">
-                                            <div class="control is-expanded">
-                                                <InputText class="input" @bind-Value="ProjectSearchFilter.SearchText" Placeholder="Search Filter (Comma Seperate Terms)" />
+            <div class="columns is-centered">
+                <div class="column is-10">
+                    <CardComponent Title="Project(s)" Icon="fa-project-diagram" RightTitle="@($"{ FilteredProjectList?.Count } record(s)")" IsCardLoading=IsCardLoading>
+                        <CardBody>
+                            <div class="columns is-centered">
+                                <div class="column is-half">
+                                    <div class="box">
+                                        <EditForm Model="@ProjectSearchFilter" OnValidSubmit="@ProjectSearch_Click">
+                                            <div class="field has-addons">
+                                                <div class="control is-expanded">
+                                                    <InputText class="input" @bind-Value="ProjectSearchFilter.SearchText" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                                </div>
+                                                <div class="control">
+                                                    <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                        <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                        <span>Search</span>
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div class="control">
-                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
-                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
-                                                    <span>Search</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </EditForm>
+                                        </EditForm>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        @if (FilteredProjectList?.Count > 0)
-                        {
-                            <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>
-                                            <a @onclick="() => SortSwitch_Click(1)">
-                                                <span>Code</span>
-                                                @if (SortColumn == 1)
-                                                {
-                                                    <span class="icon">
-                                                        <i class="fas @(SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
-                                                    </span>
-                                                }
-                                            </a>
-                                        </th>
-                                        <th>
-                                            <a @onclick="() => SortSwitch_Click(2)">
-                                                <span>Name</span>
-                                                @if (SortColumn == 2)
-                                                {
-                                                    <span class="icon">
-                                                        <i class="fas @(SortOrder == 2 ? "fa-chevron-up" : "fa-chevron-down")"></i>
-                                                    </span>
-                                                }
-                                            </a>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var line in FilteredProjectList)
-                                    {
+                            @if (FilteredProjectList?.Count > 0)
+                            {
+                                <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <div class="buttons">
-                                                    <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/project/{line.FormID}")" />
-                                                    <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => DeleteProject_Click(line.FormID)" />
-                                                </div>
-                                            </td>
-                                            <td>@line.ProjectCode</td>
-                                            <td>@line.ProjectName</td>
+                                            <th></th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(1)">
+                                                    <span>Code</span>
+                                                    @if (SortColumn == 1)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(2)">
+                                                    <span>Name</span>
+                                                    @if (SortColumn == 2)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 2 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                    </CardBody>
-                    <Footer>
-                        <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddProject_Toggle" />
-                    </Footer>
-                </CardComponent>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var line in FilteredProjectList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="buttons">
+                                                        <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/project/{line.FormID}")" />
+                                                        <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => DeleteProject_Click(line.FormID)" />
+                                                    </div>
+                                                </td>
+                                                <td>@line.ProjectCode</td>
+                                                <td>@line.ProjectName</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </CardBody>
+                        <Footer>
+                            <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddProject_Toggle" />
+                        </Footer>
+                    </CardComponent>
+                </div>
             </div>
-        </div>
         }
         <hr />
         <div class="buttons">
