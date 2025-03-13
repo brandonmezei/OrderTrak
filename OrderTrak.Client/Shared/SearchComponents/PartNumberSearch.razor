@@ -1,0 +1,114 @@
+﻿@using OrderTrak.Client.Shared.FormComponents
+<div class="modal is-active">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head has-background-link">
+            <p class="modal-card-title has-text-white">Part Search</p>
+            <button class="delete has-text-white" aria-label="close" @onclick="OnClose_Handler"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="columns is-centered">
+                <div class="column">
+                    <CardComponent Title="Search" Icon="fa-search" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
+                        <CardBody>
+                            <div class="columns is-centered">
+                                <div class="column is-half">
+                                    <div class="box">
+                                        <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                            <div class="field has-addons">
+                                                <div class="control is-expanded">
+                                                    <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                                </div>
+                                                <div class="control">
+                                                    <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                        <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                        <span>Search</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </EditForm>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (ReturnTable?.Data.Count > 0)
+                            {
+                                <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(1)">
+                                                    <span>Part</span>
+                                                    @if (SearchFilters.SortColumn == 1)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(2)">
+                                                    <span>Description</span>
+                                                    @if (SearchFilters.SortColumn == 2)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(3)">
+                                                    <span>Type</span>
+                                                    @if (SearchFilters.SortColumn == 3)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(4)">
+                                                    <span>Stock / Tangible</span>
+                                                    @if (SearchFilters.SortColumn == 4)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var line in ReturnTable.Data)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="buttons">
+                                                        <FormButton Title="Select" Style="is-small" Icon="fa-mouse-pointer" />
+                                                    </div>
+                                                </td>
+                                                <td>@line.PartNumber</td>
+                                                <td>@line.PartDescription</td>
+                                                <td>@line.PartType</td>
+                                                <td>@(line.IsStock ? "Stock" : "Tangible ")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
+                                {
+                                    <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
+                                }
+                            }
+                        </CardBody>
+                    </CardComponent>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+

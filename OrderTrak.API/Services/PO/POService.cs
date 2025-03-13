@@ -150,20 +150,15 @@ namespace OrderTrak.API.Services.PO
         {
             // Get PO
             var po = await DB.PO_Header
+                .Include(x => x.UPL_Project)
                 .FirstOrDefaultAsync(x => x.FormID == pOUpdateDTO.FormID)
                 ?? throw new ValidationException("PO not found.");
 
-            // Get Project
-            var project = await DB.UPL_Project
-                .FirstOrDefaultAsync(x => x.FormID == pOUpdateDTO.ProjectID)
-                ?? throw new ValidationException("Project not found.");
-
             // Check if PO already Exists
-            if (await DB.PO_Header.AnyAsync(x => x.PONumber == pOUpdateDTO.PONumber && x.UPL_Project.FormID == project.FormID && x.FormID != pOUpdateDTO.FormID))
+            if (await DB.PO_Header.AnyAsync(x => x.PONumber == pOUpdateDTO.PONumber && x.UPL_Project.FormID == po.UPL_Project.FormID && x.FormID != pOUpdateDTO.FormID))
                 throw new ValidationException("PO already exists in project.");
 
             // Update PO
-            po.UPL_Project = project;
             po.PONumber = pOUpdateDTO.PONumber ?? throw new ValidationException("PO Number is required.");
 
             // Save

@@ -7,9 +7,6 @@ namespace OrderTrak.API.Models.DTO.PO
         [Required]
         public Guid? FormID { get; set; }
 
-        [Required(ErrorMessage = "Project is required.")]
-        public Guid? ProjectID { get; set; }
-
         [Required(ErrorMessage = "PO Number is required.")]
         public string? PONumber { get; set; } = string.Empty;
     }

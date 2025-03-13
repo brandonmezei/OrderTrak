@@ -181,8 +181,8 @@ namespace OrderTrak.Client.Pages.Customer
                         FilteredProjectList = [.. FilteredProjectList
                         .OrderBy(x => column switch
                         {
-                            0 => x.ProjectName,
-                            1 => x.ProjectCode,
+                            1 => x.ProjectName,
+                            2 => x.ProjectCode,
                             _ => x.ProjectName
                         })
                         ];
@@ -192,8 +192,8 @@ namespace OrderTrak.Client.Pages.Customer
                         FilteredProjectList = [.. FilteredProjectList
                         .OrderByDescending(x => column switch
                         {
-                            0 => x.ProjectName,
-                            1 => x.ProjectCode,
+                            1 => x.ProjectName,
+                            2 => x.ProjectCode,
                             _ => x.ProjectName
                         })
                         ];

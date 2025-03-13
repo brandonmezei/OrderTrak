@@ -26,25 +26,34 @@ namespace OrderTrak.Client.Shared.DropDowns
 
         protected override async Task OnInitializedAsync()
         {
-            CustomerDropDownFilters = await DropDownFilterFactory.GetCustomersAsync();
+            try
+            {
+                CustomerDropDownFilters = await DropDownFilterFactory.GetCustomersAsync();
 
-            if (CustomerID.HasValue)
-                ProjectDropDownFilters = await DropDownFilterFactory.GetProjectsAsync(CustomerID.Value);
+                if (CustomerID.HasValue)
+                    ProjectDropDownFilters = await DropDownFilterFactory.GetProjectsAsync(CustomerID.Value);
+            }
+            catch { }
         }
 
         private async Task CustomerSelectedValue_Changed(ChangeEventArgs e)
         {
-            if (Guid.TryParse(e.Value?.ToString(), out Guid value))
-            {
-                await CustomerSelectedValueChanged.InvokeAsync(value);
 
-                ProjectDropDownFilters = await DropDownFilterFactory.GetProjectsAsync(value);
-            }
-            else
+            try
             {
-                await CustomerSelectedValueChanged.InvokeAsync(null);
-                ProjectDropDownFilters = [];
+                if (Guid.TryParse(e.Value?.ToString(), out Guid value))
+                {
+                    await CustomerSelectedValueChanged.InvokeAsync(value);
+
+                    ProjectDropDownFilters = await DropDownFilterFactory.GetProjectsAsync(value);
+                }
+                else
+                {
+                    await CustomerSelectedValueChanged.InvokeAsync(null);
+                    ProjectDropDownFilters = [];
+                }
             }
+            catch { }
 
             StateHasChanged();
         }
