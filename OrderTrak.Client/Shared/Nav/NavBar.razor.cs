@@ -1,5 +1,7 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using OrderTrak.Client.Provider;
 
 namespace OrderTrak.Client.Shared.Nav
 {
@@ -10,6 +12,9 @@ namespace OrderTrak.Client.Shared.Nav
 
         [Inject]
         private ILocalStorageService LocalStorageService { get; set; } = default!;
+
+        [Inject]
+        private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
         protected string? UserName { get; set; }
 
@@ -22,6 +27,8 @@ namespace OrderTrak.Client.Shared.Nav
 
         protected override async Task OnInitializedAsync()
         {
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
             UserName = await LocalStorageService.GetItemAsync<string>("fullname");
             Permissions = await LocalStorageService.GetItemAsync<List<string>>("permissions") ?? [];
 

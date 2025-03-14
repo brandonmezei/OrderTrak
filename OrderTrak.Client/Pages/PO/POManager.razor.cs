@@ -207,5 +207,27 @@ namespace OrderTrak.Client.Pages.PO
             Layout.ClearMessages();
             NewPart = !NewPart;
         }
+
+        protected async Task AddPart_Click(Guid? FormID)
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                NewPart = false;
+            }
+        }
     }
 }

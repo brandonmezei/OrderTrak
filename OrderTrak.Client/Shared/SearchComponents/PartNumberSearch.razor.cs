@@ -24,6 +24,9 @@ namespace OrderTrak.Client.Shared.SearchComponents
         [Parameter]
         public EventCallback OnClose { get; set; }
 
+        [Parameter]
+        public EventCallback<Guid?> OnClick { get; set; }
+
         protected override void OnInitialized()
         {
             SearchFilters.IsStockOnly = IsStockOnly;
@@ -106,6 +109,13 @@ namespace OrderTrak.Client.Shared.SearchComponents
         private async Task OnClose_Handler()
         {
             await OnClose.InvokeAsync();
+
+            StateHasChanged();
+        }
+
+        private async Task OnClick_Handler(Guid? LineID)
+        {
+            await OnClick.InvokeAsync(LineID);
 
             StateHasChanged();
         }
