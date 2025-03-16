@@ -9,5 +9,8 @@ namespace OrderTrak.Client.Services.PO
         Task DeletePOAsync(Guid poID);
         Task<PoDTO> GetPOAsync(Guid poID);
         Task<PagedTableOfPOSearchReturnDTO> SearchPOAsync(POSearchDTO searchQuery);
+        Task CreatePOLine(POCreateLineDTO poLineCreateDTO);
+        Task DeletePOLineAsync(Guid FormID);
+        Task UpdatePOLineAsync(POUpdateLineDTO poLineUpdateDTO);
     }
 }

@@ -160,6 +160,13 @@
                     <CardComponent Title="Project(s)" Icon="fa-project-diagram" RightTitle="@($"{ FilteredProjectList?.Count } record(s)")" IsCardLoading=IsCardLoading>
                         <CardBody>
                             <div class="columns is-centered">
+                                <div class="column">
+                                    <div class="buttons is-pulled-right">
+                                        <FormButton Title="Add" Style="is-success" Icon="fa-plus" OnClick="AddProject_Toggle" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="columns is-centered">
                                 <div class="column is-half">
                                     <div class="box">
                                         <EditForm Model="@ProjectSearchFilter" OnValidSubmit="@ProjectSearch_Click">

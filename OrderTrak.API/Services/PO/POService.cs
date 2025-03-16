@@ -164,5 +164,78 @@ namespace OrderTrak.API.Services.PO
             // Save
             await DB.SaveChangesAsync();
         }
+
+        public async Task CreatePOLineAsync(POCreateLineDTO poLineCreateDTO)
+        {
+            // Get PO
+            var po = await DB.PO_Header
+                .Include(x => x.UPL_Project)
+                .FirstOrDefaultAsync(x => x.FormID == poLineCreateDTO.OrderID)
+                ?? throw new ValidationException("PO not found.");
+
+            // Get Part
+            var part = await DB.UPL_PartInfo
+                .FirstOrDefaultAsync(x => x.FormID == poLineCreateDTO.PartID)
+                ?? throw new ValidationException("Part not found.");
+
+            // Check if Part already exists in PO
+            if (await DB.PO_Line.AnyAsync(x => x.UPL_PartInfo.FormID == part.FormID && x.PO_Header.FormID == po.FormID))
+                throw new ValidationException("Part already exists on PO.");
+
+            // Make sure the part add doesn't exceed 50
+            if (await DB.PO_Line.CountAsync(x => x.PO_Header.FormID == po.FormID) >= 50)
+                throw new ValidationException("PO can't have more than 50 parts.");
+
+            // Save
+            await DB.PO_Line.AddAsync(new PO_Line
+            {
+                PO_Header = po,
+                UPL_PartInfo = part,
+                Quantity = 1
+            });
+
+
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task DeletePOLineAsync(Guid FormID)
+        {
+            // Get PO Line
+            var poLine = await DB.PO_Line
+                .FirstOrDefaultAsync(x => x.FormID == FormID)
+                ?? throw new ValidationException("PO Line not found.");
+
+            // Check if PO Line has any Stock
+            if (await DB.INV_Stock.AnyAsync(x => x.PO_Line.FormID == poLine.FormID))
+                throw new ValidationException("PO Line has parts received to it.");
+
+            // Soft Delete PO Line
+            poLine.IsDelete = true;
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task UpdatePOLineAsync(POUpdateLineDTO poLineUpdateDTO)
+        {
+            // Get PO Line
+            var poLine = await DB.PO_Line
+                .FirstOrDefaultAsync(x => x.FormID == poLineUpdateDTO.FormID)
+                ?? throw new ValidationException("PO Line not found.");
+
+            // Make sure QTY is greater than 0
+            if (poLineUpdateDTO.Quantity <= 0)
+                throw new ValidationException("Quantity must be greater than 0.");
+
+            // Make sure QTY isn't less than what is received
+            if (poLineUpdateDTO.Quantity < DB.INV_Stock.Where(x => x.PO_Line.FormID == poLine.FormID).Sum(x => x.Quantity))
+                throw new ValidationException("Quantity can't be less than what is received.");
+
+            // Update PO Line
+            poLine.Quantity = poLineUpdateDTO.Quantity ?? throw new ValidationException("Quantity is required.");
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
     }
 }

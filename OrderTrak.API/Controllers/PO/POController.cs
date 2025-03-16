@@ -87,6 +87,42 @@ namespace OrderTrak.API.Controllers.PO
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("CreatePOLine")]
+        public async Task<ActionResult> CreatePOLine([FromBody] POCreateLineDTO poLineCreateDTO)
+        {
+            try
+            {
+                await pOService.CreatePOLineAsync(poLineCreateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("UpdatePOLine")]
+        public async Task<ActionResult> UpdatePOLine([FromBody] POUpdateLineDTO poLineUpdateDTO)
+        {
+            try
+            {
+                await pOService.UpdatePOLineAsync(poLineUpdateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE
@@ -96,6 +132,24 @@ namespace OrderTrak.API.Controllers.PO
             try
             {
                 await pOService.DeletePOAsync(poID);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete("DeletePOLine/{FormID}")]
+        public async Task<ActionResult> DeletePOLineAsync(Guid FormID)
+        {
+            try
+            {
+                await pOService.DeletePOLineAsync(FormID);
                 return Ok();
             }
             catch (ValidationException ex)

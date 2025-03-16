@@ -11,9 +11,19 @@ namespace OrderTrak.Client.Services.PO
             return await APIService.CreatePOAsync(pOCreateDTO);
         }
 
+        public async Task CreatePOLine(POCreateLineDTO poLineCreateDTO)
+        {
+            await APIService.CreatePOLineAsync(poLineCreateDTO);
+        }
+
         public async Task DeletePOAsync(Guid partID)
         {
             await APIService.DeletePOAsync(partID);
+        }
+
+        public async Task DeletePOLineAsync(Guid FormID)
+        {
+            await APIService.DeletePOLineAsync(FormID);
         }
 
         public async Task<PoDTO> GetPOAsync(Guid partID)
@@ -29,6 +39,11 @@ namespace OrderTrak.Client.Services.PO
         public async Task UpdatePOAsync(POUpdateDTO pOUpdateDTO)
         {
             await APIService.UpdatePOAsync(pOUpdateDTO);
+        }
+
+        public async Task UpdatePOLineAsync(POUpdateLineDTO poLineUpdateDTO)
+        {
+            await APIService.UpdatePOLineAsync(poLineUpdateDTO);
         }
     }
 }

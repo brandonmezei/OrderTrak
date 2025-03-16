@@ -33,6 +33,10 @@ namespace OrderTrak.Client.Pages.PO
 
         protected bool NewPart { get; set; }
 
+        protected Guid? DeleteLineID { get; set; }
+
+        protected POUpdateLineDTO? POLineEditor { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -41,6 +45,9 @@ namespace OrderTrak.Client.Pages.PO
             try
             {
                 PurchaseOrder = await POService.GetPOAsync(FormID);
+
+                // Get Purchase Line by filter
+                FilteredPOList = [.. PurchaseOrder.PoLines];
             }
             catch (ApiException ex)
             {
@@ -212,21 +219,129 @@ namespace OrderTrak.Client.Pages.PO
         {
             Layout.ClearMessages();
 
-            try
+            if (FormID.HasValue && PurchaseOrder != null)
             {
+                try
+                {
+                    // Add Line
+                    await POService.CreatePOLine(new POCreateLineDTO
+                    {
+                        OrderID = PurchaseOrder.FormID,
+                        PartID = FormID.Value
+                    });
 
+                    // Refresh
+                    PurchaseOrder = await POService.GetPOAsync(PurchaseOrder.FormID);
+
+                    // Get Purchase Line by filter
+                    FilteredPOList = [.. PurchaseOrder.PoLines];
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    NewPart = false;
+                }
             }
-            catch (ApiException ex)
+        }
+
+        protected void DeletePart_Toggle(Guid? FormID)
+        {
+            Layout.ClearMessages();
+            DeleteLineID = FormID;
+        }
+
+        protected async Task DeletePart_Confirm()
+        {
+            if(DeleteLineID.HasValue && PurchaseOrder != null)
             {
-                Layout.AddMessage(ex.Response, MessageType.Error);
+                try
+                {
+                    // Delete Line
+                    await POService.DeletePOLineAsync(DeleteLineID.Value);
+
+                    // Refresh
+                    PurchaseOrder = await POService.GetPOAsync(PurchaseOrder.FormID);
+
+                    // Get Purchase Line by filter
+                    FilteredPOList = [.. PurchaseOrder.PoLines];
+
+                    Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    DeleteLineID = null;
+                }
             }
-            catch (Exception ex)
+        }
+
+        protected void EditPart_Toggle(Guid? FormID)
+        {
+            Layout.ClearMessages();
+
+            if (FormID.HasValue && PurchaseOrder != null)
             {
-                Layout.AddMessage(ex.Message, MessageType.Error);
+                var poLine = PurchaseOrder.PoLines.FirstOrDefault(x => x.FormID == FormID);
+
+                if (poLine != null)
+                {
+                    POLineEditor = new POUpdateLineDTO
+                    {
+                        FormID = FormID.Value,
+                        PartNumber = poLine.PartNumber,
+                        PartDescription = poLine.PartDescription,
+                        Quantity = poLine.Quantity
+                    };
+                }
             }
-            finally
+            else
+                POLineEditor = null;
+        }
+
+        protected async Task EditPart_Save()
+        {
+            if(POLineEditor != null && PurchaseOrder != null)
             {
-                NewPart = false;
+                try
+                {
+                    // Update Line
+                    await POService.UpdatePOLineAsync(POLineEditor);
+                    
+                    // Refresh
+                    PurchaseOrder = await POService.GetPOAsync(PurchaseOrder.FormID);
+                    // Get Purchase Line by filter
+                    FilteredPOList = [.. PurchaseOrder.PoLines];
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    POLineEditor = null;
+                }
             }
         }
     }

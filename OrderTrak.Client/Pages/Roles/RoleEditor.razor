@@ -155,6 +155,13 @@
                     <CardBody>
                         <div class="columns is-centered">
                             <div class="column">
+                                <div class="buttons is-pulled-right">
+                                    <FormButton Title="Add" Style="is-success" Icon="fa-plus" OnClick="AddUser_Toggle" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-centered">
+                            <div class="column">
                                 <div class="box">
                                     <EditForm Model="@SearchFilters" OnValidSubmit="UserToRolesSearch_Click">
                                         <div class="field has-addons">
