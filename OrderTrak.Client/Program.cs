@@ -16,6 +16,7 @@ using OrderTrak.Client.Services.Parts;
 using OrderTrak.Client.Services.PO;
 using OrderTrak.Client.Services.Profile;
 using OrderTrak.Client.Services.Project;
+using OrderTrak.Client.Services.Receiving;
 using OrderTrak.Client.Services.Roles;
 using OrderTrak.Client.Services.StockGroup;
 
@@ -47,6 +48,7 @@ builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IStockGroupService, StockGroupService>();
 builder.Services.AddScoped<IPOService, POService>();
+builder.Services.AddScoped<IReceivingService, ReceivingService>();
 
 builder.Services.AddTransient<TokenHttpClientHandler>();
 

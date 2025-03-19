@@ -14,6 +14,7 @@ using OrderTrak.API.Services.Parts;
 using OrderTrak.API.Services.PO;
 using OrderTrak.API.Services.Profile;
 using OrderTrak.API.Services.Project;
+using OrderTrak.API.Services.Receiving;
 using OrderTrak.API.Services.Roles;
 using OrderTrak.API.Services.StockGroup;
 using OrderTrak.API.Services.StringHandlers;
@@ -90,6 +91,7 @@ builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IStockGroupService, StockGroupService>();
 builder.Services.AddScoped<IPOService, POService>();
+builder.Services.AddScoped<IReceivingService, ReceivingService>();
 
 
 // Register custom authorization handler
@@ -119,6 +121,9 @@ builder.Services.AddAuthorization(options =>
     
     options.AddPolicy("PurchaseOrder", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("PurchaseOrder")));
+    
+    options.AddPolicy("Receiving", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Receiving")));
 });
 
 builder.Services.AddCors(options =>

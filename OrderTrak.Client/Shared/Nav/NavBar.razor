@@ -42,6 +42,10 @@
                         {
                             <NavBarItem Label="Part Manager" Icon="fa-cogs" URL="/part/search" />
                         }
+                        @if (Permissions.Any(x => x == "Receiving"))
+                        {
+                            <NavBarItem Label="Receiving" Icon="fa-receipt" URL="/receiving/search" />
+                        }
                         @if (Permissions.Any(x => x == "StockGroup"))
                         {
                             <NavBarItem Label="Stock Group Manager" Icon="fa-boxes" URL="/stockgroup/search" />
