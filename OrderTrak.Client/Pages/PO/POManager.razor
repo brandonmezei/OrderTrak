@@ -52,19 +52,19 @@
                                     <DataAnnotationsValidator />
                                     <FormField Icon="fa-cogs" Title="Part Number" Disabled=true>
                                         <Content>
-                                            <InputText class="input" Type="text" Placeholder="Customer Code" @bind-Value="POLineEditor.PartNumber" />
+                                            <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartNumber" />
                                         </Content>
                                     </FormField>
 
                                     <FormField Icon="fa-align-left" Title="Part Description" Disabled=true>
                                         <Content>
-                                            <InputText class="input" Type="text" Placeholder="Customer Code" @bind-Value="POLineEditor.PartDescription" />
+                                            <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartDescription" />
                                         </Content>
                                     </FormField>
 
                                     <FormField Icon="fa-cubes" Title="Quantity">
                                         <Content>
-                                            <InputNumber class="input is-danger" Type="text" Placeholder="Customer Code" @bind-Value="POLineEditor.Quantity" style="75px" />
+                                            <InputNumber class="input is-danger"  Placeholder="Customer Code" @bind-Value="POLineEditor.Quantity" style="75px" />
                                             <ValidationMessage For="@(() => POLineEditor.Quantity)" />
                                         </Content>
                                     </FormField>
@@ -95,7 +95,7 @@
                     <CardBody>
                         <FormField Icon="fa-file-invoice" Title="Purchase Order">
                             <Content>
-                                <InputText class="input is-danger" Type="text" Placeholder="Purchase Order" @bind-Value="PurchaseOrder.PoNumber" />
+                                <InputText class="input is-danger"  Placeholder="Purchase Order" @bind-Value="PurchaseOrder.PoNumber" />
                             </Content>
                         </FormField>
                     </CardBody>

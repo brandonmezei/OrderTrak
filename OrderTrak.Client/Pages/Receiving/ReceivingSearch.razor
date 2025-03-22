@@ -18,13 +18,13 @@
                                 <DataAnnotationsValidator />
                                 <FormField Icon="fa-location-arrow" Title="Tracking Number">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Tracking Number" @bind-Value="CreateRec.TrackingNumber" />
+                                        <InputText class="input is-danger"  Placeholder="Tracking Number" @bind-Value="CreateRec.TrackingNumber" />
                                         <ValidationMessage For="@(() => CreateRec.TrackingNumber)" />
                                     </Content>
                                 </FormField>
                                 <FormField Icon="fa-truck" Title="Carrier">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Carrier" @bind-Value="CreateRec.Carrier" />
+                                        <InputText class="input is-danger"  Placeholder="Carrier" @bind-Value="CreateRec.Carrier" />
                                         <ValidationMessage For="@(() => CreateRec.Carrier)" />
                                     </Content>
                                 </FormField>
@@ -147,6 +147,17 @@
                                             }
                                         </a>
                                     </th>
+                                    <th>
+                                        <a @onclick="() => SortSwitch_Click(5)">
+                                            <span>Received Date</span>
+                                            @if (SearchFilters.SortColumn == 5)
+                                            {
+                                                <span class="icon">
+                                                    <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                </span>
+                                            }
+                                        </a>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,6 +174,7 @@
                                         <td>@line.Carrier</td>
                                         <td>@line.PoCount</td>
                                         <td>@line.QuantityReceived</td>
+                                        <td>@(line.DataReceived.ToString("MMM dd yyyy"))</td>
                                     </tr>
                                 }
                             </tbody>

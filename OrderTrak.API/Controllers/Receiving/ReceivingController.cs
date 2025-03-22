@@ -15,6 +15,25 @@ namespace OrderTrak.API.Controllers.Receiving
     {
         private readonly IReceivingService ReceivingService = receivingService;
 
+        #region GET
+        [HttpGet("GetReceiving/{recID}")]
+        public async Task<ActionResult<ReceivingDTO>> GetReceivingAsync(Guid recID)
+        {
+            try
+            {
+                return Ok(await ReceivingService.GetReceivingAsync(recID));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        #endregion
+
         #region POST
         [HttpPost("CreateReceiving")]
         public async Task<ActionResult<Guid>> CreateReceivingAsync([FromBody] ReceivingCreateDTO receivingCreateDTO)

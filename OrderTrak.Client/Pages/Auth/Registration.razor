@@ -13,19 +13,19 @@
                     <DataAnnotationsValidator />
                     <FormField Icon="fa-user">
                         <Content>
-                            <InputText class="input is-danger" Type="text" Placeholder="First Name" @bind-Value="RegisterModel.FirstName" />
+                            <InputText class="input is-danger"  Placeholder="First Name" @bind-Value="RegisterModel.FirstName" />
                             <ValidationMessage For="@(() => RegisterModel.FirstName)" />
                         </Content>
                     </FormField>
                     <FormField Icon="fa-user">
                         <Content>
-                            <InputText class="input is-danger" Type="text" Placeholder="Last Name" @bind-Value="RegisterModel.LastName" />
+                            <InputText class="input is-danger"  Placeholder="Last Name" @bind-Value="RegisterModel.LastName" />
                             <ValidationMessage For="@(() => RegisterModel.LastName)" />
                         </Content>
                     </FormField>
                     <FormField Icon="fa-envelope">
                         <Content>
-                            <InputText class="input is-danger" Type="text" Placeholder="Email" @bind-Value="RegisterModel.Email" />
+                            <InputText class="input is-danger"  Placeholder="Email" @bind-Value="RegisterModel.Email" />
                             <ValidationMessage For="@(() => RegisterModel.Email)" />
                         </Content>
                     </FormField>

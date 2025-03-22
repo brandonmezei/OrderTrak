@@ -6,7 +6,7 @@ namespace OrderTrak.Client.Services.Receiving
     {
         Task<Guid> CreateReceivingAsync(ReceivingCreateDTO receivingCreateDTO);
         Task DeleteReceivingAsync(Guid recID);
-        //Task<PartDTO> GetPartAsync(Guid partID);
+        Task<ReceivingDTO> GetReceivingAsync(Guid recID);
         Task<PagedTableOfReceivingSearchReturnDTO> SearchReceivingAsync(ReceivingSearchDTO searchQuery);
     }
 }

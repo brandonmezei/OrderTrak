@@ -19,7 +19,7 @@
                                 <CustomerProjectDropDown ProjectID="CreatePO.ProjectID" ProjectSelectedValueChanged="Project_Change" />
                                 <FormField Icon="fa-file-invoice" Title="Purchase Order">
                                     <Content>
-                                        <InputText class="input is-danger" Type="text" Placeholder="Purchase Order" @bind-Value="CreatePO.PoNumber" />
+                                        <InputText class="input is-danger"  Placeholder="Purchase Order" @bind-Value="CreatePO.PoNumber" />
                                         <ValidationMessage For="@(() => CreatePO.PoNumber)" />
                                     </Content>
                                 </FormField>

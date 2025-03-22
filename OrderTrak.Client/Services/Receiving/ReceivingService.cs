@@ -15,6 +15,11 @@ namespace OrderTrak.Client.Services.Receiving
             await ApiService.DeleteReceivingAsync(recID);
         }
 
+        public async Task<ReceivingDTO> GetReceivingAsync(Guid recID)
+        {
+            return await ApiService.GetReceivingAsync(recID);
+        }
+
         public async Task<PagedTableOfReceivingSearchReturnDTO> SearchReceivingAsync(ReceivingSearchDTO searchQuery)
         {
             return await ApiService.SearchReceivingAsync(searchQuery);

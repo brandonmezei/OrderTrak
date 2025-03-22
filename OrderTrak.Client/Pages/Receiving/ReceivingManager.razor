@@ -1,0 +1,53 @@
+﻿@page "/receiving/{FormID:guid}"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.SearchComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Receiving - OrderTrak</PageTitle>
+
+@if (Receiving != null)
+{
+    <div class="box">
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="buttons is-pulled-right">
+                    <FormButton Title="Delete" Style="is-danger" Icon="fa-trash" />
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <CardComponent Title="Information" Icon="fa-info-circle">
+                    <CardBody>
+                        <FormField Icon="fa-location-arrow" Title="Tracking Number">
+                            <Content>
+                                <InputText class="input is-danger" @bind-Value="Receiving.TrackingNumber" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-truck" Title="Carrier">
+                            <Content>
+                                <InputText class="input is-danger" @bind-Value="Receiving.Carrier" />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-calendar-alt" Title="Date Received" Disabled=true>
+                            <Content>
+                                <InputDate class="input is-danger" @bind-Value="Receiving.DataReceived" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/receiving/search" />
+            <FormButton Title="Save" Style="is-success" Icon="fa-save" />
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

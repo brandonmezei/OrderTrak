@@ -45,6 +45,44 @@ namespace OrderTrak.API.Services.Receiving
             await DB.SaveChangesAsync();
         }
 
+        public async Task<ReceivingDTO> GetReceivingAsync(Guid recID)
+        {
+            // Get Receipt
+            return await DB.INV_Receipt
+                .Include(x => x.INV_Stock)
+                    .ThenInclude(x => x.PO_Line)
+                        .ThenInclude(x => x.UPL_PartInfo)
+                 .Include(x => x.INV_Stock)
+                    .ThenInclude(x => x.PO_Line)
+                        .ThenInclude(x => x.PO_Header)
+                .Where(x => x.FormID == recID)
+                .AsNoTracking()
+                .Select(x => new ReceivingDTO
+                {
+                    FormID = x.FormID,
+                    TrackingNumber = x.TrackingNumber,
+                    Carrier = x.Carrier,
+                    DataReceived = x.CreateDate,
+                    CanReceive = DateTime.Today.Date == x.CreateDate.Date,
+                    ReceivingLines = x.INV_Stock
+                        .GroupBy(x => new { 
+                            x.PO_Line.UPL_PartInfo.PartNumber, 
+                            x.PO_Line.UPL_PartInfo.PartDescription, 
+                            x.PO_Line.PO_Header.PONumber 
+                        })
+                        .Select(i => new ReceivingLineDTO
+                        {
+                            PartNumber = i.Key.PartNumber,
+                            PartDescription = i.Key.PartDescription,
+                            PurchaseOrder = i.Key.PONumber,
+                            Quantity = i.Sum(s => s.Quantity)
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new ValidationException("Receiving record not found");
+        }
+
         public async Task<PagedTable<ReceivingSearchReturnDTO>> SearchReceivingAsync(ReceivingSearchDTO searchQuery)
         {
             // Get Rec
@@ -95,6 +133,11 @@ namespace OrderTrak.API.Services.Receiving
                         ? query.OrderBy(x => x.INV_Stock.Sum(x => x.Quantity))
                         : query.OrderByDescending(x => x.INV_Stock.Sum(x => x.Quantity));
                     break;
+                case 5:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.CreateDate)
+                        : query.OrderByDescending(x => x.CreateDate);
+                    break;
                 default:
                     query = query.OrderBy(x => x.Id);
                     break;
@@ -111,7 +154,8 @@ namespace OrderTrak.API.Services.Receiving
                     TrackingNumber = x.TrackingNumber,
                     Carrier = x.Carrier,
                     POCount = x.INV_Stock.Select(i => i.POLineID).Distinct().Count(),
-                    QuantityReceived = x.INV_Stock.Sum(x => x.Quantity)
+                    QuantityReceived = x.INV_Stock.Sum(x => x.Quantity),
+                    DataReceived = x.CreateDate
                 })
                 .ToListAsync();
 
