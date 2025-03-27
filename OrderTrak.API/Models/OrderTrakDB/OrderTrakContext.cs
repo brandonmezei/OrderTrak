@@ -153,5 +153,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public DbSet<UPL_UOM> UPL_UOM { get; set; }
         public DbSet<INV_Receipt> INV_Receipt { get; set; }
         public DbSet<INV_Stock> INV_Stock { get; set; }
+        public DbSet<INV_StockStatus> INV_StockStatus { get; set; }
     }
 }

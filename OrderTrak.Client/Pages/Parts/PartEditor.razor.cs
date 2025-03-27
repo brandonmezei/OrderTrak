@@ -85,7 +85,7 @@ namespace OrderTrak.Client.Pages.Parts
                 if (Part != null)
                 {
                     // Delete Part
-                    await PartService.DeletePartAsync(FormID);
+                    await PartService.DeletePartAsync(Part.FormID);
 
                     Navigation.NavigateTo($"/part/search?Delete=true");
                 }

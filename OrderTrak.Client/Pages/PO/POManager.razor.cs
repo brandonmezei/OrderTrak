@@ -100,7 +100,7 @@ namespace OrderTrak.Client.Pages.PO
                 if (PurchaseOrder != null)
                 {
                     // Delete Part
-                    await POService.DeletePOAsync(FormID);
+                    await POService.DeletePOAsync(PurchaseOrder.FormID);
 
                     Navigation.NavigateTo($"/po/search?Delete=true");
                 }

@@ -85,7 +85,7 @@ namespace OrderTrak.Client.Pages.StockGroup
                 if (StockGroup != null)
                 {
                     // Delete Location
-                    await StockGroupService.DeleteStockGroupAsync(FormID);
+                    await StockGroupService.DeleteStockGroupAsync(StockGroup.FormID);
 
                     Navigation.NavigateTo($"/stockgroup/search?Delete=true");
                 }

@@ -18,6 +18,10 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public int POLineID { get; set; }
 
         [Required]
+        [ForeignKey("INV_StockStatus")]
+        public int StatusID { get; set; }
+
+        [Required]
         [ForeignKey("UPL_StockGroup")]
         public int StockGroupID { get; set; }
 
@@ -48,5 +52,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public virtual UPL_StockGroup UPL_StockGroup { get; set; } = null!;
 
         public virtual UPL_Location UPL_Location { get; set; } = null!;
+
+        public virtual INV_StockStatus INV_StockStatus { get; set; } = null!;
     }
 }

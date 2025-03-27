@@ -9,6 +9,20 @@
 
 @if (Receiving != null)
 {
+    @if (DeleteRec)
+    {
+        <ModalPopup Title="Confirm Delete" OnClose="DeleteRec_Toggle">
+            <Content>
+                <p class="subtitle">Are you sure you want to delete this receipt?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="DeleteRec_Toggle" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteRecConfirm_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
+
     <div class="box">
         <div class="columns is-centered">
             <div class="column">
@@ -37,6 +51,112 @@
                             </Content>
                         </FormField>
                     </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column">
+                <CardComponent Title="Receiving Line(s)" Icon="fa-file-invoice">
+                    <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <div class="buttons is-pulled-right">
+                                    <FormButton Title="Add" Style="is-success" Icon="fa-plus" OnClick="AddRec_Toggle" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-centered">
+                            <div class="column is-half">
+                                <div class="box">
+                                    <EditForm Model="@RecSearchFilter" OnValidSubmit="@RecSearch_Click">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <InputText class="input" @bind-Value="RecSearchFilter.SearchText" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                    <span>Search</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        @if (FilteredRecList?.Count > 0)
+                        {
+                            <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(1)">
+                                                <span>Part</span>
+                                                @if (SortColumn == 1)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(2)">
+                                                <span>Description</span>
+                                                @if (SortColumn == 2)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(3)">
+                                                <span>Purchase Order</span>
+                                                @if (SortColumn == 3)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(4)">
+                                                <span>Quantity</span>
+                                                @if (SortColumn == 4)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in FilteredRecList)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="buttons">
+                                                    <FormButton Title="Edit" Style="is-small" Icon="fa-edit" />
+                                                    <FormButton Title="Delete" Style="is-small" Icon="fa-trash" />
+                                                </div>
+                                            </td>
+                                            <td>@line.PartNumber</td>
+                                            <td>@line.PartDescription</td>
+                                            <td>@line.PurchaseOrder</td>
+                                            <td>@line.Quantity</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </CardBody>
+                    <Footer>
+                        <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddRec_Toggle" />
+                    </Footer>
                 </CardComponent>
             </div>
         </div>
