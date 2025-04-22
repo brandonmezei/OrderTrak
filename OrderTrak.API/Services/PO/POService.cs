@@ -237,5 +237,90 @@ namespace OrderTrak.API.Services.PO
             // Save
             await DB.SaveChangesAsync();
         }
+
+        public async Task<PagedTable<POLineSearchReturnDTO>> SearchPOLineAsync(SearchQueryDTO searchQuery)
+        {
+            var query = DB.PO_Line
+              .Include(x => x.PO_Header.UPL_Project)
+              .Include(x => x.UPL_PartInfo)
+              .Include(x => x.INV_Stock)
+              .Where(x => x.Quantity > x.INV_Stock.Sum(i => i.Quantity));
+
+            // Filters
+            if (!string.IsNullOrEmpty(searchQuery.SearchFilter))
+            {
+                var searchFilter = searchQuery.SearchFilter
+                    .Split(',')
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
+
+                foreach (var filter in searchFilter)
+                {
+                    query = query.Where(x =>
+                        x.UPL_PartInfo.PartNumber.Contains(filter) ||
+                         x.PO_Header.PONumber.Contains(filter) ||
+                         x.PO_Header.UPL_Project.ProjectName.Contains(filter)
+                    );
+                }
+            }
+
+            // Apply Order By
+            switch (searchQuery.SortColumn)
+            {
+                case 1:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.PO_Header.PONumber)
+                        : query.OrderByDescending(x => x.PO_Header.PONumber);
+                    break;
+                case 2:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.PO_Header.UPL_Project.ProjectName)
+                        : query.OrderByDescending(x => x.PO_Header.UPL_Project.ProjectName);
+                    break;
+                case 3:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.UPL_PartInfo.PartNumber)
+                        : query.OrderByDescending(x => x.UPL_PartInfo.PartNumber);
+                    break;
+                case 4:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.Quantity)
+                        : query.OrderByDescending(x => x.Quantity);
+                    break;
+                case 5:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.INV_Stock.Sum(i => i.Quantity))
+                        : query.OrderByDescending(x => x.INV_Stock.Sum(i => i.Quantity));
+                    break;
+                default:
+                    query = query.OrderBy(x => x.Id);
+                    break;
+            }
+
+            // Apply pagination and projection
+            var POPartList = await query
+                .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
+                .Take(searchQuery.RecordSize)
+                .AsNoTracking()
+                .Select(x => new POLineSearchReturnDTO
+                {
+                    FormID = x.FormID,
+                    PONumber = x.PO_Header.PONumber,
+                    ProjectName = x.PO_Header.UPL_Project.ProjectName,
+                    PartNumber = x.UPL_PartInfo.PartNumber,
+                    Quantity = x.Quantity,
+                    RecQuantity = x.INV_Stock.Sum(i => i.Quantity)
+                })
+                .ToListAsync();
+
+            // Return Object
+            return new PagedTable<POLineSearchReturnDTO>
+            {
+                Data = POPartList,
+                TotalRecords = await query.CountAsync(),
+                PageIndex = searchQuery.Page
+            };
+        }
     }
 }

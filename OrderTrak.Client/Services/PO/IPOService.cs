@@ -12,5 +12,6 @@ namespace OrderTrak.Client.Services.PO
         Task CreatePOLine(POCreateLineDTO poLineCreateDTO);
         Task DeletePOLineAsync(Guid FormID);
         Task UpdatePOLineAsync(POUpdateLineDTO poLineUpdateDTO);
+        Task<PagedTableOfPOLineSearchReturnDTO> SearchPOLineAsync(SearchQueryDTO searchQuery);
     }
 }

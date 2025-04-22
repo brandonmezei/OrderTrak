@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
+using OrderTrak.Client.Services.PO;
 using OrderTrak.Client.Services.Receiving;
+using OrderTrak.Client.Statics;
 using System.Net.Security;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
@@ -15,11 +17,17 @@ namespace OrderTrak.Client.Pages.Receiving
         [Inject]
         private IReceivingService ReceivingService { get; set; } = default!;
 
+        [Inject]
+        private IPOService POService { get; set; } = default!;
+
         protected ReceivingDTO? Receiving { get; set; }
 
         protected List<ReceivingLineDTO>? FilteredRecList { get; set; }
 
         protected bool NewRec { get; set; }
+
+        protected PagedTableOfPOLineSearchReturnDTO? NewReturnTable;
+        protected SearchQueryDTO NewSearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
         protected TableSearch RecSearchFilter { get; set; } = new();
 
@@ -51,10 +59,17 @@ namespace OrderTrak.Client.Pages.Receiving
             }
         }
 
-        protected void AddRec_Toggle()
+        protected async Task AddRec_Toggle()
         {
             Layout.ClearMessages();
             NewRec = !NewRec;
+
+            NewSearchFilters = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+
+            if (NewRec)
+                NewReturnTable = await POService.SearchPOLineAsync(NewSearchFilters);           
+            else
+                NewReturnTable = null;           
         }
 
         protected void RecSearch_Click()
@@ -178,6 +193,90 @@ namespace OrderTrak.Client.Pages.Receiving
             finally
             {
                 DeleteRec = false;
+            }
+        }
+
+        protected async Task AddSearch_Click()
+        {
+            if (IsCardLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsCardLoading = true;
+
+            try
+            {
+                NewSearchFilters.Page = 1;
+
+                // Get Po Lines from API
+                NewReturnTable = await POService.SearchPOLineAsync(NewSearchFilters);
+
+                if (NewReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                IsCardLoading = false;
+            }
+        }
+
+        protected async Task NewSortSwitch_Click(int column)
+        {
+            NewSearchFilters.SortColumn = column;
+            NewSearchFilters.SortOrder = NewSearchFilters.SortOrder == 1 ? 2 : 1;
+
+            try
+            {
+                // Get Po Lines from API
+                NewReturnTable = await POService.SearchPOLineAsync(NewSearchFilters);
+
+                if (NewReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected async Task NewPageSwitch_Click(int page)
+        {
+            NewSearchFilters.Page = page;
+
+            try
+            {
+                // Get Po Lines from API
+                NewReturnTable = await POService.SearchPOLineAsync(NewSearchFilters);
+
+                if (NewReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
             }
         }
     }

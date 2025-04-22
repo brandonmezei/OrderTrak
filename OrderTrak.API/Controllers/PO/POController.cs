@@ -123,6 +123,23 @@ namespace OrderTrak.API.Controllers.PO
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("SearchPOLine")]
+        public async Task<ActionResult<PagedTable<POLineSearchReturnDTO>>> SearchPOLineAsync([FromBody] SearchQueryDTO searchQuery)
+        {
+            try
+            {
+                return Ok(await pOService.SearchPOLineAsync(searchQuery));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE

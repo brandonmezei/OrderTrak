@@ -36,6 +36,11 @@ namespace OrderTrak.Client.Services.PO
             return await APIService.SearchPOAsync(searchQuery);
         }
 
+        public async Task<PagedTableOfPOLineSearchReturnDTO> SearchPOLineAsync(SearchQueryDTO searchQuery)
+        {
+            return await APIService.SearchPOLineAsync(searchQuery);
+        }
+
         public async Task UpdatePOAsync(POUpdateDTO pOUpdateDTO)
         {
             await APIService.UpdatePOAsync(pOUpdateDTO);

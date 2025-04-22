@@ -34,6 +34,11 @@
                         Warehouse
                     </button>
                     <div class="navbar-dropdown">
+                        @if (Permissions.Any(x => x == "Receiving"))
+                        {
+                            <NavBarItem Label="Receiving" Icon="fa-receipt" URL="/receiving/search" />
+                        }
+                        <hr class="navbar-divider" />
                         @if (Permissions.Any(x => x == "Location"))
                         {
                             <NavBarItem Label="Location Manager" Icon="fa-warehouse" URL="/location/search" />
@@ -41,10 +46,6 @@
                         @if (Permissions.Any(x => x == "Parts"))
                         {
                             <NavBarItem Label="Part Manager" Icon="fa-cogs" URL="/part/search" />
-                        }
-                        @if (Permissions.Any(x => x == "Receiving"))
-                        {
-                            <NavBarItem Label="Receiving" Icon="fa-receipt" URL="/receiving/search" />
                         }
                         @if (Permissions.Any(x => x == "StockGroup"))
                         {

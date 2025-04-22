@@ -32,11 +32,15 @@ namespace OrderTrak.API.Services.Receiving
            // Find the Record
            var rec = DB.INV_Receipt
                 .FirstOrDefault(x => x.FormID == recID)
-                ?? throw new ValidationException("Receiving record not found");
+                ?? throw new ValidationException("Receiving record not found.");
 
             // Check to make sure it is empty
             if (await DB.INV_Stock.AnyAsync(x => x.ReceiptID == rec.Id))
-                throw new ValidationException("Receiving record is not empty");
+                throw new ValidationException("Receiving record is not empty.");
+
+            // Check to make sure the receipt is on today's date
+            if (rec.CreateDate.Date != DateTime.Today.Date)
+                throw new ValidationException("Receiving record is not on today's date.");
 
             // Soft Delete Record
             rec.IsDelete = true;
