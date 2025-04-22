@@ -90,6 +90,10 @@
                                     </div>
                                     <hr />
                                     <div class="field">
+                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.IsToday" id="TodayOnly" @onclick="TodayOnly_Change" />
+                                        <label for="TodayOnly">Today Only</label>
+                                    </div>
+                                    <div class="field">
                                         <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.IsEmpty" id="EmptyOnly" @onclick="EmptyOnly_Change" />
                                         <label for="EmptyOnly">Show Empty Only</label>
                                     </div>

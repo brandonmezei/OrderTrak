@@ -14,7 +14,7 @@ namespace OrderTrak.Client.Pages.Receiving
         [SupplyParameterFromQuery]
         public bool Delete { get; set; }
 
-        protected ReceivingSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        protected ReceivingSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1, IsToday = true };
 
         protected ReceivingCreateDTO? CreateRec { get; set; }
 
@@ -239,6 +239,12 @@ namespace OrderTrak.Client.Pages.Receiving
         protected async Task EmptyOnly_Change()
         {
             SearchFilters.IsEmpty = !SearchFilters.IsEmpty;
+            await Search_Click();
+        }
+        
+        protected async Task TodayOnly_Change()
+        {
+            SearchFilters.IsToday = !SearchFilters.IsToday;
             await Search_Click();
         }
     }

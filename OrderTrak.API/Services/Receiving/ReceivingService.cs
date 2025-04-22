@@ -114,6 +114,10 @@ namespace OrderTrak.API.Services.Receiving
             if(searchQuery.IsEmpty)
                 query = query.Where(x => !x.INV_Stock.Any());
 
+            // Date Filter
+            if (searchQuery.IsToday)
+                query = query.Where(x => x.CreateDate.Date == DateTime.Today.Date);
+
             // Apply Order By
             switch (searchQuery.SortColumn)
             {

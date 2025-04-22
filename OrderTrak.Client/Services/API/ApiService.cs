@@ -7205,6 +7205,9 @@ namespace OrderTrak.Client.Services.API
         [Newtonsoft.Json.JsonProperty("isEmpty", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool IsEmpty { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("isToday", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsToday { get; set; }
+
         [Newtonsoft.Json.JsonProperty("searchFilter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string SearchFilter { get; set; }
 
