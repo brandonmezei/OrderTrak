@@ -1,15 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderTrak.API.Models.DTO;
+using OrderTrak.API.Models.DTO.Location;
 using OrderTrak.API.Models.DTO.Receiving;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Services.Location;
+using OrderTrak.API.Static;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrak.API.Services.Receiving
 {
-    public class ReceivingService(OrderTrakContext orderTrakContext) : IReceivingService
+    public class ReceivingService(OrderTrakContext orderTrakContext, ILocationService injectedLocationService) : IReceivingService
     {
 
         private readonly OrderTrakContext DB = orderTrakContext;
+        private readonly ILocationService locationService = injectedLocationService;
+
 
         public async Task<Guid> CreateReceivingAsync(ReceivingCreateDTO receivingCreateDTO)
         {
@@ -194,16 +199,113 @@ namespace OrderTrak.API.Services.Receiving
                 .FirstOrDefaultAsync(x => x.FormID == receivingLineCreateDTO.StockGroupID)
                 ?? throw new ValidationException("Stock Group not found.");
 
+            // Get Received Status
+            var stockStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.Received)
+                ?? throw new ValidationException("Stock Status not found.");
+
+            // Get Dock Location
+            var dockLocation = await DB.UPL_Location
+                .FirstOrDefaultAsync(x => x.LocationNumber == Locations.Dock);
+
+            // Create Dock if it doesn't exist
+            if (dockLocation == null)
+            {
+                // Get Feet UOM
+                var feetUOM = await DB.UPL_UOM
+                    .FirstOrDefaultAsync(x => x.UnitOfMeasurement == UOM.Feet)
+                    ?? throw new ValidationException("Feet UOM not found.");
+
+                await locationService.CreateLocationAsync(new LocationCreateDTO
+                {
+                    LocationNumber = Locations.Dock,
+                    Height = 1,
+                    Width = 1,
+                    Depth = 1,
+                    UOMID = feetUOM.FormID
+                });
+
+                // Get Dock Location
+                dockLocation = await DB.UPL_Location
+                    .FirstOrDefaultAsync(x => x.LocationNumber == Locations.Dock)
+                    ?? throw new ValidationException("Dock Location not found.");
+            }
+
             // Loop through each box line
             foreach (var line in receivingLineCreateDTO.BoxLineList)
             {
                 // Qty Must be greater than 0
-                if (line.Quantity <= 0)
+                if (!line.Quantity.HasValue || line.Quantity <= 0)
                     throw new ValidationException("Quantity must be greater than 0.");
 
-                // Qty Must be 1 if serialized
-                //if (poLine.IsSerialized && line.Quantity != 1)
-                //    throw new ValidationException("Quantity must be 1 for serialized items.");
+                // Create New Receipt
+                var newStock = new INV_Stock
+                {
+                    INV_Receipt = receipt,
+                    PO_Line = poLine,
+                    INV_StockStatus = stockStatus,
+                    UPL_StockGroup = stockGroup,
+                    Quantity = line.Quantity ?? 1
+                };
+
+                // Serialized Logic
+                if (poLine.IsSerialized)
+                {
+                    // Set new Stock QTY to 1
+                    newStock.Quantity = 1;
+
+                    // Check Serial is Empty
+                    if (string.IsNullOrEmpty(line.SerialNumber))
+                        throw new ValidationException("Serial Number is required.");
+
+                    // Check Serial is Unique
+                    if (await DB.INV_Stock.AnyAsync(x => x.SerialNumber == line.SerialNumber && x.INV_StockStatus.StockStatus != StockStatus.Shipped))
+                        throw new ValidationException($"Serial Number {line.SerialNumber} already exists.");
+
+                    // Set Serial Number and Asset Tag
+                    newStock.SerialNumber = line.SerialNumber;
+                    newStock.AssetTag = line.AssetTag;
+                }
+
+                // Reference Logic
+                foreach(var reference in line.UDFList)
+                {
+                    switch (reference.Pos)
+                    {
+                        case 1:
+                            newStock.UDF1 = reference.Value;
+                            break;
+                        case 2:
+                            newStock.UDF2 = reference.Value;
+                            break;
+                        case 3:
+                            newStock.UDF3 = reference.Value;
+                            break;
+                        case 4:
+                            newStock.UDF4 = reference.Value;
+                            break;
+                        case 5:
+                            newStock.UDF5 = reference.Value;
+                            break;
+                        case 6:
+                            newStock.UDF6 = reference.Value;
+                            break;
+                        case 7:
+                            newStock.UDF7 = reference.Value;
+                            break;
+                        case 8:
+                            newStock.UDF8 = reference.Value;
+                            break;
+                        case 9:
+                            newStock.UDF9 = reference.Value;
+                            break;
+                        case 10:
+                            newStock.UDF10 = reference.Value;
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
 
             // Save

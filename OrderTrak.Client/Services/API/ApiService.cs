@@ -6779,6 +6779,9 @@ namespace OrderTrak.Client.Services.API
         [Newtonsoft.Json.JsonProperty("recQuantity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int RecQuantity { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("isSerialized", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSerialized { get; set; }
+
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
         [Newtonsoft.Json.JsonExtensionData]

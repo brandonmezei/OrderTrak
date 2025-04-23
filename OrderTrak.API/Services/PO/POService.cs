@@ -295,6 +295,11 @@ namespace OrderTrak.API.Services.PO
                         ? query.OrderBy(x => x.INV_Stock.Sum(i => i.Quantity))
                         : query.OrderByDescending(x => x.INV_Stock.Sum(i => i.Quantity));
                     break;
+                case 6:
+                    query = searchQuery.SortOrder == 1
+                        ? query.OrderBy(x => x.IsSerialized)
+                        : query.OrderByDescending(x => x.IsSerialized);
+                    break;
                 default:
                     query = query.OrderBy(x => x.Id);
                     break;
@@ -312,7 +317,8 @@ namespace OrderTrak.API.Services.PO
                     ProjectName = x.PO_Header.UPL_Project.ProjectName,
                     PartNumber = x.UPL_PartInfo.PartNumber,
                     Quantity = x.Quantity,
-                    RecQuantity = x.INV_Stock.Sum(i => i.Quantity)
+                    RecQuantity = x.INV_Stock.Sum(i => i.Quantity),
+                    IsSerialized= x.IsSerialized
                 })
                 .ToListAsync();
 
