@@ -194,6 +194,7 @@ namespace OrderTrak.Client.Pages.PO
                         2 => [.. FilteredPOList.OrderBy(x => x.PartDescription)],
                         3 => [.. FilteredPOList.OrderBy(x => x.Quantity)],
                         4 => [.. FilteredPOList.OrderBy(x => x.RecQuantity)],
+                        5 => [.. FilteredPOList.OrderBy(x => x.IsSerialized)],
                         _ => [.. FilteredPOList.OrderBy(x => x.PartNumber)],
                     },
                     2 => column switch
@@ -202,6 +203,7 @@ namespace OrderTrak.Client.Pages.PO
                         2 => [.. FilteredPOList.OrderByDescending(x => x.PartDescription)],
                         3 => [.. FilteredPOList.OrderByDescending(x => x.Quantity)],
                         4 => [.. FilteredPOList.OrderByDescending(x => x.RecQuantity)],
+                        5 => [.. FilteredPOList.OrderByDescending(x => x.IsSerialized)],
                         _ => [.. FilteredPOList.OrderByDescending(x => x.PartNumber)],
                     },
                     _ => [.. FilteredPOList.OrderBy(x => x.PartNumber)]
@@ -300,15 +302,7 @@ namespace OrderTrak.Client.Pages.PO
                 var poLine = PurchaseOrder.PoLines.FirstOrDefault(x => x.FormID == FormID);
 
                 if (poLine != null)
-                {
-                    POLineEditor = new POUpdateLineDTO
-                    {
-                        FormID = FormID.Value,
-                        PartNumber = poLine.PartNumber,
-                        PartDescription = poLine.PartDescription,
-                        Quantity = poLine.Quantity
-                    };
-                }
+                    POLineEditor = MapperService.Map<POUpdateLineDTO>(poLine);
             }
             else
                 POLineEditor = null;
@@ -325,6 +319,7 @@ namespace OrderTrak.Client.Pages.PO
                     
                     // Refresh
                     PurchaseOrder = await POService.GetPOAsync(PurchaseOrder.FormID);
+                    
                     // Get Purchase Line by filter
                     FilteredPOList = [.. PurchaseOrder.PoLines];
 
@@ -343,6 +338,12 @@ namespace OrderTrak.Client.Pages.PO
                     POLineEditor = null;
                 }
             }
+        }
+
+        protected void Serialized_Change()
+        {
+            if(POLineEditor != null)
+                POLineEditor.IsSerialized = !POLineEditor.IsSerialized;
         }
     }
 }

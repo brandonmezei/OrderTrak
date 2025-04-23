@@ -55,20 +55,22 @@
                                             <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartNumber" />
                                         </Content>
                                     </FormField>
-
                                     <FormField Icon="fa-align-left" Title="Part Description" Disabled=true>
                                         <Content>
                                             <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartDescription" />
                                         </Content>
                                     </FormField>
-
                                     <FormField Icon="fa-cubes" Title="Quantity">
                                         <Content>
                                             <InputNumber class="input is-danger"  Placeholder="Customer Code" @bind-Value="POLineEditor.Quantity" style="75px" />
                                             <ValidationMessage For="@(() => POLineEditor.Quantity)" />
                                         </Content>
                                     </FormField>
-
+                                    <hr />
+                                    <div class="field">
+                                        <InputCheckbox class="is-checkradio" @bind-Value="POLineEditor.IsSerialized" id="Serialized" @onclick="Serialized_Change" />
+                                        <label for="Serialized">Serialized Line</label>
+                                    </div>
                             </CardBody>
                             <Footer>
                                 <FormButton Title="Save" Style="card-footer-item" Icon="fa-plus" />
@@ -180,6 +182,17 @@
                                                 }
                                             </a>
                                         </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(5)">
+                                                <span>Serialized</span>
+                                                @if (SortColumn == 5)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -196,6 +209,7 @@
                                             <td>@line.PartDescription</td>
                                             <td>@line.Quantity</td>
                                             <td>@line.RecQuantity</td>
+                                            <td>@line.IsSerialized</td>
                                         </tr>
                                     }
                                 </tbody>

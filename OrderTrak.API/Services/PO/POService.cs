@@ -70,7 +70,8 @@ namespace OrderTrak.API.Services.PO
                         PartNumber = i.UPL_PartInfo.PartNumber,
                         PartDescription = i.UPL_PartInfo.PartDescription,
                         Quantity = i.Quantity,
-                        RecQuantity = DB.INV_Stock.Where(s => s.PO_Line.FormID == i.FormID).Sum(s => s.Quantity)
+                        RecQuantity = DB.INV_Stock.Where(s => s.PO_Line.FormID == i.FormID).Sum(s => s.Quantity),
+                        IsSerialized = i.IsSerialized
                     })
                     .ToList()
                 })
@@ -233,6 +234,7 @@ namespace OrderTrak.API.Services.PO
 
             // Update PO Line
             poLine.Quantity = poLineUpdateDTO.Quantity ?? throw new ValidationException("Quantity is required.");
+            poLine.IsSerialized = poLineUpdateDTO.IsSerialized;
 
             // Save
             await DB.SaveChangesAsync();

@@ -175,5 +175,39 @@ namespace OrderTrak.API.Services.Receiving
                 PageIndex = searchQuery.Page
             };
         }
+
+        public async Task CreateReceivingLineAsync(ReceivingLineCreateDTO receivingLineCreateDTO)
+        {
+
+            // Get Receipt by RecID
+            var receipt = await DB.INV_Receipt
+                .FirstOrDefaultAsync(x => x.FormID == receivingLineCreateDTO.RecID)
+                ?? throw new ValidationException("Receiving record not found.");
+
+            // Get PO Line by POLineID
+            var poLine = await DB.PO_Line
+                .FirstOrDefaultAsync(x => x.FormID == receivingLineCreateDTO.PoLineID)
+                ?? throw new ValidationException("PO Line not found.");
+
+            // Get Stock Group by StockGroupID
+            var stockGroup = await DB.UPL_StockGroup
+                .FirstOrDefaultAsync(x => x.FormID == receivingLineCreateDTO.StockGroupID)
+                ?? throw new ValidationException("Stock Group not found.");
+
+            // Loop through each box line
+            foreach (var line in receivingLineCreateDTO.BoxLineList)
+            {
+                // Qty Must be greater than 0
+                if (line.Quantity <= 0)
+                    throw new ValidationException("Quantity must be greater than 0.");
+
+                // Qty Must be 1 if serialized
+                //if (poLine.IsSerialized && line.Quantity != 1)
+                //    throw new ValidationException("Quantity must be 1 for serialized items.");
+            }
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
     }
 }

@@ -6744,6 +6744,9 @@ namespace OrderTrak.Client.Services.API
         [Newtonsoft.Json.JsonProperty("recQuantity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int RecQuantity { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("isSerialized", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsSerialized { get; set; }
+
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
         [Newtonsoft.Json.JsonExtensionData]
@@ -6876,7 +6879,11 @@ namespace OrderTrak.Client.Services.API
         public string PartDescription { get; set; }
 
         [Newtonsoft.Json.JsonProperty("quantity", Required = Newtonsoft.Json.Required.AllowNull)]
+        [System.ComponentModel.DataAnnotations.Range(1, 2147483647)]
         public int? Quantity { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isSerialized", Required = Newtonsoft.Json.Required.Always)]
+        public bool IsSerialized { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 

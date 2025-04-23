@@ -7,5 +7,7 @@
         public string PartDescription { get; set; } = string.Empty;
         public int Quantity { get; set; }
         public int RecQuantity { get; set; }
+
+        public bool IsSerialized { get; set; }
     }
 }
