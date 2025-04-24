@@ -8,5 +8,6 @@ namespace OrderTrak.Client.Services.Filters
         Task<List<DropDownFilterDTO>> GetUOMAsync();
         Task<List<DropDownFilterDTO>> GetCustomersAsync();
         Task<List<DropDownFilterDTO>> GetProjectsAsync(Guid CustomerID);
+        Task<List<DropDownFilterDTO>> GetStockGroupAsync();
     }
 }

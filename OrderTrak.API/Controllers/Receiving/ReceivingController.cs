@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Receiving;
@@ -58,6 +57,24 @@ namespace OrderTrak.API.Controllers.Receiving
             try
             {
                 return Ok(await ReceivingService.SearchReceivingAsync(searchQuery));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("CreateReceivingLine")]
+        public async Task<ActionResult> CreateReceivingLineAsync([FromBody] ReceivingLineCreateDTO receivingLineCreateDTO)
+        {
+            try
+            {
+                await ReceivingService.CreateReceivingLineAsync(receivingLineCreateDTO);
+                return Ok();
             }
             catch (ValidationException ex)
             {

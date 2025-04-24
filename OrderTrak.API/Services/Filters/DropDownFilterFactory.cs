@@ -64,5 +64,18 @@ namespace OrderTrak.API.Services.Filters
                 })
                 .ToListAsync();
         }
+
+        public async Task<List<DropDownFilterDTO>> GetStockGroupAsync()
+        {
+            return await DB.UPL_StockGroup
+                 .OrderBy(x => x.StockGroupTitle)
+                 .AsNoTracking()
+                 .Select(x => new DropDownFilterDTO
+                 {
+                     FormID = x.FormID,
+                     Label = x.StockGroupTitle
+                 })
+                 .ToListAsync();
+        }
     }
 }

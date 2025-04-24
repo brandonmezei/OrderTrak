@@ -241,7 +241,7 @@ namespace OrderTrak.Client.Pages.Receiving
             SearchFilters.IsEmpty = !SearchFilters.IsEmpty;
             await Search_Click();
         }
-        
+
         protected async Task TodayOnly_Change()
         {
             SearchFilters.IsToday = !SearchFilters.IsToday;

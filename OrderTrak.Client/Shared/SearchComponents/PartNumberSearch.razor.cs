@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Parts;
-using System.Runtime.CompilerServices;
 
 namespace OrderTrak.Client.Shared.SearchComponents
 {
@@ -45,7 +44,7 @@ namespace OrderTrak.Client.Shared.SearchComponents
                     // Get Parts from API
                     ReturnTable = await PartService.SearchPartsAsync(SearchFilters);
                 }
-                catch{ }
+                catch { }
                 finally
                 {
                     IsCardLoading = false;

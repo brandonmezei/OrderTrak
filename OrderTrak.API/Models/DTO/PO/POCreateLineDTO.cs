@@ -6,7 +6,7 @@ namespace OrderTrak.API.Models.DTO.PO
     {
         [Required]
         public Guid OrderID { get; set; }
-        
+
         [Required]
         public Guid PartID { get; set; }
     }

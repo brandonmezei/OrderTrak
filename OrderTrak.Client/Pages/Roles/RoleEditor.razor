@@ -102,6 +102,7 @@
                         </div>
                         @if (FilteredRoleToFunctionList?.Count > 0)
                         {
+                            <div class="table-container">
                             <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                 <thead>
                                     <tr>
@@ -146,6 +147,7 @@
                                     }
                                 </tbody>
                             </table>
+                            </div>
                         }
                     </CardBody>
                 </CardComponent>
@@ -181,6 +183,7 @@
                         </div>
                         @if (RoleToUserList?.Data.Count > 0)
                         {
+                            <div class="table-container">
                             <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                 <thead>
                                     <tr>
@@ -228,6 +231,7 @@
                                     }
                                 </tbody>
                             </table>
+                            </div>
                             @if (RoleToUserList.TotalRecords > SearchFilters.RecordSize)
                             {
                                 <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@RoleToUserList.TotalRecords" OnPageChanged="PageSwitch_Click" />

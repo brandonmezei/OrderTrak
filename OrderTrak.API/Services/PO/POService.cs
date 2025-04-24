@@ -318,7 +318,7 @@ namespace OrderTrak.API.Services.PO
                     PartNumber = x.UPL_PartInfo.PartNumber,
                     Quantity = x.Quantity,
                     RecQuantity = x.INV_Stock.Sum(i => i.Quantity),
-                    IsSerialized= x.IsSerialized
+                    IsSerialized = x.IsSerialized
                 })
                 .ToListAsync();
 

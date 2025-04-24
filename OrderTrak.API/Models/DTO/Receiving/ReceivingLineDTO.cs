@@ -5,6 +5,6 @@
         public string PartNumber { get; set; } = string.Empty;
         public string PartDescription { get; set; } = string.Empty;
         public string PurchaseOrder { get; set; } = string.Empty;
-        public int Quantity { get; set; } 
+        public int Quantity { get; set; }
     }
 }

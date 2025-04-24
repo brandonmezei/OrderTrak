@@ -45,25 +45,25 @@
                                     <DataAnnotationsValidator />
                                     <FormField Icon="fa-project-diagram" Title="Project Code">
                                         <Content>
-                                            <InputText class="input is-danger"  Placeholder="Project Code" @bind-Value="CreateProject.ProjectCode" />
+                                            <InputText class="input is-danger" Placeholder="Project Code" @bind-Value="CreateProject.ProjectCode" />
                                             <ValidationMessage For="@(() => CreateProject.ProjectCode)" />
                                         </Content>
                                     </FormField>
                                     <FormField Icon="fa-project-diagram" Title="Project Name">
                                         <Content>
-                                            <InputText class="input is-danger"  Placeholder="Project Name" @bind-Value="CreateProject.ProjectName" />
+                                            <InputText class="input is-danger" Placeholder="Project Name" @bind-Value="CreateProject.ProjectName" />
                                             <ValidationMessage For="@(() => CreateProject.ProjectName)" />
                                         </Content>
                                     </FormField>
                                     <FormField Icon="fa-user" Title="Contact Name">
                                         <Content>
-                                            <InputText class="input is-danger"  Placeholder="Contact Name" @bind-Value="CreateProject.ContactName" />
+                                            <InputText class="input is-danger" Placeholder="Contact Name" @bind-Value="CreateProject.ContactName" />
                                             <ValidationMessage For="@(() => CreateProject.ContactName)" />
                                         </Content>
                                     </FormField>
                                     <FormField Icon="fa-phone" Title="Contact Phone">
                                         <Content>
-                                            <InputText class="input is-danger"  Placeholder="Contact Phone" @bind-Value="CreateProject.ContactPhone" />
+                                            <InputText class="input is-danger" Placeholder="Contact Phone" @bind-Value="CreateProject.ContactPhone" />
                                             <ValidationMessage For="@(() => CreateProject.ContactPhone)" />
                                         </Content>
                                     </FormField>
@@ -99,12 +99,12 @@
                     <CardBody>
                         <FormField Icon="fa-id-card" Title="Customer Code">
                             <Content>
-                                <InputText class="input is-danger"  Placeholder="Customer Code" @bind-Value="Customer.CustomerCode" />
+                                <InputText class="input is-danger" Placeholder="Customer Code" @bind-Value="Customer.CustomerCode" />
                             </Content>
                         </FormField>
                         <FormField Icon="fa-id-card" Title="Customer Name">
                             <Content>
-                                <InputText class="input is-danger"  Placeholder="Customer Name" @bind-Value="Customer.CustomerName" />
+                                <InputText class="input is-danger" Placeholder="Customer Name" @bind-Value="Customer.CustomerName" />
                             </Content>
                         </FormField>
                     </CardBody>
@@ -117,34 +117,34 @@
                             <div class="column">
                                 <FormField Icon="fa-map-marker-alt" Title="Address">
                                     <Content>
-                                        <InputText class="input is-danger"  Placeholder="Address" @bind-Value="Customer.Address" />
+                                        <InputText class="input is-danger" Placeholder="Address" @bind-Value="Customer.Address" />
                                     </Content>
                                 </FormField>
                                 <FormField Icon="fa-city" Title="City">
                                     <Content>
-                                        <InputText class="input is-danger"  Placeholder="City" @bind-Value="Customer.City" />
+                                        <InputText class="input is-danger" Placeholder="City" @bind-Value="Customer.City" />
                                     </Content>
                                 </FormField>
                                 <FormField Icon="fa-phone" Title="Phone">
                                     <Content>
-                                        <InputText class="input is-danger"  Placeholder="Phone" @bind-Value="Customer.Phone" />
+                                        <InputText class="input is-danger" Placeholder="Phone" @bind-Value="Customer.Phone" />
                                     </Content>
                                 </FormField>
                             </div>
                             <div class="column">
                                 <FormField Icon="fa-map-marker-alt" Title="Address 2">
                                     <Content>
-                                        <InputText class="input is-primary"  Placeholder="Address" @bind-Value="Customer.Address2" />
+                                        <InputText class="input is-primary" Placeholder="Address" @bind-Value="Customer.Address2" />
                                     </Content>
                                 </FormField>
                                 <FormField Icon="fa-flag" Title="State">
                                     <Content>
-                                        <InputText class="input is-danger"  Placeholder="State" @bind-Value="Customer.State" />
+                                        <InputText class="input is-danger" Placeholder="State" @bind-Value="Customer.State" />
                                     </Content>
                                 </FormField>
                                 <FormField Icon="fa-envelope" Title="Zip">
                                     <Content>
-                                        <InputText class="input is-danger"  Placeholder="Zip" @bind-Value="Customer.Zip" />
+                                        <InputText class="input is-danger" Placeholder="Zip" @bind-Value="Customer.Zip" />
                                     </Content>
                                 </FormField>
                             </div>
@@ -187,50 +187,52 @@
                             </div>
                             @if (FilteredProjectList?.Count > 0)
                             {
-                                <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>
-                                                <a @onclick="() => SortSwitch_Click(1)">
-                                                    <span>Code</span>
-                                                    @if (SortColumn == 1)
-                                                    {
-                                                        <span class="icon">
-                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
-                                                        </span>
-                                                    }
-                                                </a>
-                                            </th>
-                                            <th>
-                                                <a @onclick="() => SortSwitch_Click(2)">
-                                                    <span>Name</span>
-                                                    @if (SortColumn == 2)
-                                                    {
-                                                        <span class="icon">
-                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
-                                                        </span>
-                                                    }
-                                                </a>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var line in FilteredProjectList)
-                                        {
+                                <div class="table-container">
+                                    <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                        <thead>
                                             <tr>
-                                                <td>
-                                                    <div class="buttons">
-                                                        <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/project/{line.FormID}")" />
-                                                        <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => DeleteProject_Click(line.FormID)" />
-                                                    </div>
-                                                </td>
-                                                <td>@line.ProjectCode</td>
-                                                <td>@line.ProjectName</td>
+                                                <th></th>
+                                                <th>
+                                                    <a @onclick="() => SortSwitch_Click(1)">
+                                                        <span>Code</span>
+                                                        @if (SortColumn == 1)
+                                                        {
+                                                            <span class="icon">
+                                                                <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                            </span>
+                                                        }
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a @onclick="() => SortSwitch_Click(2)">
+                                                        <span>Name</span>
+                                                        @if (SortColumn == 2)
+                                                        {
+                                                            <span class="icon">
+                                                                <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                            </span>
+                                                        }
+                                                    </a>
+                                                </th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var line in FilteredProjectList)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="buttons">
+                                                            <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/project/{line.FormID}")" />
+                                                            <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => DeleteProject_Click(line.FormID)" />
+                                                        </div>
+                                                    </td>
+                                                    <td>@line.ProjectCode</td>
+                                                    <td>@line.ProjectName</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             }
                         </CardBody>
                         <Footer>

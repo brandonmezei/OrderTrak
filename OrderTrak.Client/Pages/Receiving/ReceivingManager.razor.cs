@@ -4,7 +4,6 @@ using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.PO;
 using OrderTrak.Client.Services.Receiving;
 using OrderTrak.Client.Statics;
-using System.Net.Security;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Receiving
@@ -28,6 +27,7 @@ namespace OrderTrak.Client.Pages.Receiving
 
         protected PagedTableOfPOLineSearchReturnDTO? NewReturnTable;
         protected SearchQueryDTO NewSearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        protected ReceivingLineCreateDTO? NewReceipt { get; set; }
 
         protected TableSearch RecSearchFilter { get; set; } = new();
 
@@ -47,7 +47,7 @@ namespace OrderTrak.Client.Pages.Receiving
                 Receiving = await ReceivingService.GetReceivingAsync(FormID);
 
                 // Get Rec Line by filter
-                FilteredRecList = [.. Receiving.ReceivingLines ];
+                FilteredRecList = [.. Receiving.ReceivingLines];
             }
             catch (ApiException ex)
             {
@@ -67,9 +67,9 @@ namespace OrderTrak.Client.Pages.Receiving
             NewSearchFilters = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
             if (NewRec)
-                NewReturnTable = await POService.SearchPOLineAsync(NewSearchFilters);           
+                NewReturnTable = await POService.SearchPOLineAsync(NewSearchFilters);
             else
-                NewReturnTable = null;           
+                NewReturnTable = null;
         }
 
         protected void RecSearch_Click()
@@ -278,6 +278,67 @@ namespace OrderTrak.Client.Pages.Receiving
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }
+        }
+
+        protected void SelectPOLine_Click(Guid? FormID)
+        {
+            Layout.ClearMessages();
+
+            // Exit if Null Clearing Receipt
+            if (FormID == null)
+            {
+                NewReceipt = null;
+                return;
+            }
+
+            try
+            {
+                var selectedLine = NewReturnTable?.Data
+                    .FirstOrDefault(x => x.FormID == FormID);
+
+                if (Receiving != null && selectedLine != null)
+                {
+                    // Create New Receipt
+                    NewReceipt = new ReceivingLineCreateDTO
+                    {
+                        RecID = Receiving.FormID,
+                        PoLineID = selectedLine.FormID,
+                        BoxLineList = []
+                    };
+
+                    // Add one BoxLineList if the part is not serailized if not add the difference between the quantity and the rec quantity
+
+                    if (selectedLine.IsSerialized)
+                    {
+                        var remainQty = selectedLine.Quantity - selectedLine.RecQuantity;
+
+                        for (int i = 0; i < remainQty; i++)
+                        {
+                            NewReceipt.BoxLineList.Add(new ReceivingBoxLineCreateDTO
+                            {
+                                Quantity = 1,
+                            });
+                        }
+                    }
+                    else
+                    {
+                        NewReceipt.BoxLineList.Add(new ReceivingBoxLineCreateDTO
+                        {
+                            Quantity = 1,
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected void StockGroup_Change(Guid? FormID)
+        {
+            if (NewReceipt != null)
+                NewReceipt.StockGroupID = FormID;
         }
     }
 }

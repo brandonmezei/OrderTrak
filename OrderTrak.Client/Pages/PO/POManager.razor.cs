@@ -263,7 +263,7 @@ namespace OrderTrak.Client.Pages.PO
 
         protected async Task DeletePart_Confirm()
         {
-            if(DeleteLineID.HasValue && PurchaseOrder != null)
+            if (DeleteLineID.HasValue && PurchaseOrder != null)
             {
                 try
                 {
@@ -310,16 +310,16 @@ namespace OrderTrak.Client.Pages.PO
 
         protected async Task EditPart_Save()
         {
-            if(POLineEditor != null && PurchaseOrder != null)
+            if (POLineEditor != null && PurchaseOrder != null)
             {
                 try
                 {
                     // Update Line
                     await POService.UpdatePOLineAsync(POLineEditor);
-                    
+
                     // Refresh
                     PurchaseOrder = await POService.GetPOAsync(PurchaseOrder.FormID);
-                    
+
                     // Get Purchase Line by filter
                     FilteredPOList = [.. PurchaseOrder.PoLines];
 
@@ -342,7 +342,7 @@ namespace OrderTrak.Client.Pages.PO
 
         protected void Serialized_Change()
         {
-            if(POLineEditor != null)
+            if (POLineEditor != null)
                 POLineEditor.IsSerialized = !POLineEditor.IsSerialized;
         }
     }

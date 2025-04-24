@@ -10,6 +10,11 @@ namespace OrderTrak.Client.Services.Receiving
             return await ApiService.CreateReceivingAsync(receivingCreateDTO);
         }
 
+        public async Task CreateReceivingLineAsync(ReceivingLineCreateDTO receivingLineCreateDTO)
+        {
+            await ApiService.CreateReceivingLineAsync(receivingLineCreateDTO);
+        }
+
         public async Task DeleteReceivingAsync(Guid recID)
         {
             await ApiService.DeleteReceivingAsync(recID);

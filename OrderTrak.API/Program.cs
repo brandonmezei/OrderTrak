@@ -118,10 +118,10 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("StockGroup", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("StockGroup")));
-    
+
     options.AddPolicy("PurchaseOrder", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("PurchaseOrder")));
-    
+
     options.AddPolicy("Receiving", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Receiving")));
 });

@@ -15,7 +15,6 @@ namespace OrderTrak.API.Services.Receiving
         private readonly OrderTrakContext DB = orderTrakContext;
         private readonly ILocationService locationService = injectedLocationService;
 
-
         public async Task<Guid> CreateReceivingAsync(ReceivingCreateDTO receivingCreateDTO)
         {
             // Add the new receiving record to the database
@@ -34,10 +33,10 @@ namespace OrderTrak.API.Services.Receiving
 
         public async Task DeleteReceivingAsync(Guid recID)
         {
-           // Find the Record
-           var rec = DB.INV_Receipt
-                .FirstOrDefault(x => x.FormID == recID)
-                ?? throw new ValidationException("Receiving record not found.");
+            // Find the Record
+            var rec = DB.INV_Receipt
+                 .FirstOrDefault(x => x.FormID == recID)
+                 ?? throw new ValidationException("Receiving record not found.");
 
             // Check to make sure it is empty
             if (await DB.INV_Stock.AnyAsync(x => x.ReceiptID == rec.Id))
@@ -74,10 +73,11 @@ namespace OrderTrak.API.Services.Receiving
                     DataReceived = x.CreateDate,
                     CanReceive = DateTime.Today.Date == x.CreateDate.Date,
                     ReceivingLines = x.INV_Stock
-                        .GroupBy(x => new { 
-                            x.PO_Line.UPL_PartInfo.PartNumber, 
-                            x.PO_Line.UPL_PartInfo.PartDescription, 
-                            x.PO_Line.PO_Header.PONumber 
+                        .GroupBy(x => new
+                        {
+                            x.PO_Line.UPL_PartInfo.PartNumber,
+                            x.PO_Line.UPL_PartInfo.PartDescription,
+                            x.PO_Line.PO_Header.PONumber
                         })
                         .Select(i => new ReceivingLineDTO
                         {
@@ -116,7 +116,7 @@ namespace OrderTrak.API.Services.Receiving
             }
 
             // Empty Filter
-            if(searchQuery.IsEmpty)
+            if (searchQuery.IsEmpty)
                 query = query.Where(x => !x.INV_Stock.Any());
 
             // Date Filter
@@ -202,7 +202,7 @@ namespace OrderTrak.API.Services.Receiving
             // Get Received Status
             var stockStatus = await DB.INV_StockStatus
                 .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.Received)
-                ?? throw new ValidationException("Stock Status not found.");
+                ?? throw new ValidationException("Stock Status Received not found.");
 
             // Get Dock Location
             var dockLocation = await DB.UPL_Location
@@ -230,6 +230,14 @@ namespace OrderTrak.API.Services.Receiving
                     .FirstOrDefaultAsync(x => x.LocationNumber == Locations.Dock)
                     ?? throw new ValidationException("Dock Location not found.");
             }
+
+            // Check if total receipt qty plus what is already on stock for the PO line will exceed the po line qty
+            var totalQty = await DB.INV_Stock
+                .Where(x => x.PO_Line.FormID == receivingLineCreateDTO.PoLineID)
+                .SumAsync(x => x.Quantity);
+
+            if (totalQty + receivingLineCreateDTO.BoxLineList.Sum(x => x.Quantity ?? 0) > poLine.Quantity)
+                throw new ValidationException("Total quantity received exceeds PO line quantity.");
 
             // Loop through each box line
             foreach (var line in receivingLineCreateDTO.BoxLineList)
@@ -268,7 +276,7 @@ namespace OrderTrak.API.Services.Receiving
                 }
 
                 // Reference Logic
-                foreach(var reference in line.UDFList)
+                foreach (var reference in line.UDFList)
                 {
                     switch (reference.Pos)
                     {
@@ -306,6 +314,8 @@ namespace OrderTrak.API.Services.Receiving
                             break;
                     }
                 }
+
+                DB.INV_Stock.Add(newStock);
             }
 
             // Save

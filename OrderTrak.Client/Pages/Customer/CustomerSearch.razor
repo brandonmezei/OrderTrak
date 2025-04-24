@@ -132,6 +132,7 @@
                     </div>
                     @if (ReturnTable?.Data.Count > 0)
                     {
+                        <div class="table-container">
                         <table class="table is-fullwidth is-striped is-hoverable has-text-centered ">
                             <thead>
                                 <tr>
@@ -200,6 +201,7 @@
                                 }
                             </tbody>
                         </table>
+                        </div>
                         @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
                         {
                             <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />

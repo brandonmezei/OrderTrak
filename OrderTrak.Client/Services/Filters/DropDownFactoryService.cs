@@ -25,5 +25,10 @@ namespace OrderTrak.Client.Services.Filters
         {
             return [.. await ApiService.GetProjectsDropDownAsync(CustomerID)];
         }
+
+        public async Task<List<DropDownFilterDTO>> GetStockGroupAsync()
+        {
+            return [.. await ApiService.GetStockGroupDropDownAsync()];
+        }
     }
 }

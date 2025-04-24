@@ -1,7 +1,6 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using OrderTrak.Client.Provider;
 
 namespace OrderTrak.Client.Shared.Nav
 {
@@ -70,7 +69,7 @@ namespace OrderTrak.Client.Shared.Nav
             IsOrdersOpen = !IsOrdersOpen;
             IsSettingOpen = false;
             IsWarehouseOpen = false;
-            IsUserOpen = false; 
+            IsUserOpen = false;
         }
     }
 }

@@ -50,14 +50,14 @@
                             <CardComponent Title="PO Line" Icon="fa-file-invoice">
                             <CardBody>
                                     <DataAnnotationsValidator />
-                                    <FormField Icon="fa-cogs" Title="Part Number" Disabled=true>
+                                    <FormField Icon="fa-cogs" Title="Part Number">
                                         <Content>
-                                            <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartNumber" />
+                                            <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartNumber" disabled />
                                         </Content>
                                     </FormField>
-                                    <FormField Icon="fa-align-left" Title="Part Description" Disabled=true>
+                                    <FormField Icon="fa-align-left" Title="Part Description">
                                         <Content>
-                                            <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartDescription" />
+                                            <InputText class="input" Placeholder="Customer Code" @bind-Value="POLineEditor.PartDescription" disabled />
                                         </Content>
                                     </FormField>
                                     <FormField Icon="fa-cubes" Title="Quantity">
@@ -134,6 +134,7 @@
                         </div>
                         @if (FilteredPOList?.Count > 0)
                         {
+                            <div class="table-container">
                             <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                 <thead>
                                     <tr>
@@ -214,6 +215,7 @@
                                     }
                                 </tbody>
                             </table>
+                            </div>
                         }
                     </CardBody>
                     <Footer>
