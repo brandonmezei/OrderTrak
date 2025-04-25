@@ -406,5 +406,28 @@ namespace OrderTrak.Client.Pages.Receiving
                 Layout.AddMessage(ex.Message, MessageType.Error);
             }
         }
+
+        protected async Task SaveUpperInfo_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if (Receiving != null)
+                {
+                    // Save PO
+                    await ReceivingService.UpdateReceivingAsync(MapperService.Map<ReceivingUpdateDTO>(Receiving));
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
     }
 }

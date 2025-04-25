@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250425185602_Order_OrderLines")]
+    partial class Order_OrderLines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -327,9 +330,6 @@ namespace OrderTrak.API.Migrations
                     b.Property<string>("OrderUDF9")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("RequestedDeliveryDate")
                         .HasColumnType("datetime2");
 
@@ -363,53 +363,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectID");
-
                     b.ToTable("ORD_Order");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_PickList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("FormID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LineID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StockID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdateName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LineID");
-
-                    b.HasIndex("StockID");
-
-                    b.ToTable("ORD_PickList");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
@@ -1245,36 +1199,6 @@ namespace OrderTrak.API.Migrations
                     b.Navigation("UPL_StockGroup");
                 });
 
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Order", b =>
-                {
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_Project", "UPL_Project")
-                        .WithMany("ORD_Order")
-                        .HasForeignKey("ProjectID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UPL_Project");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_PickList", b =>
-                {
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.ORD_Line", "ORD_Line")
-                        .WithMany("ORD_PickList")
-                        .HasForeignKey("LineID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.INV_Stock", "INV_Stock")
-                        .WithMany("ORD_PickList")
-                        .HasForeignKey("StockID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("INV_Stock");
-
-                    b.Navigation("ORD_Line");
-                });
-
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
                 {
                     b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_Project", "UPL_Project")
@@ -1382,19 +1306,9 @@ namespace OrderTrak.API.Migrations
                     b.Navigation("INV_Stock");
                 });
 
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_Stock", b =>
-                {
-                    b.Navigation("ORD_PickList");
-                });
-
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_StockStatus", b =>
                 {
                     b.Navigation("INV_Stock");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Line", b =>
-                {
-                    b.Navigation("ORD_PickList");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Order", b =>
@@ -1446,11 +1360,6 @@ namespace OrderTrak.API.Migrations
                     b.Navigation("ORD_Line");
 
                     b.Navigation("PO_Line");
-                });
-
-            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Project", b =>
-                {
-                    b.Navigation("ORD_Order");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_StockGroup", b =>

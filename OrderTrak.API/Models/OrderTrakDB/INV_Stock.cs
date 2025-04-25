@@ -54,5 +54,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public virtual UPL_Location UPL_Location { get; set; } = null!;
 
         public virtual INV_StockStatus INV_StockStatus { get; set; } = null!;
+        public virtual ICollection<ORD_PickList> ORD_PickList { get; set; } = [];
     }
 }

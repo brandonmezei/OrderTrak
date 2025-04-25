@@ -67,6 +67,17 @@ namespace OrderTrak.API.Services.Project
             project.UDF8 = projectUpdateDTO.UDF8;
             project.UDF9 = projectUpdateDTO.UDF9;
             project.UDF10 = projectUpdateDTO.UDF10;
+            project.StakeHolderEmail = projectUpdateDTO.StakeHolderEmail;
+            project.OrderUDF1 = projectUpdateDTO.OrderUDF1;
+            project.OrderUDF2 = projectUpdateDTO.OrderUDF2;
+            project.OrderUDF3 = projectUpdateDTO.OrderUDF3;
+            project.OrderUDF4 = projectUpdateDTO.OrderUDF4;
+            project.OrderUDF5 = projectUpdateDTO.OrderUDF5;
+            project.OrderUDF6 = projectUpdateDTO.OrderUDF6;
+            project.OrderUDF7 = projectUpdateDTO.OrderUDF7;
+            project.OrderUDF8 = projectUpdateDTO.OrderUDF8;
+            project.OrderUDF9 = projectUpdateDTO.OrderUDF9;
+            project.OrderUDF10 = projectUpdateDTO.OrderUDF10;
 
             // Save
             await DB.SaveChangesAsync();
@@ -111,7 +122,18 @@ namespace OrderTrak.API.Services.Project
                     UDF7 = x.UDF7,
                     UDF8 = x.UDF8,
                     UDF9 = x.UDF9,
-                    UDF10 = x.UDF10
+                    UDF10 = x.UDF10,
+                    StakeHolderEmail = x.StakeHolderEmail,
+                    OrderUDF1 = x.OrderUDF1,
+                    OrderUDF2 = x.OrderUDF2,
+                    OrderUDF3 = x.OrderUDF3,
+                    OrderUDF4 = x.OrderUDF4,
+                    OrderUDF5 = x.OrderUDF5,
+                    OrderUDF6 = x.OrderUDF6,
+                    OrderUDF7 = x.OrderUDF7,
+                    OrderUDF8 = x.OrderUDF8,
+                    OrderUDF9 = x.OrderUDF9,
+                    OrderUDF10 = x.OrderUDF10
                 })
                 .FirstOrDefaultAsync(x => x.FormID == projectID)
                 ?? throw new ValidationException("Project not found.");

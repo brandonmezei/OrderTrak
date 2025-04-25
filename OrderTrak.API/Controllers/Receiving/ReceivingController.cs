@@ -85,6 +85,24 @@ namespace OrderTrak.API.Controllers.Receiving
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("UpdateReceiving")]
+        public async Task<ActionResult> UpdateReceivingAsync([FromBody] ReceivingUpdateDTO receivingUpdateDTO)
+        {
+            try
+            {
+                await ReceivingService.UpdateReceivingAsync(receivingUpdateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE

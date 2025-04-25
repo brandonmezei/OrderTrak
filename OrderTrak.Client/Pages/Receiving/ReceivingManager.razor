@@ -195,18 +195,18 @@
                                     </div>
                                 </div>
                                 <hr />
-                                <div class="box">
-                                    @foreach (var tuple in NewReceipt.BoxLineList.Select((line, index) => new {line, index}))
-                                    {
+                                @foreach (var tuple in NewReceipt.BoxLineList.Select((line, index) => new { line, index }))
+                                {
+                                    <div class="box">
                                         <div class="columns is-centered">
-                                            <div class="column">
+                                            <div class="column is-one-third">
                                                 <FormField Icon="fa-box" Title="Box Number">
                                                     <Content>
                                                         <input type="text" class="input" value="@(tuple.index + 1)" disabled />
                                                     </Content>
                                                 </FormField>
                                             </div>
-                                            <div class="column">
+                                            <div class="column is-one-third">
                                                 <FormField Icon="fa-cubes" Title="Quantity">
                                                     <Content>
                                                         @if (poLine.IsSerialized)
@@ -220,19 +220,22 @@
                                                     </Content>
                                                 </FormField>
                                             </div>
-                                            @if(poLine.IsSerialized)
+                                        </div>
+                                        <hr />
+                                        <div class="columns is-centered is-flex is-flex-wrap-wrap">
+                                            @if (poLine.IsSerialized)
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-barcode" Title="Serial">
                                                         <Content>
                                                             <InputText class="input is-danger" @bind-Value="tuple.line.SerialNumber" />
                                                         </Content>
                                                     </FormField>
                                                 </div>
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-desktop" Title="Asset">
                                                         <Content>
-                                                            <InputText class="input is-danger" @bind-Value="tuple.line.AssetTag" />
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.AssetTag" />
                                                         </Content>
                                                     </FormField>
                                                 </div>
@@ -240,7 +243,7 @@
 
                                             @if (!string.IsNullOrEmpty(poLine.UdF1))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF1>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF1" />
@@ -250,7 +253,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF2))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF2>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF2" />
@@ -260,7 +263,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF3))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF3>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF3" />
@@ -270,7 +273,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF4))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF4>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF4" />
@@ -280,7 +283,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF5))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF5>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF5" />
@@ -290,7 +293,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF6))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF6>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF6" />
@@ -300,7 +303,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF7))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF7>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF7" />
@@ -310,7 +313,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF8))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF8>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF8" />
@@ -320,7 +323,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF9))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF9>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF9" />
@@ -330,7 +333,7 @@
                                             }
                                             @if (!string.IsNullOrEmpty(poLine.UdF10))
                                             {
-                                                <div class="column">
+                                                <div class="column is-3">
                                                     <FormField Icon="fa-hashtag" Title=@poLine.UdF10>
                                                         <Content>
                                                             <InputText class="input is-primary" @bind-Value="tuple.line.UdF10" />
@@ -339,9 +342,8 @@
                                                 </div>
                                             }
                                         </div>
-                                        <hr />
-                                    }
-                                </div>
+                                    </div>
+                                }
                             </CardBody>
                             <Footer>
                                 @if (!poLine.IsSerialized)
@@ -506,7 +508,7 @@
             <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/receiving/search" />
             @if (Receiving.CanReceive)
             {
-                <FormButton Title="Save" Style="is-success" Icon="fa-save" />
+                <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="SaveUpperInfo_Click" />
             }
         </div>
     </div>

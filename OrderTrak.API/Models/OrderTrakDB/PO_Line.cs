@@ -26,5 +26,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public virtual PO_Header PO_Header { get; set; } = null!;
         public virtual UPL_PartInfo UPL_PartInfo { get; set; } = null!;
         public virtual ICollection<INV_Stock> INV_Stock { get; set; } = [];
+        public virtual ICollection<ORD_Line> ORD_Line { get; set; } = [];
     }
 }

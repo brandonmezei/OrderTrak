@@ -29,5 +29,10 @@ namespace OrderTrak.Client.Services.Receiving
         {
             return await ApiService.SearchReceivingAsync(searchQuery);
         }
+
+        public async Task UpdateReceivingAsync(ReceivingUpdateDTO receivingUpdateDTO)
+        {
+            await ApiService.UpdateReceivingAsync(receivingUpdateDTO);
+        }
     }
 }

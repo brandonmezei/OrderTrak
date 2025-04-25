@@ -9,5 +9,6 @@ namespace OrderTrak.Client.Services.Receiving
         Task<ReceivingDTO> GetReceivingAsync(Guid recID);
         Task<PagedTableOfReceivingSearchReturnDTO> SearchReceivingAsync(ReceivingSearchDTO searchQuery);
         Task CreateReceivingLineAsync(ReceivingLineCreateDTO receivingLineCreateDTO);
+        Task UpdateReceivingAsync(ReceivingUpdateDTO receivingUpdateDTO);
     }
 }

@@ -113,35 +113,43 @@
             <div class="column">
                 <CardComponent Title="Address" Icon="fa-map-marker-alt">
                     <CardBody>
-                        <div class="columns is-centered">
-                            <div class="column">
+                        <div class="columns is-centered is-flex-wrap-wrap">
+                            <div class="column is-half">
                                 <FormField Icon="fa-map-marker-alt" Title="Address">
                                     <Content>
                                         <InputText class="input is-danger" Placeholder="Address" @bind-Value="Customer.Address" />
                                     </Content>
                                 </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-map-marker-alt" Title="Address 2">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="Address" @bind-Value="Customer.Address2" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
                                 <FormField Icon="fa-city" Title="City">
                                     <Content>
                                         <InputText class="input is-danger" Placeholder="City" @bind-Value="Customer.City" />
                                     </Content>
                                 </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-flag" Title="State">
+                                    <Content>
+                                        <InputText class="input is-danger" Placeholder="State" @bind-Value="Customer.State" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
                                 <FormField Icon="fa-phone" Title="Phone">
                                     <Content>
                                         <InputText class="input is-danger" Placeholder="Phone" @bind-Value="Customer.Phone" />
                                     </Content>
                                 </FormField>
                             </div>
-                            <div class="column">
-                                <FormField Icon="fa-map-marker-alt" Title="Address 2">
-                                    <Content>
-                                        <InputText class="input is-primary" Placeholder="Address" @bind-Value="Customer.Address2" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-flag" Title="State">
-                                    <Content>
-                                        <InputText class="input is-danger" Placeholder="State" @bind-Value="Customer.State" />
-                                    </Content>
-                                </FormField>
+                            <div class="column is-half">
                                 <FormField Icon="fa-envelope" Title="Zip">
                                     <Content>
                                         <InputText class="input is-danger" Placeholder="Zip" @bind-Value="Customer.Zip" />

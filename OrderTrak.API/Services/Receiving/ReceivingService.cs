@@ -308,5 +308,24 @@ namespace OrderTrak.API.Services.Receiving
             // Save
             await DB.SaveChangesAsync();
         }
+
+        public async Task UpdateReceivingAsync(ReceivingUpdateDTO receivingUpdateDTO)
+        {
+            // Get the Receipt by FormID
+            var receipt = DB.INV_Receipt
+                .FirstOrDefault(x => x.FormID == receivingUpdateDTO.FormID)
+                ?? throw new ValidationException("Receiving record not found.");
+
+            // Check if the receipt is on today's date
+            if (receipt.CreateDate.Date != DateTime.Today.Date)
+                throw new ValidationException("Receiving record is not on today's date.");
+
+            // Update Details
+            receipt.TrackingNumber = receivingUpdateDTO.TrackingNumber ?? throw new ValidationException("Tracking Number cannot be blank.");
+            receipt.Carrier = receivingUpdateDTO.Carrier ?? throw new ValidationException("Carrier cannot be blank.");
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
     }
 }

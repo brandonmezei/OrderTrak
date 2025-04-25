@@ -200,6 +200,15 @@ namespace OrderTrak.Client.Services.API
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task UpdateReceivingAsync(ReceivingUpdateDTO body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task UpdateReceivingAsync(ReceivingUpdateDTO body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task DeleteReceivingAsync(System.Guid recID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -2138,6 +2147,85 @@ namespace OrderTrak.Client.Services.API
                 
                     // Operation Path: "api/Receiving/CreateReceivingLine"
                     urlBuilder_.Append("api/Receiving/CreateReceivingLine");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task UpdateReceivingAsync(ReceivingUpdateDTO body)
+        {
+            return UpdateReceivingAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task UpdateReceivingAsync(ReceivingUpdateDTO body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/Receiving/UpdateReceiving"
+                    urlBuilder_.Append("api/Receiving/UpdateReceiving");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -7230,6 +7318,9 @@ namespace OrderTrak.Client.Services.API
         [Newtonsoft.Json.JsonProperty("contactEmail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ContactEmail { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("stakeHolderEmail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string StakeHolderEmail { get; set; }
+
         [Newtonsoft.Json.JsonProperty("udF1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string UdF1 { get; set; }
 
@@ -7259,6 +7350,36 @@ namespace OrderTrak.Client.Services.API
 
         [Newtonsoft.Json.JsonProperty("udF10", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string UdF10 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF4 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF5", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF5 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF6", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF6 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF7", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF7 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF8", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF8 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF9", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF9 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF10", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF10 { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
@@ -7293,6 +7414,9 @@ namespace OrderTrak.Client.Services.API
         [Newtonsoft.Json.JsonProperty("contactEmail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ContactEmail { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("stakeHolderEmail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string StakeHolderEmail { get; set; }
+
         [Newtonsoft.Json.JsonProperty("udF1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string UdF1 { get; set; }
 
@@ -7322,6 +7446,36 @@ namespace OrderTrak.Client.Services.API
 
         [Newtonsoft.Json.JsonProperty("udF10", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string UdF10 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF4 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF5", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF5 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF6", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF6 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF7", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF7 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF8", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF8 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF9", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF9 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("orderUDF10", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrderUDF10 { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
@@ -7550,6 +7704,30 @@ namespace OrderTrak.Client.Services.API
 
         [Newtonsoft.Json.JsonProperty("dataReceived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset DataReceived { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.3.0.0 (NJsonSchema v11.2.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ReceivingUpdateDTO
+    {
+        [Newtonsoft.Json.JsonProperty("formID", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid FormID { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("trackingNumber", Required = Newtonsoft.Json.Required.AllowNull)]
+        public string TrackingNumber { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("carrier", Required = Newtonsoft.Json.Required.AllowNull)]
+        public string Carrier { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 

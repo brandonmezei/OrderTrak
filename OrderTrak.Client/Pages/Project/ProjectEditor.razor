@@ -75,63 +75,184 @@
                 </CardComponent>
             </div>
             <div class="column">
-                <CardComponent Title="UDF Labels(s)" Icon="fa-cogs">
+
+                <CardComponent Title="Stake Holder Email(s)" Icon="fa-envelope">
                     <CardBody>
-                        <div class="columns is-centered">
-                            <div class="column">
+                        <FormField Title="Stake Holder Email(s)">
+                            <Content>
+                                <InputTextArea class="textarea" Placeholder="UDF1" @bind-Value="Project.StakeHolderEmail" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+
+                <CardComponent Title="Inventory UDF Labels(s)" Icon="fa-cogs">
+                    <CardBody>
+                        <div class="columns is-centered is-flex-wrap-wrap">
+                            <div class="column is-half">
                                 <FormField Icon="fa-font" Title="UDF 1">
                                     <Content>
-                                        <InputText class="input"  Placeholder="UDF1" @bind-Value="Project.UdF1" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 3">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF3" @bind-Value="Project.UdF3" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 5">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF5" @bind-Value="Project.UdF5" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 7">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF7" @bind-Value="Project.UdF7" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 9">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF9" @bind-Value="Project.UdF9" />
+                                        <InputText class="input is-primary" Placeholder="UDF1" @bind-Value="Project.UdF1" />
                                     </Content>
                                 </FormField>
                             </div>
-                            <div class="column">
+                            <div class="column is-half">
                                 <FormField Icon="fa-font" Title="UDF 2">
                                     <Content>
-                                        <InputText class="input"  Placeholder="UDF2" @bind-Value="Project.UdF2" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 4">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF4" @bind-Value="Project.UdF4" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 6">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF6" @bind-Value="Project.UdF6" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 8">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF8" @bind-Value="Project.UdF8" />
-                                    </Content>
-                                </FormField>
-                                <FormField Icon="fa-font" Title="UDF 10">
-                                    <Content>
-                                        <InputText class="input"  Placeholder="UDF10" @bind-Value="Project.UdF10" />
+                                        <InputText class="input is-primary" Placeholder="UDF2" @bind-Value="Project.UdF2" />
                                     </Content>
                                 </FormField>
                             </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 3">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF3" @bind-Value="Project.UdF3" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 4">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF4" @bind-Value="Project.UdF4" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 5">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF5" @bind-Value="Project.UdF5" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 6">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF6" @bind-Value="Project.UdF6" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 7">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF7" @bind-Value="Project.UdF7" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 8">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF8" @bind-Value="Project.UdF8" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 9">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF9" @bind-Value="Project.UdF9" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-font" Title="UDF 10">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF10" @bind-Value="Project.UdF10" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                        </div>
+                    </CardBody>
+                </CardComponent>
+                           
+                <CardComponent Title="Order UDF Labels(s)" Icon="fa-tags">
+                    <CardBody>
+                        <div class="columns is-centered is-flex-wrap-wrap">
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 1">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF1" @bind-Value="Project.OrderUDF1" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 2">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF2" @bind-Value="Project.OrderUDF2" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 3">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF3" @bind-Value="Project.OrderUDF3" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 4">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF4" @bind-Value="Project.OrderUDF4" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 5">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF5" @bind-Value="Project.OrderUDF5" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 6">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF6" @bind-Value="Project.OrderUDF6" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 7">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF7" @bind-Value="Project.OrderUDF7" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 8">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF8" @bind-Value="Project.OrderUDF8" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 9">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF9" @bind-Value="Project.OrderUDF9" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
+                            <div class="column is-half">
+                                <FormField Icon="fa-pen-to-square" Title="UDF 10">
+                                    <Content>
+                                        <InputText class="input is-primary" Placeholder="UDF10" @bind-Value="Project.OrderUDF10" />
+                                    </Content>
+                                </FormField>
+                            </div>
+
                         </div>
                     </CardBody>
                 </CardComponent>

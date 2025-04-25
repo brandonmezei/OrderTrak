@@ -8,6 +8,7 @@ namespace OrderTrak.API.Services.Receiving
         Task<Guid> CreateReceivingAsync(ReceivingCreateDTO receivingCreateDTO);
         Task DeleteReceivingAsync(Guid recID);
         Task<ReceivingDTO> GetReceivingAsync(Guid recID);
+        Task UpdateReceivingAsync(ReceivingUpdateDTO receivingUpdateDTO);
         Task<PagedTable<ReceivingSearchReturnDTO>> SearchReceivingAsync(ReceivingSearchDTO searchQuery);
         Task CreateReceivingLineAsync(ReceivingLineCreateDTO receivingLineCreateDTO);
     }

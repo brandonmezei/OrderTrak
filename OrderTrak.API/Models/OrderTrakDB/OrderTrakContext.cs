@@ -94,6 +94,40 @@ namespace OrderTrak.API.Models.OrderTrakDB
                 .WithMany(pp => pp.INV_Stock)
                 .HasForeignKey(pl => pl.LocationID)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure for Ord_Line
+            modelBuilder.Entity<ORD_Line>()
+                .HasOne(pl => pl.UPL_PartInfo)
+                .WithMany(pp => pp.ORD_Line)
+                .HasForeignKey(pl => pl.PartID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ORD_Line>()
+                .HasOne(pl => pl.PO_Line)
+                .WithMany(pp => pp.ORD_Line)
+                .HasForeignKey(pl => pl.POLineID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ORD_Line>()
+               .HasOne(pl => pl.UPL_StockGroup)
+               .WithMany(pp => pp.ORD_Line)
+               .HasForeignKey(pl => pl.StockGroupID)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure ORD_PickList
+            modelBuilder.Entity<ORD_PickList>()
+                .HasOne(pl => pl.ORD_Line)
+                .WithMany(pp => pp.ORD_PickList)
+                .HasForeignKey(pl => pl.LineID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ORD_PickList>()
+                .HasOne(pl => pl.INV_Stock)
+                .WithMany(pp => pp.ORD_PickList)
+                .HasForeignKey(pl => pl.StockID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
         }
 
         public override int SaveChanges()
