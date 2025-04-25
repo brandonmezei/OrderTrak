@@ -11,7 +11,7 @@
 {
     @if (DeleteRec)
     {
-        <ModalPopup Title="Confirm Delete" OnClose="DeleteRec_Toggle">
+        <ModalPopup Title="Confirm Delete" OnClose="DeleteRec_Toggle" Messages=Layout.Messages>
             <Content>
                 <p class="subtitle">Are you sure you want to delete this receipt?</p>
             </Content>
@@ -24,7 +24,7 @@
 
     @if (NewRec)
     {
-        <ModalPopup Title="New Receipt" OnClose="AddRec_Toggle">
+        <ModalPopup Title="New Receipt" OnClose="AddRec_Toggle" Messages=Layout.Messages>
             <Content>
                 <CardComponent Title="PO Lines" Icon="fa-receipt" RightTitle="@($"{ NewReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
                     <CardBody>
@@ -158,7 +158,7 @@
 
             if (poLine != null)
             {
-                <ModalPopup Title="Receipt Lines" OnClose="() => SelectPOLine_Click(null)">
+                <ModalPopup Title="Receipt Lines" OnClose="() => SelectPOLine_Click(null)" Messages=Layout.Messages>
                     <Content>
                         <div class="columns is-centered">
                             <div class="column">
@@ -220,13 +220,140 @@
                                                     </Content>
                                                 </FormField>
                                             </div>
+                                            @if(poLine.IsSerialized)
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-barcode" Title="Serial">
+                                                        <Content>
+                                                            <InputText class="input is-danger" @bind-Value="tuple.line.SerialNumber" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                                <div class="column">
+                                                    <FormField Icon="fa-desktop" Title="Asset">
+                                                        <Content>
+                                                            <InputText class="input is-danger" @bind-Value="tuple.line.AssetTag" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(poLine.UdF1))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF1>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF1" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF2))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF2>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF2" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF3))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF3>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF3" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF4))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF4>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF4" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF5))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF5>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF5" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF6))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF6>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF6" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF7))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF7>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF7" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF8))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF8>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF8" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF9))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF9>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF9" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poLine.UdF10))
+                                            {
+                                                <div class="column">
+                                                    <FormField Icon="fa-hashtag" Title=@poLine.UdF10>
+                                                        <Content>
+                                                            <InputText class="input is-primary" @bind-Value="tuple.line.UdF10" />
+                                                        </Content>
+                                                    </FormField>
+                                                </div>
+                                            }
                                         </div>
                                         <hr />
                                     }
                                 </div>
                             </CardBody>
+                            <Footer>
+                                @if (!poLine.IsSerialized)
+                                {
+                                    <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="AddBoxLine_Click" />
+                                }
+                            </Footer>
                         </CardComponent>
                     </Content>
+                    <FooterButtons>
+                        <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="SaveRec_Click" />
+                    </FooterButtons>
                 </ModalPopup>
             }
         }
@@ -304,7 +431,6 @@
                                 <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                     <thead>
                                         <tr>
-                                            <th></th>
                                             <th>
                                                 <a @onclick="() => SortSwitch_Click(1)">
                                                     <span>Part</span>
@@ -355,12 +481,6 @@
                                         @foreach (var line in FilteredRecList)
                                         {
                                             <tr>
-                                                <td>
-                                                    <div class="buttons">
-                                                        <FormButton Title="Edit" Style="is-small" Icon="fa-edit" />
-                                                        <FormButton Title="Delete" Style="is-small" Icon="fa-trash" />
-                                                    </div>
-                                                </td>
                                                 <td>@line.PartNumber</td>
                                                 <td>@line.PartDescription</td>
                                                 <td>@line.PurchaseOrder</td>

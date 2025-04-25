@@ -8,7 +8,7 @@ namespace OrderTrak.Client.Layout
         protected string HeaderMessage { get; set; } = "Welcome to OrderTrak";
         protected string SubTitle { get; set; } = "Your trusted order management system...";
 
-        protected List<OrderTrakMessages> Messages { get; set; } = [];
+        public List<OrderTrakMessages> Messages { get; set; } = [];
 
         public void UpdateHeader(string message, string subtitle)
         {

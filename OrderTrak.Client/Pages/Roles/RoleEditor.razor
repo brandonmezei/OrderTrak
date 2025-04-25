@@ -10,7 +10,7 @@
 {
     @if (UserDeleteID.HasValue)
     {
-        <ModalPopup Title="Confirm Delete" OnClose="() => UserDelete_Toggle(null)">
+        <ModalPopup Title="Confirm Delete" OnClose="() => UserDelete_Toggle(null)" Messages=Layout.Messages>
             <Content>
                 <p class="subtitle">Are you sure you want to remove this user from this role?</p>
             </Content>
@@ -23,7 +23,7 @@
 
     @if (AddUserShow)
     {
-        <ModalPopup Title="Add User" OnClose="AddUser_Toggle">
+        <ModalPopup Title="Add User" OnClose="AddUser_Toggle" Messages=Layout.Messages>
             <Content>
                 <div class="columns is-centered">
                     <div class="column is-half">
@@ -47,7 +47,7 @@
 
     @if (DeleteRole)
     {
-        <ModalPopup Title="Confirm Delete" OnClose="DeleteRole_Toggle">
+        <ModalPopup Title="Confirm Delete" OnClose="DeleteRole_Toggle" Messages=Layout.Messages>
             <Content>
                 <p class="subtitle">Are you sure you want to delete this role?</p>
             </Content>

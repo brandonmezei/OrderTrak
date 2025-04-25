@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using OrderTrak.Client.Models;
 
 namespace OrderTrak.Client.Shared.FormComponents
 {
@@ -16,11 +17,19 @@ namespace OrderTrak.Client.Shared.FormComponents
         [Parameter]
         public EventCallback OnClose { get; set; }
 
+        [Parameter]
+        public List<OrderTrakMessages> Messages { get; set; } = [];
 
         private async Task OnClose_Handler()
         {
             await OnClose.InvokeAsync();
 
+            StateHasChanged();
+        }
+
+        public void RemoveMessage(OrderTrakMessages message)
+        {
+            Messages.Remove(message);
             StateHasChanged();
         }
     }

@@ -318,7 +318,17 @@ namespace OrderTrak.API.Services.PO
                     PartNumber = x.UPL_PartInfo.PartNumber,
                     Quantity = x.Quantity,
                     RecQuantity = x.INV_Stock.Sum(i => i.Quantity),
-                    IsSerialized = x.IsSerialized
+                    IsSerialized = x.IsSerialized,
+                    UDF1 = x.PO_Header.UPL_Project.UDF1,
+                    UDF2 = x.PO_Header.UPL_Project.UDF2,
+                    UDF3 = x.PO_Header.UPL_Project.UDF3,
+                    UDF4 = x.PO_Header.UPL_Project.UDF4,
+                    UDF5 = x.PO_Header.UPL_Project.UDF5,
+                    UDF6 = x.PO_Header.UPL_Project.UDF6,
+                    UDF7 = x.PO_Header.UPL_Project.UDF7,
+                    UDF8 = x.PO_Header.UPL_Project.UDF8,
+                    UDF9 = x.PO_Header.UPL_Project.UDF9,
+                    UDF10 = x.PO_Header.UPL_Project.UDF10
                 })
                 .ToListAsync();
 

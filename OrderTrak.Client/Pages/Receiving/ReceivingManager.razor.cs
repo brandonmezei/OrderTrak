@@ -340,5 +340,71 @@ namespace OrderTrak.Client.Pages.Receiving
             if (NewReceipt != null)
                 NewReceipt.StockGroupID = FormID;
         }
+
+        protected void AddBoxLine_Click()
+        {
+            Layout.ClearMessages();
+
+            if (NewReceipt != null)
+            {
+                NewReceipt.BoxLineList.Add(new ReceivingBoxLineCreateDTO
+                {
+                    Quantity = 1,
+                });
+            }
+        }
+
+        protected async Task SaveRec_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if (Receiving != null && NewReceipt != null)
+                {
+                    // Filter Box Ids Qty > 0
+                    NewReceipt.BoxLineList = [.. NewReceipt.BoxLineList
+                        .Where(x => x.Quantity > 0)];
+
+                    // Get PO Line
+                    var selectedLine = NewReturnTable?.Data
+                        .FirstOrDefault(x => x.FormID == NewReceipt.PoLineID);
+
+                    if(selectedLine != null && selectedLine.IsSerialized)
+                    {
+                        // Filter Everything with a blank Serial
+                        NewReceipt.BoxLineList = [.. NewReceipt.BoxLineList
+                            .Where(x => !string.IsNullOrEmpty(x.SerialNumber))];
+                    }
+
+                    if (NewReceipt.BoxLineList.Count > 0)
+                    {
+                        // Create PO Line
+                        await ReceivingService.CreateReceivingLineAsync(NewReceipt);
+                        
+                        // Clear Receipt
+                        NewReceipt = null;
+
+                        // Clear Search
+                        await AddRec_Toggle();
+
+                        // Refresh Rec Line
+                        Receiving = await ReceivingService.GetReceivingAsync(Receiving.FormID);
+                        // Get Rec Line by filter
+                        FilteredRecList = [.. Receiving.ReceivingLines];
+
+                        Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                    }
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
     }
 }

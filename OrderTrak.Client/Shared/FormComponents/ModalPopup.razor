@@ -6,6 +6,28 @@
             <button class="delete has-text-white" aria-label="close" @onclick="OnClose_Handler"></button>
         </header>
         <section class="modal-card-body">
+            @if (Messages.Count > 0)
+            {
+                @foreach (var message in Messages)
+                {
+                    <br />
+                    <div class="columns is-centered">
+                        <div class="column is-10">
+                            <div class="message @message.BulmaLevel">
+                                <div class="message-header">
+                                    <span>@message.HeaderMessage</span>
+                                    <button class="delete" aria-label="delete" @onclick="() => RemoveMessage(message)"></button>
+                                </div>
+                                <div class="message-body">
+                                    <span>@message.Text</span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
             @Content
         </section>
         <footer class="modal-card-foot">

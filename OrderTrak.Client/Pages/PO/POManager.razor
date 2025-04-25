@@ -11,7 +11,7 @@
 {
     @if (DeletePO)
     {
-        <ModalPopup Title="Confirm Delete" OnClose="Delete_Toggle">
+        <ModalPopup Title="Confirm Delete" OnClose="Delete_Toggle" Messages=Layout.Messages>
             <Content>
                 <p class="subtitle">Are you sure you want to delete this po?</p>
             </Content>
@@ -29,7 +29,7 @@
 
     @if (DeleteLineID.HasValue)
     {
-        <ModalPopup Title="Confirm Delete" OnClose="() => DeletePart_Toggle(null)">
+        <ModalPopup Title="Confirm Delete" OnClose="() => DeletePart_Toggle(null)" Messages=Layout.Messages>
             <Content>
                 <p class="subtitle">Are you sure you want to delete this po line?</p>
             </Content>
@@ -42,7 +42,7 @@
 
     @if (POLineEditor != null)
     {
-        <ModalPopup Title="Edit PO Line" OnClose="() => EditPart_Toggle(null)">
+        <ModalPopup Title="Edit PO Line" OnClose="() => EditPart_Toggle(null)" Messages=Layout.Messages>
             <Content>
                 <div class="columns is-centered">
                     <div class="column is-half">

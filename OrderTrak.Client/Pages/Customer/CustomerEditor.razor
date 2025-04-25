@@ -9,7 +9,7 @@
 {
     @if (DeleteCustomer)
     {
-        <ModalPopup Title="Confirm Delete" OnClose="Delete_Toggle">
+        <ModalPopup Title="Confirm Delete" OnClose="Delete_Toggle" Messages=Layout.Messages>
             <Content>
                 <p class="subtitle">Are you sure you want to delete this customer?</p>
             </Content>
@@ -22,7 +22,7 @@
 
     @if (DeleteProjectID.HasValue)
     {
-        <ModalPopup Title="Confirm Delete" OnClose="() => DeleteProject_Click(null)">
+        <ModalPopup Title="Confirm Delete" OnClose="() => DeleteProject_Click(null)" Messages=Layout.Messages>
             <Content>
                 <p class="subtitle">Are you sure you want to delete this project?</p>
             </Content>
@@ -35,7 +35,7 @@
 
     @if (CreateProject != null)
     {
-        <ModalPopup Title="Add Project" OnClose="AddProject_Toggle">
+        <ModalPopup Title="Add Project" OnClose="AddProject_Toggle" Messages=Layout.Messages>
             <Content>
                 <div class="columns is-centered">
                     <div class="column is-half">

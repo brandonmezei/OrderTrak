@@ -97,6 +97,7 @@ namespace OrderTrak.API.Services.Receiving
             // Get Rec
             var query = DB.INV_Receipt
                 .Include(x => x.INV_Stock)
+                    .ThenInclude(x => x.PO_Line.PO_Header)
                 .AsQueryable();
 
             // Filters
@@ -138,8 +139,8 @@ namespace OrderTrak.API.Services.Receiving
                     break;
                 case 3:
                     query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.INV_Stock.Select(i => i.POLineID).Distinct().Count())
-                        : query.OrderByDescending(x => x.INV_Stock.Select(i => i.POLineID).Distinct().Count());
+                        ? query.OrderBy(x => x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count())
+                        : query.OrderByDescending(x => x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count());
                     break;
                 case 4:
                     query = searchQuery.SortOrder == 1
@@ -166,7 +167,7 @@ namespace OrderTrak.API.Services.Receiving
                     FormID = x.FormID,
                     TrackingNumber = x.TrackingNumber,
                     Carrier = x.Carrier,
-                    POCount = x.INV_Stock.Select(i => i.POLineID).Distinct().Count(),
+                    POCount = x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count(),
                     QuantityReceived = x.INV_Stock.Sum(x => x.Quantity),
                     DataReceived = x.CreateDate
                 })
@@ -239,6 +240,19 @@ namespace OrderTrak.API.Services.Receiving
             if (totalQty + receivingLineCreateDTO.BoxLineList.Sum(x => x.Quantity ?? 0) > poLine.Quantity)
                 throw new ValidationException("Total quantity received exceeds PO line quantity.");
 
+            // Check if Serial Numbers are unique in upload if Poline is serialized
+            if (poLine.IsSerialized)
+            {
+                var serialNumbers = receivingLineCreateDTO.BoxLineList
+                    .Select(x => x.SerialNumber)
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
+
+                // Check if serial numbers are unique
+                if (serialNumbers.Distinct().Count() != serialNumbers.Count)
+                    throw new ValidationException("Serial Numbers must be unique.");
+            }
+
             // Loop through each box line
             foreach (var line in receivingLineCreateDTO.BoxLineList)
             {
@@ -253,6 +267,7 @@ namespace OrderTrak.API.Services.Receiving
                     PO_Line = poLine,
                     INV_StockStatus = stockStatus,
                     UPL_StockGroup = stockGroup,
+                    UPL_Location = dockLocation,
                     Quantity = line.Quantity ?? 1
                 };
 
@@ -276,44 +291,16 @@ namespace OrderTrak.API.Services.Receiving
                 }
 
                 // Reference Logic
-                foreach (var reference in line.UDFList)
-                {
-                    switch (reference.Pos)
-                    {
-                        case 1:
-                            newStock.UDF1 = reference.Value;
-                            break;
-                        case 2:
-                            newStock.UDF2 = reference.Value;
-                            break;
-                        case 3:
-                            newStock.UDF3 = reference.Value;
-                            break;
-                        case 4:
-                            newStock.UDF4 = reference.Value;
-                            break;
-                        case 5:
-                            newStock.UDF5 = reference.Value;
-                            break;
-                        case 6:
-                            newStock.UDF6 = reference.Value;
-                            break;
-                        case 7:
-                            newStock.UDF7 = reference.Value;
-                            break;
-                        case 8:
-                            newStock.UDF8 = reference.Value;
-                            break;
-                        case 9:
-                            newStock.UDF9 = reference.Value;
-                            break;
-                        case 10:
-                            newStock.UDF10 = reference.Value;
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                newStock.UDF1 = line.UDF1;
+                newStock.UDF2 = line.UDF2;
+                newStock.UDF3 = line.UDF3;
+                newStock.UDF4 = line.UDF4;
+                newStock.UDF5 = line.UDF5;
+                newStock.UDF6 = line.UDF6;
+                newStock.UDF7 = line.UDF7;
+                newStock.UDF8 = line.UDF8;
+                newStock.UDF9 = line.UDF9;
+                newStock.UDF10 = line.UDF10;
 
                 DB.INV_Stock.Add(newStock);
             }
