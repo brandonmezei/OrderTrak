@@ -4,6 +4,6 @@
     {
         public Guid FormID { get; set; }
         public string PONumber { get; set; } = string.Empty;
-        public string ProjectName { get; set; } = string.Empty;
+        public string ProjectCode { get; set; } = string.Empty;
     }
 }

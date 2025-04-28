@@ -188,5 +188,9 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public DbSet<INV_Receipt> INV_Receipt { get; set; }
         public DbSet<INV_Stock> INV_Stock { get; set; }
         public DbSet<INV_StockStatus> INV_StockStatus { get; set; }
+        public DbSet<ORD_Order> ORD_Order { get; set; }
+        public DbSet<ORD_Line> ORD_Line { get; set; }
+        public DbSet<ORD_PickList> ORD_PickList { get; set; }
+        public DbSet<ORD_Status> ORD_Status { get; set; }
     }
 }

@@ -99,7 +99,7 @@ namespace OrderTrak.API.Services.PO
                 {
                     query = query.Where(x =>
                         x.PONumber.Contains(filter) ||
-                         x.UPL_Project.ProjectName.Contains(filter)
+                         x.UPL_Project.ProjectCode.Contains(filter)
                     );
                 }
             }
@@ -117,8 +117,8 @@ namespace OrderTrak.API.Services.PO
                     break;
                 case 2:
                     query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.UPL_Project.ProjectName)
-                        : query.OrderByDescending(x => x.UPL_Project.ProjectName);
+                        ? query.OrderBy(x => x.UPL_Project.ProjectCode)
+                        : query.OrderByDescending(x => x.UPL_Project.ProjectCode);
                     break;
                 default:
                     query = query.OrderBy(x => x.Id);
@@ -134,7 +134,7 @@ namespace OrderTrak.API.Services.PO
                 {
                     FormID = x.FormID,
                     PONumber = x.PONumber,
-                    ProjectName = x.UPL_Project.ProjectName,
+                    ProjectCode = x.UPL_Project.ProjectCode,
                 })
                 .ToListAsync();
 
@@ -262,7 +262,7 @@ namespace OrderTrak.API.Services.PO
                     query = query.Where(x =>
                         x.UPL_PartInfo.PartNumber.Contains(filter) ||
                          x.PO_Header.PONumber.Contains(filter) ||
-                         x.PO_Header.UPL_Project.ProjectName.Contains(filter)
+                         x.PO_Header.UPL_Project.ProjectCode.Contains(filter)
                     );
                 }
             }
@@ -277,8 +277,8 @@ namespace OrderTrak.API.Services.PO
                     break;
                 case 2:
                     query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.PO_Header.UPL_Project.ProjectName)
-                        : query.OrderByDescending(x => x.PO_Header.UPL_Project.ProjectName);
+                        ? query.OrderBy(x => x.PO_Header.UPL_Project.ProjectCode)
+                        : query.OrderByDescending(x => x.PO_Header.UPL_Project.ProjectCode);
                     break;
                 case 3:
                     query = searchQuery.SortOrder == 1
@@ -314,7 +314,7 @@ namespace OrderTrak.API.Services.PO
                 {
                     FormID = x.FormID,
                     PONumber = x.PO_Header.PONumber,
-                    ProjectName = x.PO_Header.UPL_Project.ProjectName,
+                    ProjectCode = x.PO_Header.UPL_Project.ProjectCode,
                     PartNumber = x.UPL_PartInfo.PartNumber,
                     Quantity = x.Quantity,
                     RecQuantity = x.INV_Stock.Sum(i => i.Quantity),

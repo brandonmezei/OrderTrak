@@ -13,6 +13,10 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [ForeignKey("UPL_Project")]
         public int ProjectID { get; set; }
 
+        [Required]
+        [ForeignKey("ORD_Status")]
+        public int StatusID { get; set; }
+
         public DateTime? RequestedShipDate { get; set; }
         public DateTime? RequestedDeliveryDate { get; set; }
         public DateTime? ActualShipDate { get; set; }
@@ -39,5 +43,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         public virtual ICollection<ORD_Line> ORD_Line { get; set; } = [];
         public virtual UPL_Project UPL_Project { get; set; } = null!;
+        public virtual ORD_Status ORD_Status { get; set; } = null!;
     }
 }

@@ -124,6 +124,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("Receiving", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Receiving")));
+    
+    options.AddPolicy("Order", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Order")));
 });
 
 builder.Services.AddCors(options =>

@@ -22,6 +22,10 @@
                         Orders
                     </button>
                     <div class="navbar-dropdown">
+                        @if (Permissions.Any(x => x == "Order"))
+                        {
+                            <NavBarItem Label="Order Manager" Icon="fa-box" URL="/order/search" />
+                        }
                         @if (Permissions.Any(x => x == "PurchaseOrder"))
                         {
                             <NavBarItem Label="Purchase Order Manager" Icon="fa-file-invoice" URL="/po/search" />
