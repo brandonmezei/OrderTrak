@@ -7,6 +7,6 @@
         public string Carrier { get; set; } = string.Empty;
         public int POCount { get; set; }
         public int QuantityReceived { get; set; }
-        public DateTime DataReceived { get; set; }
+        public DateTime DateReceived { get; set; }
     }
 }

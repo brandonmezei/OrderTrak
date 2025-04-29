@@ -1,34 +1,32 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
-using OrderTrak.Client.Services.PO;
+using OrderTrak.Client.Services.Order;
 using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
-namespace OrderTrak.Client.Pages.PO
+namespace OrderTrak.Client.Pages.Order
 {
-    public partial class POSearch
+    public partial class OrderSearch
     {
         [Inject]
-        private IPOService POService { get; set; } = default!;
+        private IOrderService OrderService { get; set; } = default!;
 
         [SupplyParameterFromQuery]
-        public bool Delete { get; set; }
+        public bool Cancel { get; set; }
 
-        protected POSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        protected SearchQueryDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
-        protected POCreateDTO? CreatePO { get; set; }
+        protected OrderCreateDTO? CreateOrder { get; set; }
 
-        protected PagedTableOfPOSearchReturnDTO? ReturnTable;
-
-        protected Guid? DeleteID { get; set; }
+        protected PagedTableOfOrderSearchReturnDTO? ReturnTable;
 
         protected override void OnInitialized()
         {
             Layout.ClearMessages();
-            Layout.UpdateHeader("Purchase Order Admin", "Create and edit purchase orders.");
+            Layout.UpdateHeader("Order Admin", "Create and edit orders.");
 
-            if (Delete)
-                Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
+            if (Cancel)
+                Layout.AddMessage(Messages.CancelSuccessful, MessageType.Success);
 
             IsCardLoading = true;
         }
@@ -42,9 +40,9 @@ namespace OrderTrak.Client.Pages.PO
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
-                    // Get PO from API
-                    SearchFilters = await LocalStorage.GetItemAsync<POSearchDTO>("search") ?? SearchFilters;
-                    ReturnTable = await POService.SearchPOAsync(SearchFilters);
+                    // Get Orders from API
+                    SearchFilters = await LocalStorage.GetItemAsync<SearchQueryDTO>("search") ?? SearchFilters;
+                    ReturnTable = await OrderService.SearchOrderAsync(SearchFilters);
                 }
                 catch (ApiException ex)
                 {
@@ -78,8 +76,8 @@ namespace OrderTrak.Client.Pages.PO
                 // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                // Get Purchase Order from API
-                ReturnTable = await POService.SearchPOAsync(SearchFilters);
+                // Get Order from API
+                ReturnTable = await OrderService.SearchOrderAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -110,8 +108,8 @@ namespace OrderTrak.Client.Pages.PO
                 // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                // Get Purchase Order from API
-                ReturnTable = await POService.SearchPOAsync(SearchFilters);
+                // Get Order from API
+                ReturnTable = await OrderService.SearchOrderAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -137,8 +135,8 @@ namespace OrderTrak.Client.Pages.PO
                 // Save Filters
                 await LocalStorage.SetItemAsync("search", SearchFilters);
 
-                // Get Purchase Order from API
-                ReturnTable = await POService.SearchPOAsync(SearchFilters);
+                // Get Order from API
+                ReturnTable = await OrderService.SearchOrderAsync(SearchFilters);
 
                 if (ReturnTable?.TotalRecords == 0)
                 {
@@ -155,15 +153,15 @@ namespace OrderTrak.Client.Pages.PO
             }
         }
 
-        protected void CreatePO_Toggle()
+        protected void CreateOrder_Toggle()
         {
-            if (CreatePO == null)
-                CreatePO = new();
+            if (CreateOrder == null)
+                CreateOrder = new();
             else
-                CreatePO = null;
+                CreateOrder = null;
         }
 
-        protected async Task CreatePO_Submit()
+        protected async Task CreateOrder_Submit()
         {
             if (IsLoading)
                 return;
@@ -174,13 +172,13 @@ namespace OrderTrak.Client.Pages.PO
 
             try
             {
-                if (CreatePO != null)
+                if (CreateOrder != null)
                 {
-                    // Create the Part
-                    await POService.CreatePOAsync(CreatePO);
+                    // Create the Order
+                    await OrderService.CreateOrderAsync(CreateOrder);
 
-                    // Get Purchase Order from API
-                    ReturnTable = await POService.SearchPOAsync(SearchFilters);
+                    // Get Order from API
+                    ReturnTable = await OrderService.SearchOrderAsync(SearchFilters);
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }
@@ -195,59 +193,15 @@ namespace OrderTrak.Client.Pages.PO
             }
             finally
             {
-                CreatePO = null;
+                CreateOrder = null;
                 IsLoading = false;
             }
         }
 
-        protected void Delete_Toggle(Guid? FormID)
-        {
-            Layout.ClearMessages();
-
-            DeleteID = FormID;
-        }
-
-        protected async Task DeleteConfirm_Click()
-        {
-            Layout.ClearMessages();
-
-            try
-            {
-                if (DeleteID.HasValue)
-                {
-                    // Delete the PO
-                    await POService.DeletePOAsync(DeleteID.Value);
-
-                    // Get Purchase Order from API
-                    ReturnTable = await POService.SearchPOAsync(SearchFilters);
-
-                    Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
-                }
-            }
-            catch (ApiException ex)
-            {
-                Layout.AddMessage(ex.Response, MessageType.Error);
-            }
-            catch (Exception ex)
-            {
-                Layout.AddMessage(ex.Message, MessageType.Error);
-            }
-            finally
-            {
-                DeleteID = null;
-            }
-        }
-
-        protected async Task NoReceipt_Change()
-        {
-            SearchFilters.NoReceipt = !SearchFilters.NoReceipt;
-            await Search_Click();
-        }
-
         protected void Project_Change(Guid? FormID)
         {
-            if (CreatePO != null && FormID.HasValue)
-                CreatePO.ProjectID = FormID.Value;
+            if (CreateOrder != null && FormID.HasValue)
+                CreateOrder.ProjectID = FormID.Value;
         }
     }
 }

@@ -5,6 +5,8 @@
         public Guid FormID { get; set; }
         public Guid ProjectID { get; set; }
         public string PONumber { get; set; } = string.Empty;
+        public string CustomerCode { get; set; } = string.Empty;
+        public string ProjectCode { get; set; } = string.Empty;
         public List<POLineDTO> POLines { get; set; } = [];
     }
 }

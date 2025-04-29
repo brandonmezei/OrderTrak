@@ -55,6 +55,7 @@ namespace OrderTrak.API.Services.PO
         {
             return await DB.PO_Header
                 .Include(x => x.UPL_Project)
+                    .ThenInclude(x => x.UPL_Customer)
                 .Include(x => x.PO_Line)
                     .ThenInclude(x => x.UPL_PartInfo)
                 .Where(x => x.FormID == partID)
@@ -64,6 +65,8 @@ namespace OrderTrak.API.Services.PO
                     FormID = x.FormID,
                     ProjectID = x.UPL_Project.FormID,
                     PONumber = x.PONumber,
+                    CustomerCode = x.UPL_Project.UPL_Customer.CustomerCode,
+                    ProjectCode = x.UPL_Project.ProjectCode,
                     POLines = x.PO_Line.Select(i => new POLineDTO
                     {
                         FormID = i.FormID,

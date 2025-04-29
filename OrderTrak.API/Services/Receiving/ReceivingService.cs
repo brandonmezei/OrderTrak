@@ -169,7 +169,7 @@ namespace OrderTrak.API.Services.Receiving
                     Carrier = x.Carrier,
                     POCount = x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count(),
                     QuantityReceived = x.INV_Stock.Sum(x => x.Quantity),
-                    DataReceived = x.CreateDate
+                    DateReceived = x.CreateDate
                 })
                 .ToListAsync();
 

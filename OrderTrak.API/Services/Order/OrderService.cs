@@ -2,6 +2,7 @@
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Order;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Static;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrak.API.Services.Order
@@ -16,10 +17,16 @@ namespace OrderTrak.API.Services.Order
             var project = await DB.UPL_Project.FirstOrDefaultAsync(x => x.FormID == orderCreateDTO.ProjectID)
                 ?? throw new ValidationException("Project not found.");
 
+            // Get Draft Ord_Status
+            var draftStatus = await DB.ORD_Status
+                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Draft)
+                ?? throw new ValidationException("Cannot find Draft Status");
+
             // Create Order
             var order = new ORD_Order
             {
-                ProjectID = project.Id,
+                UPL_Project = project,
+                ORD_Status = draftStatus,
                 StakeHolderEmail = project.StakeHolderEmail
             };
 
@@ -35,12 +42,14 @@ namespace OrderTrak.API.Services.Order
             // Get Order By OrderID
             return await DB.ORD_Order
                 .Include(x => x.UPL_Project)
+                    .ThenInclude(x => x.UPL_Customer)
                 .Include(x => x.ORD_Status)
                 .Where(x => x.FormID == orderID)
                 .AsNoTracking()
                 .Select(x => new OrderHeaderDTO { 
                     FormID = x.FormID,
                     ProjectID = x.UPL_Project.FormID,
+                    CustomerCode = x.UPL_Project.UPL_Customer.CustomerCode,
                     ProjectCode = x.UPL_Project.ProjectCode,
                     OrderStatus = x.ORD_Status.Status,
                     OrderID = x.Id,
@@ -48,6 +57,16 @@ namespace OrderTrak.API.Services.Order
                     RequestedDeliveryDate = x.RequestedDeliveryDate,
                     ActualShipDate = x.ActualShipDate,
                     StakeHolderEmail = x.StakeHolderEmail,
+                    OrderUDFLabel1 = x.UPL_Project.OrderUDF1,
+                    OrderUDFLabel2 = x.UPL_Project.OrderUDF2,
+                    OrderUDFLabel3 = x.UPL_Project.OrderUDF3,
+                    OrderUDFLabel4 = x.UPL_Project.OrderUDF4,
+                    OrderUDFLabel5 = x.UPL_Project.OrderUDF5,
+                    OrderUDFLabel6 = x.UPL_Project.OrderUDF6,
+                    OrderUDFLabel7 = x.UPL_Project.OrderUDF7,
+                    OrderUDFLabel8 = x.UPL_Project.OrderUDF8,
+                    OrderUDFLabel9 = x.UPL_Project.OrderUDF9,
+                    OrderUDFLabel10 = x.UPL_Project.OrderUDF10,
                     OrderUDF1 = x.OrderUDF1,
                     OrderUDF2 = x.OrderUDF2,
                     OrderUDF3 = x.OrderUDF3,
@@ -57,7 +76,8 @@ namespace OrderTrak.API.Services.Order
                     OrderUDF7 = x.OrderUDF7,
                     OrderUDF8 = x.OrderUDF8,
                     OrderUDF9 = x.OrderUDF9,
-                    OrderUDF10 = x.OrderUDF10
+                    OrderUDF10 = x.OrderUDF10,
+                    IsClosed = x.ORD_Status.Status == OrderStatus.Shipped
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Order not found.");
@@ -164,13 +184,7 @@ namespace OrderTrak.API.Services.Order
                 .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.FormID)
                 ?? throw new ValidationException("Order not found.");
 
-           // Get Project
-           var project = await DB.UPL_Project
-                .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.ProjectID)
-                ?? throw new ValidationException("Project not found.");
-
             // Update Order
-            order.UPL_Project = project;
             order.RequestedShipDate = orderHeaderUpdateDTO.RequestedShipDate;
             order.RequestedDeliveryDate = orderHeaderUpdateDTO.RequestedDeliveryDate;
             order.ActualShipDate = orderHeaderUpdateDTO.ActualShipDate;

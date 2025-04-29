@@ -7,9 +7,6 @@ namespace OrderTrak.API.Models.DTO.Order
         [Required]
         public Guid? FormID { get; set; }
 
-        [Required(ErrorMessage = "Project is required.")]
-        public Guid? ProjectID { get; set; }
-
         public DateTime? RequestedShipDate { get; set; }
         public DateTime? RequestedDeliveryDate { get; set; }
         public DateTime? ActualShipDate { get; set; }

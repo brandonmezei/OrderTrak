@@ -1,0 +1,201 @@
+﻿@page "/order/section1/{FormID:guid}"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.SearchComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Order - OrderTrak</PageTitle>
+
+@if (Order != null)
+{
+    <div class="box">
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <CardComponent Title="Information" Icon="fa-info-circle">
+                    <CardBody>
+                        <FormField Icon="fa-box" Title="Order">
+                            <Content>
+                                <InputNumber class="input" Placeholder="Order ID" @bind-Value="Order.OrderID" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-id-card" Title="Customer">
+                            <Content>
+                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.CustomerCode" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-project-diagram" Title="Project">
+                            <Content>
+                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.ProjectCode" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-chart-line" Title="Status">
+                            <Content>
+                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.OrderStatus" disabled />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column is-one-third">
+                <CardComponent Title="Dates" Icon="fa-calendar">
+                    <CardBody>
+                        <div class="columns is-centered is-flex-wrap-wrap">
+                            <div class="column is-half">
+                                <FormField Icon="fa-truck" Title="Requested Ship Date">
+                                    <Content>
+                                        <InputDate class="input is-danger" Placeholder="Requested Ship Date" @bind-Value="Order.RequestedShipDate" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-dolly" Title="Requested Delivery Date">
+                                    <Content>
+                                        <InputDate class="input is-danger" Placeholder="Requested Delivery Date" @bind-Value="Order.RequestedDeliveryDate" />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            @if (Order.IsClosed)
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-box-open" Title="Actual Delivery Date">
+                                        <Content>
+                                            <InputDate class="input is-primary" Placeholder="Actual Delivery Date" @bind-Value="Order.ActualShipDate" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                        </div>
+                    </CardBody>
+                </CardComponent>
+                <CardComponent Title="Stake Holder Email(s)" Icon="fa-envelope">
+                    <CardBody>
+                        <FormField Title="Stake Holder Email(s)">
+                            <Content>
+                                <InputTextArea class="textarea" Placeholder="Stake Holder Email" @bind-Value="Order.StakeHolderEmail" />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column is-one-third">
+                <CardComponent Title="UDF Labels(s)" Icon="fa-tags">
+                    <CardBody>
+                        <div class="columns is-centered is-flex-wrap-wrap">
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel1))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel1>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel1" @bind-Value="Order.OrderUDF1" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel2))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel2>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel2" @bind-Value="Order.OrderUDF2" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel3))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel3>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel3" @bind-Value="Order.OrderUDF3" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel4))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel4>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel4" @bind-Value="Order.OrderUDF4" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel5))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel5>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel5" @bind-Value="Order.OrderUDF5" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel6))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel6>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel6" @bind-Value="Order.OrderUDF6" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel7))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel7>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel7" @bind-Value="Order.OrderUDF7" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel8))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel8>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel8" @bind-Value="Order.OrderUDF8" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel9))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel9>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel9" @bind-Value="Order.OrderUDF9" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Order.OrderUDFLabel10))
+                            {
+                                <div class="column is-half">
+                                    <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel10>
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel10" @bind-Value="Order.OrderUDF10" />
+                                        </Content>
+                                    </FormField>
+                                </div>
+                            }
+
+                        </div>
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/order/search" />
+            <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

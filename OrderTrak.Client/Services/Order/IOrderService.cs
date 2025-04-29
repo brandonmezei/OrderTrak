@@ -1,0 +1,12 @@
+﻿using OrderTrak.Client.Services.API;
+
+namespace OrderTrak.Client.Services.Order
+{
+    public interface IOrderService
+    {
+        Task<Guid> CreateOrderAsync(OrderCreateDTO orderCreateDTO);
+        Task UpdateOrderHeaderAsync(OrderHeaderUpdateDTO orderHeaderUpdateDTO);
+        Task<OrderHeaderDTO> GetOrderHeaderAsync(Guid orderID);
+        Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(SearchQueryDTO searchQuery);
+    }
+}

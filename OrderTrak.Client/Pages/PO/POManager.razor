@@ -100,6 +100,16 @@
                                 <InputText class="input is-danger"  Placeholder="Purchase Order" @bind-Value="PurchaseOrder.PoNumber" />
                             </Content>
                         </FormField>
+                        <FormField Icon="fa-id-card" Title="Customer">
+                            <Content>
+                                <InputText class="input" Placeholder="Customer" @bind-Value="PurchaseOrder.CustomerCode" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-project-diagram" Title="Project">
+                            <Content>
+                                <InputText class="input" Placeholder="Project" @bind-Value="PurchaseOrder.ProjectCode" disabled />
+                            </Content>
+                        </FormField>
                     </CardBody>
                 </CardComponent>
             </div>
