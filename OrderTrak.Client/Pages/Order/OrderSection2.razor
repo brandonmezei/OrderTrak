@@ -1,0 +1,22 @@
+﻿@page "/order/section2/{FormID:guid}"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.Order
+@using OrderTrak.Client.Shared.SearchComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Order - OrderTrak</PageTitle>
+
+<div class="box">
+    <OrderTabSwitcher Section=2 FormID=@FormID />
+    <div class="columns is-centered">
+        <div class="column">
+            <CardComponent Title="Order Line(s)" Icon="fa-list" RightTitle="@($"{ FilteredPartList?.Count } record(s)")" IsCardLoading=IsCardLoading>
+                <CardBody>
+
+                </CardBody>
+            </CardComponent>
+        </div>
+    </div>
+</div>

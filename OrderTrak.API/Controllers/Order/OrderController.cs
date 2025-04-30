@@ -32,6 +32,23 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("GetOrderLine/{orderID}")]
+        public async Task<ActionResult<List<OrderPartListDTO>>> GetOrderLineAsync(Guid orderID)
+        {
+            try
+            {
+                return Ok(await orderService.GetOrderLineAsync(orderID));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region POST
@@ -76,6 +93,24 @@ namespace OrderTrak.API.Controllers.Order
             try
             {
                 return Ok(await orderService.SearchOrderAsync(searchQuery));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("CreateOrderLine")]
+        public async Task<ActionResult> CreateOrderLineAsync([FromBody] OrderCreateLineDTO orderCreateLineDTO)
+        {
+            try
+            {
+                await orderService.CreateOrderLineAsync(orderCreateLineDTO);
+                return Ok();
             }
             catch (ValidationException ex)
             {

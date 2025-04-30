@@ -1,0 +1,44 @@
+﻿<div class="tabs is-centered is-boxed">
+    <ul>
+        <li class="@(Section == 1 ? "is-active" : string.Empty)">
+            <a href="/order/section1/@FormID">
+                <span class="icon is-small">
+                    <i class="fas fa-box" aria-hidden="true"></i> <!-- Order -->
+                </span>
+                <span>Order</span>
+            </a>
+        </li>
+        <li class="@(Section == 2 ? "is-active" : string.Empty)">
+            <a href="/order/section2/@FormID">
+                <span class="icon is-small">
+                    <i class="fas fa-list" aria-hidden="true"></i> <!-- Part List -->
+                </span>
+                <span>Part List</span>
+            </a>
+        </li>
+        <li class="@(Section == 3 ? "is-active" : string.Empty)">
+            <a href="/order/section3/@FormID">
+                <span class="icon is-small">
+                    <i class="fas fa-truck" aria-hidden="true"></i> <!-- Shipping -->
+                </span>
+                <span>Shipping</span>
+            </a>
+        </li>
+        <li class="@(Section == 4 ? "is-active" : string.Empty)">
+            <a href="/order/section4/@FormID">
+                <span class="icon is-small">
+                    <i class="fas fa-toggle-on" aria-hidden="true"></i> <!-- Activation -->
+                </span>
+                <span>Activation</span>
+            </a>
+        </li>
+        <li class="@(Section == 5 ? "is-active" : string.Empty)">
+            <a href="/order/section5/@FormID">
+                <span class="icon is-small">
+                    <i class="fas fa-ban" aria-hidden="true"></i> <!-- Cancelation -->
+                </span>
+                <span>Cancelation</span>
+            </a>
+        </li>
+    </ul>
+</div>

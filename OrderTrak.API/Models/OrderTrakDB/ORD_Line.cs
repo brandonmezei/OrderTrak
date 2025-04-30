@@ -17,11 +17,9 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [ForeignKey("UPL_PartInfo")]
         public int PartID { get; set; }
 
-        [Required]
         [ForeignKey("PO_Line")]
         public int POLineID { get; set; }
 
-        [Required]
         [ForeignKey("UPL_StockGroup")]
         public int StockGroupID { get; set; }
 
@@ -32,8 +30,8 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         public virtual ORD_Order ORD_Order { get; set; } = null!;
         public virtual UPL_PartInfo UPL_PartInfo { get; set; } = null!;
-        public virtual PO_Line PO_Line { get; set; } = null!;
-        public virtual UPL_StockGroup UPL_StockGroup { get; set; } = null!;
+        public virtual PO_Line? PO_Line { get; set; } = null!;
+        public virtual UPL_StockGroup? UPL_StockGroup { get; set; } = null!;
         public virtual ICollection<ORD_PickList> ORD_PickList { get; set; } = [];
     }
 }

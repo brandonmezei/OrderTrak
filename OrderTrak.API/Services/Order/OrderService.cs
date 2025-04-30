@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Server;
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Order;
 using OrderTrak.API.Models.OrderTrakDB;
@@ -37,6 +38,44 @@ namespace OrderTrak.API.Services.Order
             return order.FormID;
         }
 
+        public async Task CreateOrderLineAsync(OrderCreateLineDTO orderCreateLineDTO)
+        {
+            // Get Order making sure it's not shipped
+            var order = await DB.ORD_Order
+                .FirstOrDefaultAsync(x => x.FormID == orderCreateLineDTO.OrderID
+                    && x.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order not found.");
+
+            // Get Part
+            var part = await DB.UPL_PartInfo
+                .FirstOrDefaultAsync(x => x.FormID == orderCreateLineDTO.PartID)
+                ?? throw new ValidationException("Part not found.");
+
+            // Make sure the part add doesn't exceed 50
+            if (await DB.ORD_Line.CountAsync(x => x.ORD_Order.FormID == order.FormID) >= 50)
+                throw new ValidationException("Order can't have more than 50 parts.");
+
+            // If the Order isn't draft update to PickReady so it can be picked
+            if (order.ORD_Status.Status != OrderStatus.Draft)
+            {
+                var pickReadyStatus = await DB.ORD_Status
+                    .FirstOrDefaultAsync(x => x.Status == OrderStatus.PickReady)
+                    ?? throw new ValidationException("Cannot find Pick Ready Status");
+
+                order.ORD_Status = pickReadyStatus;
+            }
+
+            // Create Order Line
+            order.ORD_Line.Add(new ORD_Line
+            {
+                UPL_PartInfo = part,
+                Quantity = 1
+            });
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
         public async Task<OrderHeaderDTO> GetOrderHeaderAsync(Guid orderID)
         {
             // Get Order By OrderID
@@ -46,7 +85,8 @@ namespace OrderTrak.API.Services.Order
                 .Include(x => x.ORD_Status)
                 .Where(x => x.FormID == orderID)
                 .AsNoTracking()
-                .Select(x => new OrderHeaderDTO { 
+                .Select(x => new OrderHeaderDTO
+                {
                     FormID = x.FormID,
                     ProjectID = x.UPL_Project.FormID,
                     CustomerCode = x.UPL_Project.UPL_Customer.CustomerCode,
@@ -81,6 +121,33 @@ namespace OrderTrak.API.Services.Order
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Order not found.");
+        }
+
+        public async Task<List<OrderPartListDTO>> GetOrderLineAsync(Guid orderID)
+        {
+            return await DB.ORD_Line
+                .Include(x => x.UPL_PartInfo)
+                .Include(x => x.PO_Line.PO_Header)
+                .Include(x => x.UPL_StockGroup)
+                .Include(x => x.ORD_PickList)
+                    .ThenInclude(x => x.INV_Stock)
+                .AsSplitQuery()
+                .Where(x => x.ORD_Order.FormID == orderID)
+                .AsNoTracking()
+                .Select(x => new OrderPartListDTO
+                  {
+                      FormID = x.FormID,
+                      PartID = x.UPL_PartInfo.FormID,
+                      POLineID = x.PO_Line != null ? x.PO_Line.FormID : null,
+                      StockGroupID = x.UPL_StockGroup != null ? x.UPL_StockGroup.FormID : null,
+                      PartNumber = x.UPL_PartInfo.PartNumber,
+                      PartDescription = x.UPL_PartInfo.PartDescription,
+                      PO = x.PO_Line != null ? x.PO_Line.PO_Header.PONumber : null,
+                      StockGroup = x.UPL_StockGroup != null ? x.UPL_StockGroup.StockGroupTitle : null,
+                      Quantity = x.Quantity,
+                      PickedQuantity = x.ORD_PickList.Sum(i => i.INV_Stock.Quantity)
+                  })
+                .ToListAsync();
         }
 
         public async Task<PagedTable<OrderSearchReturnDTO>> SearchOrderAsync(SearchQueryDTO searchQuery)

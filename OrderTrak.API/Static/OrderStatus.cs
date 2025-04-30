@@ -8,6 +8,7 @@
         public static readonly string Picking = "Picking";
         public static readonly string Picked = "Picked";
         public static readonly string Shipped = "Shipped";
+        public static readonly string Hold = "Hold";
 
     }
 }

@@ -8,5 +8,7 @@ namespace OrderTrak.Client.Services.Order
         Task UpdateOrderHeaderAsync(OrderHeaderUpdateDTO orderHeaderUpdateDTO);
         Task<OrderHeaderDTO> GetOrderHeaderAsync(Guid orderID);
         Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(SearchQueryDTO searchQuery);
+        Task CreateOrderLineAsync(OrderCreateLineDTO orderCreateLineDTO);
+        Task<List<OrderPartListDTO>> GetOrderLineAsync(Guid orderID);
     }
 }
