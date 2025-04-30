@@ -12,6 +12,31 @@ namespace OrderTrak.API.Services.Order
     {
         private readonly OrderTrakContext DB = orderTrakContext;
 
+        private async Task PlaceOrderOnHoldAsync(Guid orderID)
+        {
+            // Get Order making sure it's not shipped or draft or already on hold
+            var order = await DB.ORD_Order
+                .FirstOrDefaultAsync(x => x.FormID == orderID
+                    && x.ORD_Status.Status != OrderStatus.Shipped 
+                    && x.ORD_Status.Status != OrderStatus.Draft
+                    && x.ORD_Status.Status != OrderStatus.Hold
+                    );
+
+            if (order != null)
+            {
+                // Get Hold Status
+                var holdStatus = await DB.ORD_Status
+                    .FirstOrDefaultAsync(x => x.Status == OrderStatus.Hold)
+                    ?? throw new ValidationException("Cannot find Hold Status");
+
+                // Update Order
+                order.ORD_Status = holdStatus;
+
+                // Save
+                await DB.SaveChangesAsync();
+            }
+        }
+
         public async Task<Guid> CreateOrderAsync(OrderCreateDTO orderCreateDTO)
         {
             // Get Project
@@ -44,7 +69,7 @@ namespace OrderTrak.API.Services.Order
             var order = await DB.ORD_Order
                 .FirstOrDefaultAsync(x => x.FormID == orderCreateLineDTO.OrderID
                     && x.ORD_Status.Status != OrderStatus.Shipped)
-                ?? throw new ValidationException("Order not found.");
+                ?? throw new ValidationException("Order not found or shipped.");
 
             // Get Part
             var part = await DB.UPL_PartInfo
@@ -78,6 +103,9 @@ namespace OrderTrak.API.Services.Order
 
         public async Task<OrderHeaderDTO> GetOrderHeaderAsync(Guid orderID)
         {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderID);
+
             // Get Order By OrderID
             return await DB.ORD_Order
                 .Include(x => x.UPL_Project)
@@ -125,6 +153,9 @@ namespace OrderTrak.API.Services.Order
 
         public async Task<List<OrderPartListDTO>> GetOrderLineAsync(Guid orderID)
         {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderID);
+
             return await DB.ORD_Line
                 .Include(x => x.UPL_PartInfo)
                 .Include(x => x.PO_Line.PO_Header)
@@ -246,10 +277,11 @@ namespace OrderTrak.API.Services.Order
 
         public async Task UpdateOrderHeaderAsync(OrderHeaderUpdateDTO orderHeaderUpdateDTO)
         {
-            // Get Order By FormID
+            // Get Order making sure it's not shipped
             var order = await DB.ORD_Order
-                .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.FormID)
-                ?? throw new ValidationException("Order not found.");
+                .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.FormID
+                    && x.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order not found or shipped.");
 
             // Update Order
             order.RequestedShipDate = orderHeaderUpdateDTO.RequestedShipDate;
