@@ -9,8 +9,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("UPL_UOM")]
+        [Required]      
         public int UOMID { get; set; }
 
 
@@ -26,6 +25,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public decimal Depth { get; set; } = 0;
 
+        [ForeignKey("UOMID")]
         public virtual UPL_UOM UPL_UOM { get; set; } = null!;
 
         public virtual ICollection<INV_Stock> INV_Stock { get; set; } = [];

@@ -9,18 +9,19 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("SYS_Roles")]
+        [Required]      
         public int RoleID { get; set; }
 
-        [Required]
-        [ForeignKey("SYS_Function")]
+        [Required]      
         public int FunctionID { get; set; }
 
         [Required]
         public bool CanAccess { get; set; }
 
+        [ForeignKey("RoleID")]
         public virtual SYS_Roles SYS_Roles { get; set; } = null!;
+
+        [ForeignKey("FunctionID")]
         public virtual SYS_Function SYS_Function { get; set; } = null!;
     }
 }

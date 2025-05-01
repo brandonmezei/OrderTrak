@@ -9,7 +9,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [ForeignKey("SYS_Roles")]
         public int? RoleID { get; set; }
 
         [Required]
@@ -35,6 +34,8 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public bool Approved { get; set; }
 
+
+        [ForeignKey("RoleID")]
         public virtual SYS_Roles SYS_Roles { get; set; } = null!;
     }
 }

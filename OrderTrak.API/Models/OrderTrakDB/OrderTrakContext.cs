@@ -103,9 +103,9 @@ namespace OrderTrak.API.Models.OrderTrakDB
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ORD_Line>()
-                .HasOne(pl => pl.PO_Line)
+                .HasOne(pl => pl.PO_Header)
                 .WithMany(pp => pp.ORD_Line)
-                .HasForeignKey(pl => pl.POLineID)
+                .HasForeignKey(pl => pl.POHeaderID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ORD_Line>()

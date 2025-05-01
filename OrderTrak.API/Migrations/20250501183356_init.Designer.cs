@@ -12,8 +12,8 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    [Migration("20250311231939_Precision")]
-    partial class Precision
+    [Migration("20250501183356_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,6 +107,9 @@ namespace OrderTrak.API.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StatusID")
+                        .HasColumnType("int");
+
                     b.Property<int>("StockGroupID")
                         .HasColumnType("int");
 
@@ -155,9 +158,304 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("ReceiptID");
 
+                    b.HasIndex("StatusID");
+
                     b.HasIndex("StockGroupID");
 
                     b.ToTable("INV_Stock");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_StockStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("FormID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("StockStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("INV_StockStatus");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Line", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("FormID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("POHeaderID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PartID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SerialNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StockGroupID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderID");
+
+                    b.HasIndex("POHeaderID");
+
+                    b.HasIndex("PartID");
+
+                    b.HasIndex("StockGroupID");
+
+                    b.ToTable("ORD_Line");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActualShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Address1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Carrier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("FormID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OrderUDF1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF10")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF5")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF6")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF7")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF8")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF9")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("RequestedDeliveryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RequestedShipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShipContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StakeHolderEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Zip")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectID");
+
+                    b.HasIndex("StatusID");
+
+                    b.ToTable("ORD_Order");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_PickList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("FormID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LineID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LineID");
+
+                    b.HasIndex("StockID");
+
+                    b.ToTable("ORD_PickList");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("FormID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ORD_Status");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
@@ -223,6 +521,9 @@ namespace OrderTrak.API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSerialized")
                         .HasColumnType("bit");
 
                     b.Property<int>("POHeaderID")
@@ -750,6 +1051,36 @@ namespace OrderTrak.API.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
+                    b.Property<string>("OrderUDF1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF10")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF5")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF6")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF7")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF8")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderUDF9")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProjectCode")
                         .IsRequired()
                         .HasMaxLength(4)
@@ -757,6 +1088,9 @@ namespace OrderTrak.API.Migrations
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StakeHolderEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UDF1")
@@ -899,6 +1233,12 @@ namespace OrderTrak.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.INV_StockStatus", "INV_StockStatus")
+                        .WithMany("INV_Stock")
+                        .HasForeignKey("StatusID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_StockGroup", "UPL_StockGroup")
                         .WithMany("INV_Stock")
                         .HasForeignKey("StockGroupID")
@@ -907,11 +1247,84 @@ namespace OrderTrak.API.Migrations
 
                     b.Navigation("INV_Receipt");
 
+                    b.Navigation("INV_StockStatus");
+
                     b.Navigation("PO_Line");
 
                     b.Navigation("UPL_Location");
 
                     b.Navigation("UPL_StockGroup");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Line", b =>
+                {
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.ORD_Order", "ORD_Order")
+                        .WithMany("ORD_Line")
+                        .HasForeignKey("OrderID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.PO_Header", "PO_Header")
+                        .WithMany("ORD_Line")
+                        .HasForeignKey("POHeaderID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_PartInfo", "UPL_PartInfo")
+                        .WithMany("ORD_Line")
+                        .HasForeignKey("PartID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_StockGroup", "UPL_StockGroup")
+                        .WithMany("ORD_Line")
+                        .HasForeignKey("StockGroupID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ORD_Order");
+
+                    b.Navigation("PO_Header");
+
+                    b.Navigation("UPL_PartInfo");
+
+                    b.Navigation("UPL_StockGroup");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Order", b =>
+                {
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_Project", "UPL_Project")
+                        .WithMany("ORD_Order")
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.ORD_Status", "ORD_Status")
+                        .WithMany("ORD_Order")
+                        .HasForeignKey("StatusID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ORD_Status");
+
+                    b.Navigation("UPL_Project");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_PickList", b =>
+                {
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.ORD_Line", "ORD_Line")
+                        .WithMany("ORD_PickList")
+                        .HasForeignKey("LineID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.INV_Stock", "INV_Stock")
+                        .WithMany("ORD_PickList")
+                        .HasForeignKey("StockID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("INV_Stock");
+
+                    b.Navigation("ORD_Line");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
@@ -1021,8 +1434,35 @@ namespace OrderTrak.API.Migrations
                     b.Navigation("INV_Stock");
                 });
 
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_Stock", b =>
+                {
+                    b.Navigation("ORD_PickList");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_StockStatus", b =>
+                {
+                    b.Navigation("INV_Stock");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Line", b =>
+                {
+                    b.Navigation("ORD_PickList");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Order", b =>
+                {
+                    b.Navigation("ORD_Line");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Status", b =>
+                {
+                    b.Navigation("ORD_Order");
+                });
+
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
                 {
+                    b.Navigation("ORD_Line");
+
                     b.Navigation("PO_Line");
                 });
 
@@ -1060,12 +1500,21 @@ namespace OrderTrak.API.Migrations
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_PartInfo", b =>
                 {
+                    b.Navigation("ORD_Line");
+
                     b.Navigation("PO_Line");
+                });
+
+            modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Project", b =>
+                {
+                    b.Navigation("ORD_Order");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_StockGroup", b =>
                 {
                     b.Navigation("INV_Stock");
+
+                    b.Navigation("ORD_Line");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_UOM", b =>

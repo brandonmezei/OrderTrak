@@ -10,23 +10,18 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("INV_Receipt")]
         public int ReceiptID { get; set; }
 
         [Required]
-        [ForeignKey("PO_Line")]
         public int POLineID { get; set; }
 
         [Required]
-        [ForeignKey("INV_StockStatus")]
         public int StatusID { get; set; }
 
         [Required]
-        [ForeignKey("UPL_StockGroup")]
         public int StockGroupID { get; set; }
 
         [Required]
-        [ForeignKey("UPL_Location")]
         public int LocationID { get; set; }
 
         [Required]
@@ -45,14 +40,19 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public string? UDF9 { get; set; }
         public string? UDF10 { get; set; }
 
+        [ForeignKey("ReceiptID")]
         public virtual INV_Receipt INV_Receipt { get; set; } = null!;
 
+        [ForeignKey("POLineID")]
         public virtual PO_Line PO_Line { get; set; } = null!;
 
+        [ForeignKey("StockGroupID")]
         public virtual UPL_StockGroup UPL_StockGroup { get; set; } = null!;
 
+        [ForeignKey("LocationID")]
         public virtual UPL_Location UPL_Location { get; set; } = null!;
 
+        [ForeignKey("StatusID")]
         public virtual INV_StockStatus INV_StockStatus { get; set; } = null!;
         public virtual ICollection<ORD_PickList> ORD_PickList { get; set; } = [];
     }

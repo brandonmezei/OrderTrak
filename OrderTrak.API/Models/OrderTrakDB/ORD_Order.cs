@@ -9,12 +9,10 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("UPL_Project")]
+        [Required]     
         public int ProjectID { get; set; }
 
         [Required]
-        [ForeignKey("ORD_Status")]
         public int StatusID { get; set; }
 
         public DateTime? RequestedShipDate { get; set; }
@@ -42,7 +40,11 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public string? Carrier { get; set; }
 
         public virtual ICollection<ORD_Line> ORD_Line { get; set; } = [];
+
+        [ForeignKey("ProjectID")]
         public virtual UPL_Project UPL_Project { get; set; } = null!;
+
+        [ForeignKey("StatusID")]
         public virtual ORD_Status ORD_Status { get; set; } = null!;
     }
 }

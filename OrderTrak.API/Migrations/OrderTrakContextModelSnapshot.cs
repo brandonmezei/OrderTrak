@@ -225,7 +225,7 @@ namespace OrderTrak.API.Migrations
                     b.Property<int>("OrderID")
                         .HasColumnType("int");
 
-                    b.Property<int>("POLineID")
+                    b.Property<int?>("POHeaderID")
                         .HasColumnType("int");
 
                     b.Property<int>("PartID")
@@ -237,7 +237,7 @@ namespace OrderTrak.API.Migrations
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StockGroupID")
+                    b.Property<int?>("StockGroupID")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -251,7 +251,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("OrderID");
 
-                    b.HasIndex("POLineID");
+                    b.HasIndex("POHeaderID");
 
                     b.HasIndex("PartID");
 
@@ -1261,11 +1261,10 @@ namespace OrderTrak.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.PO_Line", "PO_Line")
+                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.PO_Header", "PO_Header")
                         .WithMany("ORD_Line")
-                        .HasForeignKey("POLineID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("POHeaderID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_PartInfo", "UPL_PartInfo")
                         .WithMany("ORD_Line")
@@ -1276,12 +1275,11 @@ namespace OrderTrak.API.Migrations
                     b.HasOne("OrderTrak.API.Models.OrderTrakDB.UPL_StockGroup", "UPL_StockGroup")
                         .WithMany("ORD_Line")
                         .HasForeignKey("StockGroupID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ORD_Order");
 
-                    b.Navigation("PO_Line");
+                    b.Navigation("PO_Header");
 
                     b.Navigation("UPL_PartInfo");
 
@@ -1460,14 +1458,14 @@ namespace OrderTrak.API.Migrations
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
                 {
+                    b.Navigation("ORD_Line");
+
                     b.Navigation("PO_Line");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Line", b =>
                 {
                     b.Navigation("INV_Stock");
-
-                    b.Navigation("ORD_Line");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLog", b =>

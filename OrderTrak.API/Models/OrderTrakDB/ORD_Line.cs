@@ -9,28 +9,31 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("ORD_Order")]
+        [Required]      
         public int OrderID { get; set; }
 
         [Required]
-        [ForeignKey("UPL_PartInfo")]
         public int PartID { get; set; }
 
-        [ForeignKey("PO_Line")]
-        public int POLineID { get; set; }
+        public int? POHeaderID { get; set; }
 
-        [ForeignKey("UPL_StockGroup")]
-        public int StockGroupID { get; set; }
+        public int? StockGroupID { get; set; }
 
         [Required]
         public int Quantity { get; set; }
 
         public string? SerialNumber { get; set; }
 
+        [ForeignKey("OrderID")]
         public virtual ORD_Order ORD_Order { get; set; } = null!;
+
+        [ForeignKey("PartID")]
         public virtual UPL_PartInfo UPL_PartInfo { get; set; } = null!;
-        public virtual PO_Line? PO_Line { get; set; } = null!;
+
+        [ForeignKey("POHeaderID")]
+        public virtual PO_Header? PO_Header { get; set; } = null!;
+
+        [ForeignKey("StockGroupID")]
         public virtual UPL_StockGroup? UPL_StockGroup { get; set; } = null!;
         public virtual ICollection<ORD_PickList> ORD_PickList { get; set; } = [];
     }

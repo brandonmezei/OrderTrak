@@ -67,6 +67,7 @@ namespace OrderTrak.API.Services.Order
         {
             // Get Order making sure it's not shipped
             var order = await DB.ORD_Order
+                .Include(x => x.ORD_Status)
                 .FirstOrDefaultAsync(x => x.FormID == orderCreateLineDTO.OrderID
                     && x.ORD_Status.Status != OrderStatus.Shipped)
                 ?? throw new ValidationException("Order not found or shipped.");
@@ -158,7 +159,7 @@ namespace OrderTrak.API.Services.Order
 
             return await DB.ORD_Line
                 .Include(x => x.UPL_PartInfo)
-                .Include(x => x.PO_Line.PO_Header)
+                .Include(x => x.PO_Header)
                 .Include(x => x.UPL_StockGroup)
                 .Include(x => x.ORD_PickList)
                     .ThenInclude(x => x.INV_Stock)
@@ -169,12 +170,13 @@ namespace OrderTrak.API.Services.Order
                   {
                       FormID = x.FormID,
                       PartID = x.UPL_PartInfo.FormID,
-                      POLineID = x.PO_Line != null ? x.PO_Line.FormID : null,
+                      POID = x.PO_Header != null ? x.PO_Header.FormID : null,
                       StockGroupID = x.UPL_StockGroup != null ? x.UPL_StockGroup.FormID : null,
                       PartNumber = x.UPL_PartInfo.PartNumber,
                       PartDescription = x.UPL_PartInfo.PartDescription,
-                      PO = x.PO_Line != null ? x.PO_Line.PO_Header.PONumber : null,
+                      PO = x.PO_Header != null ? x.PO_Header.PONumber : null,
                       StockGroup = x.UPL_StockGroup != null ? x.UPL_StockGroup.StockGroupTitle : null,
+                      SerialNumber = x.SerialNumber,
                       Quantity = x.Quantity,
                       PickedQuantity = x.ORD_PickList.Sum(i => i.INV_Stock.Quantity)
                   })

@@ -9,8 +9,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("SYS_ChangeLog")]
+        [Required]       
         public int ChangeLogId { get; set; }
 
         [Required]
@@ -19,6 +18,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public string TicketInfo { get; set; } = string.Empty;
 
+        [ForeignKey("ChangeLogId")]
         public virtual SYS_ChangeLog SYS_ChangeLog { get; set; } = null!;
     }
 }

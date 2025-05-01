@@ -9,8 +9,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("UPL_Customer")]
+        [Required]    
         public int CustomerID { get; set; }
 
         [Required]
@@ -49,6 +48,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public string? OrderUDF9 { get; set; }
         public string? OrderUDF10 { get; set; }
 
+        [ForeignKey("CustomerID")]
         public virtual UPL_Customer UPL_Customer { get; set; } = null!;
         public virtual ICollection<ORD_Order> ORD_Order { get; set; } = [];
     }

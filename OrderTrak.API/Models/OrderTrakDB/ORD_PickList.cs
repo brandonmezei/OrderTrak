@@ -10,14 +10,15 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("ORD_Line")]
         public int LineID { get; set; }
 
         [Required]
-        [ForeignKey("INV_Stock")]
         public int StockID { get; set; }
 
+        [ForeignKey("LineID")]
         public virtual ORD_Line ORD_Line { get; set; } = null!;
+
+        [ForeignKey("StockID")]
         public virtual INV_Stock INV_Stock { get; set; } = null!;
     }
 }
