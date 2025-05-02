@@ -13,6 +13,20 @@
     <PartNumberSearch IsStockOnly=true OnClose="AddPart_Toggle" OnClick="AddPart_Click" />
 }
 
+@if (DeleteID.HasValue)
+{
+    <ModalPopup Title="Confirm Delete" OnClose="() => Delete_Toggle(null)">
+        <Content>
+            <p class="subtitle">Are you sure you want to delete this order line?</p>
+        </Content>
+        <FooterButtons>
+            <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => Delete_Toggle(null)" />
+            <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteConfirm_Click" />
+        </FooterButtons>
+    </ModalPopup>
+}
+
+
 <div class="box">
     <OrderTabSwitcher Section=2 FormID=@FormID />
     <div class="columns is-centered">
@@ -171,7 +185,7 @@
                                             <td>
                                                 <div class="buttons">
                                                     <FormButton Title="Edit" Style="is-small" Icon="fa-edit" />
-                                                    <FormButton Title="Delete" Style="is-small" Icon="fa-trash" />
+                                                    <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
                                                 </div>
                                             </td>
                                             <td>@line.PartNumber</td>

@@ -9,7 +9,6 @@ using OrderTrak.API.Services.Auth;
 using OrderTrak.API.Services.ChangeLog;
 using OrderTrak.API.Services.Customer;
 using OrderTrak.API.Services.Filters;
-using OrderTrak.API.Services.Inventory;
 using OrderTrak.API.Services.Location;
 using OrderTrak.API.Services.Order;
 using OrderTrak.API.Services.Parts;
@@ -95,7 +94,6 @@ builder.Services.AddScoped<IStockGroupService, StockGroupService>();
 builder.Services.AddScoped<IPOService, POService>();
 builder.Services.AddScoped<IReceivingService, ReceivingService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 
 // Register custom authorization handler

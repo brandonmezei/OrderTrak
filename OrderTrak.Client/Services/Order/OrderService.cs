@@ -16,6 +16,11 @@ namespace OrderTrak.Client.Services.Order
             await ApiClient.CreateOrderLineAsync(orderCreateLineDTO);
         }
 
+        public async Task DeleteOrderLineAsync(Guid lineID)
+        {
+            await ApiClient.DeleteOrderLineAsync(lineID);
+        }
+
         public async Task<OrderHeaderDTO> GetOrderHeaderAsync(Guid orderID)
         {
             return await ApiClient.GetOrderHeaderAsync(orderID);

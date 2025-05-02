@@ -26,6 +26,8 @@ namespace OrderTrak.Client.Pages.Order
 
         protected bool NewPart { get; set; }
 
+        protected Guid? DeleteID { get; set; }
+
         protected override void OnInitialized()
         {
             Layout.ClearMessages();
@@ -207,6 +209,45 @@ namespace OrderTrak.Client.Pages.Order
                 {
                     NewPart = false;
                 }
+            }
+        }
+
+        protected void Delete_Toggle(Guid? FormID)
+        {
+            Layout.ClearMessages();
+
+            DeleteID = FormID;
+        }
+
+        protected async Task DeleteConfirm_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if (DeleteID.HasValue)
+                {
+                    // Delete the Line
+                    await OrderService.DeleteOrderLineAsync(DeleteID.Value);
+
+                    // Refresh
+                    PartList = await OrderService.GetOrderLineAsync(FormID);
+                    FilteredPartList = PartList;
+
+                    Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                DeleteID = null;
             }
         }
     }

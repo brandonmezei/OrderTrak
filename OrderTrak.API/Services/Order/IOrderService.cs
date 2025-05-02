@@ -11,5 +11,7 @@ namespace OrderTrak.API.Services.Order
         Task<PagedTable<OrderSearchReturnDTO>> SearchOrderAsync(SearchQueryDTO searchQuery);
         Task CreateOrderLineAsync(OrderCreateLineDTO orderCreateLineDTO);
         Task<List<OrderPartListDTO>> GetOrderLineAsync(Guid orderID);
+        Task DeleteOrderLineAsync(Guid lineID);
+        Task UpdateOrderLineAsync(OrderPartListUpdate orderPartListUpdateDTO);
     }
 }

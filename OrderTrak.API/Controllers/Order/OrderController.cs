@@ -121,6 +121,44 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("UpdateOrderLine")]
+        public async Task<ActionResult> UpdateOrderLineAsync([FromBody] OrderPartListUpdate orderPartListUpdateDTO)
+        {
+            try
+            {
+                await orderService.UpdateOrderLineAsync(orderPartListUpdateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        #endregion
+
+        #region DELETE
+        [HttpDelete("DeleteOrderLine/{lineID}")]
+        public async Task<ActionResult> DeleteOrderLineAsync(Guid lineID)
+        {
+            try
+            {
+                await orderService.DeleteOrderLineAsync(lineID);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
     }
 }

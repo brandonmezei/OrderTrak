@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.SqlServer.Server;
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Order;
 using OrderTrak.API.Models.OrderTrakDB;
@@ -17,7 +16,7 @@ namespace OrderTrak.API.Services.Order
             // Get Order making sure it's not shipped or draft or already on hold
             var order = await DB.ORD_Order
                 .FirstOrDefaultAsync(x => x.FormID == orderID
-                    && x.ORD_Status.Status != OrderStatus.Shipped 
+                    && x.ORD_Status.Status != OrderStatus.Shipped
                     && x.ORD_Status.Status != OrderStatus.Draft
                     && x.ORD_Status.Status != OrderStatus.Hold
                     );
@@ -157,7 +156,7 @@ namespace OrderTrak.API.Services.Order
             // Place Order on Hold
             await PlaceOrderOnHoldAsync(orderID);
 
-            return await DB.ORD_Line
+            var returnList = await DB.ORD_Line
                 .Include(x => x.UPL_PartInfo)
                 .Include(x => x.PO_Header)
                 .Include(x => x.UPL_StockGroup)
@@ -167,20 +166,43 @@ namespace OrderTrak.API.Services.Order
                 .Where(x => x.ORD_Order.FormID == orderID)
                 .AsNoTracking()
                 .Select(x => new OrderPartListDTO
-                  {
-                      FormID = x.FormID,
-                      PartID = x.UPL_PartInfo.FormID,
-                      POID = x.PO_Header != null ? x.PO_Header.FormID : null,
-                      StockGroupID = x.UPL_StockGroup != null ? x.UPL_StockGroup.FormID : null,
-                      PartNumber = x.UPL_PartInfo.PartNumber,
-                      PartDescription = x.UPL_PartInfo.PartDescription,
-                      PO = x.PO_Header != null ? x.PO_Header.PONumber : null,
-                      StockGroup = x.UPL_StockGroup != null ? x.UPL_StockGroup.StockGroupTitle : null,
-                      SerialNumber = x.SerialNumber,
-                      Quantity = x.Quantity,
-                      PickedQuantity = x.ORD_PickList.Sum(i => i.INV_Stock.Quantity)
-                  })
+                {
+                    FormID = x.FormID,
+                    PartID = x.UPL_PartInfo.FormID,
+                    POID = x.PO_Header != null ? x.PO_Header.FormID : null,
+                    StockGroupID = x.UPL_StockGroup != null ? x.UPL_StockGroup.FormID : null,
+                    PartNumber = x.UPL_PartInfo.PartNumber,
+                    PartDescription = x.UPL_PartInfo.PartDescription,
+                    PO = x.PO_Header != null ? x.PO_Header.PONumber : null,
+                    StockGroup = x.UPL_StockGroup != null ? x.UPL_StockGroup.StockGroupTitle : null,
+                    SerialNumber = x.SerialNumber,
+                    Quantity = x.Quantity,
+                    PickedQuantity = x.ORD_PickList.Sum(i => i.INV_Stock.Quantity),
+
+                    CommittedQuantity = DB.ORD_Line
+                    .Where(y => y.OrderID != x.OrderID
+                        && y.PartID == x.PartID
+                        && y.ORD_Order.ProjectID == x.ORD_Order.ProjectID
+                        && (y.ORD_Order.ORD_Status.Status == OrderStatus.PickReady || y.ORD_Order.ORD_Status.Status == OrderStatus.Picking)
+                        && (!x.POHeaderID.HasValue || y.POHeaderID == x.POHeaderID)
+                        && (!x.StockGroupID.HasValue || y.StockGroupID == x.StockGroupID)
+                        && (x.SerialNumber == null || y.SerialNumber == x.SerialNumber))
+                    .Select(y => y.Quantity - y.ORD_PickList.Sum(p => (int?)p.INV_Stock.Quantity) ?? 0)
+                    .Sum(),
+
+                    InStockQuantity = DB.INV_Stock
+                    .Where(y =>
+                        y.PO_Line.PartID == x.PartID
+                        && y.PO_Line.PO_Header.ProjectID == x.ORD_Order.ProjectID
+                        && y.INV_StockStatus.StockStatus == StockStatus.InStock &&
+                        (!x.POHeaderID.HasValue || y.PO_Line.POHeaderID == x.POHeaderID) &&
+                        (!x.StockGroupID.HasValue || y.StockGroupID == x.StockGroupID) &&
+                        (x.SerialNumber == null || y.SerialNumber == x.SerialNumber))
+                    .Sum(s => s.Quantity)
+                })
                 .ToListAsync();
+
+            return returnList;
         }
 
         public async Task<PagedTable<OrderSearchReturnDTO>> SearchOrderAsync(SearchQueryDTO searchQuery)
@@ -303,6 +325,92 @@ namespace OrderTrak.API.Services.Order
 
             // Save
             await DB.SaveChangesAsync();
+        }
+
+        public async Task DeleteOrderLineAsync(Guid lineID)
+        {
+            // Get order line checking if order isn't shipped
+            var orderLine = await DB.ORD_Line
+                .Include(x => x.ORD_PickList)
+                    .ThenInclude(x => x.INV_Stock)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.FormID == lineID
+                    && x.ORD_Order.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order Line not found or Order is shipped.");
+
+            // Soft Delete Order Line
+            orderLine.IsDelete = true;
+
+            // Get In Stock Stock Status
+            var inStockStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.InStock)
+                ?? throw new ValidationException("Cannot find In Stock Status");
+
+            // Get any stock picked to the order line
+            foreach (var line in orderLine.ORD_PickList)
+            {
+                // Soft Delete Pick List
+                line.IsDelete = true;
+
+                // Update Stock Back to In Stock
+                line.INV_Stock.INV_StockStatus = inStockStatus;
+            }
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task UpdateOrderLineAsync(OrderPartListUpdate orderPartListUpdateDTO)
+        {
+            // Get order line checking if order isn't shipped
+            var orderLine = await DB.ORD_Line
+                .Include(x => x.ORD_PickList)
+                    .ThenInclude(x => x.INV_Stock)
+                .FirstOrDefaultAsync(x => x.FormID == orderPartListUpdateDTO.FormID
+                    && x.ORD_Order.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order Line not found or Order is shipped.");
+
+            // Check if QTY > 0
+            if (orderPartListUpdateDTO.Quantity <= 0)
+                throw new ValidationException("Quantity must be greater than 0.");
+
+            // Check if QTY < Picked Quantity
+            if (orderPartListUpdateDTO.Quantity < orderLine.ORD_PickList.Sum(x => (int?)x.INV_Stock.Quantity ?? 0))
+                throw new ValidationException("Quantity cannot be less than the picked quantity.");
+
+            // Get PO 
+            if (orderPartListUpdateDTO.POID.HasValue)
+            {
+                var po = await DB.PO_Header
+                    .FirstOrDefaultAsync(x => x.FormID == orderPartListUpdateDTO.POID)
+                    ?? throw new ValidationException("PO not found.");
+
+                orderLine.PO_Header = po;
+            }
+            else
+                orderLine.POHeaderID = null;
+
+            // Get Stock Group
+            if (orderPartListUpdateDTO.StockGroupID.HasValue)
+            {
+                var stockGroup = await DB.UPL_StockGroup
+                    .FirstOrDefaultAsync(x => x.FormID == orderPartListUpdateDTO.StockGroupID)
+                    ?? throw new ValidationException("Stock Group not found.");
+
+                orderLine.UPL_StockGroup = stockGroup;
+            }
+            else
+                orderLine.StockGroupID = null;
+
+            // Update Serial Number
+            orderLine.SerialNumber = orderPartListUpdateDTO.SerialNumber;
+
+            // Update Quantity
+            orderLine.Quantity = orderPartListUpdateDTO.Quantity;
+
+            // Save
+            await DB.SaveChangesAsync();
+
         }
     }
 }
