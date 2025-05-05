@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderTrak.API.Models.DTO;
+using OrderTrak.API.Models.DTO.Filters;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Static;
 
 namespace OrderTrak.API.Services.Filters
 {
@@ -76,6 +78,23 @@ namespace OrderTrak.API.Services.Filters
                      Label = x.StockGroupTitle
                  })
                  .ToListAsync();
+        }
+
+        public async Task<List<DropDownFilterDTO>> GetPOListGroupAsync(POListFilterDTO pOListFilterDTO)
+        {
+            return await DB.PO_Header
+                .Where(x => x.UPL_Project.FormID == pOListFilterDTO.ProjectID
+                    && x.PO_Line.Any(i => i.UPL_PartInfo.FormID == pOListFilterDTO.PartID
+                    && i.INV_Stock.Any(s => s.INV_StockStatus.StockStatus == StockStatus.InStock))
+                )
+                .OrderBy(x => x.PONumber)
+                .AsNoTracking()
+                .Select(x => new DropDownFilterDTO
+                {
+                    FormID = x.FormID,
+                    Label = x.PONumber
+                })
+                .ToListAsync();
         }
     }
 }

@@ -40,5 +40,10 @@ namespace OrderTrak.Client.Services.Order
         {
             await ApiClient.UpdateOrderHeaderAsync(orderHeaderUpdateDTO);
         }
+
+        public async Task UpdateOrderLineAsync(OrderPartListUpdate orderPartListUpdateDTO)
+        {
+            await ApiClient.UpdateOrderLineAsync(orderPartListUpdateDTO);
+        }
     }
 }

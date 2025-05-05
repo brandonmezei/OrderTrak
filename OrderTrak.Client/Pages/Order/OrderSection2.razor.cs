@@ -15,6 +15,7 @@ namespace OrderTrak.Client.Pages.Order
         [Inject]
         private IOrderService OrderService { get; set; } = default!;
 
+        protected OrderHeaderDTO? Order { get; set; }
         protected List<OrderPartListDTO>? PartList { get; set; }
         protected List<OrderPartListDTO>? FilteredPartList { get; set; }
 
@@ -28,10 +29,25 @@ namespace OrderTrak.Client.Pages.Order
 
         protected Guid? DeleteID { get; set; }
 
-        protected override void OnInitialized()
+        protected OrderPartListUpdate? LineUpdate { get; set; }
+
+        protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
             Layout.UpdateHeader("Order Admin", "Create and edit orders.");
+
+            try
+            {
+                Order = await OrderService.GetOrderHeaderAsync(FormID);
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
 
             IsCardLoading = true;
         }
@@ -77,29 +93,29 @@ namespace OrderTrak.Client.Pages.Order
                 FilteredPartList = PartList;
 
                 if (!string.IsNullOrEmpty(SearchFilter.SearchText) && FilteredPartList != null)
+                {
+                    var searchFilter = SearchFilter.SearchText
+                       .Split(',')
+                       .Select(x => x.Trim())
+                       .Where(x => !string.IsNullOrEmpty(x))
+                       .ToList();
+
+                    var query = FilteredPartList
+                        .AsQueryable();
+
+                    foreach (var filter in searchFilter)
                     {
-                        var searchFilter = SearchFilter.SearchText
-                           .Split(',')
-                           .Select(x => x.Trim())
-                           .Where(x => !string.IsNullOrEmpty(x))
-                           .ToList();
-
-                        var query = FilteredPartList
-                            .AsQueryable();
-
-                        foreach (var filter in searchFilter)
-                        {
-                            query = query.Where(
-                                 x => x.PartNumber.Contains(filter, StringComparison.OrdinalIgnoreCase)
-                                    || x.PartDescription.Contains(filter, StringComparison.OrdinalIgnoreCase)
-                                    || (!string.IsNullOrEmpty(x.Po) && x.Po.Contains(filter, StringComparison.OrdinalIgnoreCase))
-                                    || (!string.IsNullOrEmpty(x.StockGroup) && x.StockGroup.Contains(filter, StringComparison.OrdinalIgnoreCase))
-                            );
-                        }
-
-                        FilteredPartList = [.. query];
+                        query = query.Where(
+                             x => x.PartNumber.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                                || x.PartDescription.Contains(filter, StringComparison.OrdinalIgnoreCase)
+                                || (!string.IsNullOrEmpty(x.Po) && x.Po.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                                || (!string.IsNullOrEmpty(x.StockGroup) && x.StockGroup.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                        );
                     }
-               
+
+                    FilteredPartList = [.. query];
+                }
+
             }
             catch (ApiException ex)
             {
@@ -249,6 +265,65 @@ namespace OrderTrak.Client.Pages.Order
             {
                 DeleteID = null;
             }
+        }
+
+        protected void LineEdit_Toggle(Guid? FormID)
+        {
+            Layout.ClearMessages();
+
+            if (FormID.HasValue)
+            {
+                var partLine = PartList?.FirstOrDefault(x => x.FormID == FormID);
+
+                if (partLine != null)
+                    LineUpdate = MapperService.Map<OrderPartListUpdate>(partLine);
+            }
+            else
+                LineUpdate = null;
+        }
+
+        protected async Task LineEdit_Save()
+        {
+            Layout.ClearMessages();
+
+            if (LineUpdate != null)
+            {
+                try
+                {
+                    // Update the Line
+                    await OrderService.UpdateOrderLineAsync(LineUpdate);
+
+                    // Refresh
+                    PartList = await OrderService.GetOrderLineAsync(FormID);
+                    FilteredPartList = PartList;
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    LineUpdate = null;
+                }
+            }
+        }
+
+        protected void PO_Change(Guid? FormID)
+        {
+            if (LineUpdate != null)
+                LineUpdate.Poid = FormID;
+        }
+
+        protected void StockGroup_Change(Guid? FormID)
+        {
+            if (LineUpdate != null)
+                LineUpdate.StockGroupID = FormID;
         }
     }
 }

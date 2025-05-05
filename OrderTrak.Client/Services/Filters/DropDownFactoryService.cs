@@ -30,5 +30,10 @@ namespace OrderTrak.Client.Services.Filters
         {
             return [.. await ApiService.GetStockGroupDropDownAsync()];
         }
+
+        public async Task<List<DropDownFilterDTO>> GetPOListGroupAsync(POListFilterDTO pOListFilterDTO)
+        {
+            return [.. await ApiService.GetPOListGroupDropDownAsync(pOListFilterDTO)];
+        }
     }
 }

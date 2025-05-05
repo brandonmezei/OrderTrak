@@ -1,4 +1,5 @@
 ﻿using OrderTrak.API.Models.DTO;
+using OrderTrak.API.Models.DTO.Filters;
 
 namespace OrderTrak.API.Services.Filters
 {
@@ -9,5 +10,6 @@ namespace OrderTrak.API.Services.Filters
         Task<List<DropDownFilterDTO>> GetCustomersAsync();
         Task<List<DropDownFilterDTO>> GetProjectsAsync(Guid CustomerID);
         Task<List<DropDownFilterDTO>> GetStockGroupAsync();
+        Task<List<DropDownFilterDTO>> GetPOListGroupAsync(POListFilterDTO pOListFilterDTO);
     }
 }

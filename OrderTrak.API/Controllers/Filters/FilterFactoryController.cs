@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderTrak.API.Models.DTO;
+using OrderTrak.API.Models.DTO.Filters;
 using OrderTrak.API.Services.Filters;
 using System.ComponentModel.DataAnnotations;
 
@@ -88,6 +89,25 @@ namespace OrderTrak.API.Controllers.Filters
             try
             {
                 return Ok(await DropDownService.GetStockGroupAsync());
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        #endregion
+
+        #region POST
+        [HttpPost("GetPOListGroupDropDown")]
+        public async Task<ActionResult<List<DropDownFilterDTO>>> GetPOListGroupAsync([FromBody] POListFilterDTO pOListFilterDTO)
+        {
+            try
+            {
+                return Ok(await DropDownService.GetPOListGroupAsync(pOListFilterDTO));
             }
             catch (ValidationException ex)
             {

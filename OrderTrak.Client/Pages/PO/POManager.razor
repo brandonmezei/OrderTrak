@@ -52,17 +52,17 @@
                                     <DataAnnotationsValidator />
                                     <FormField Icon="fa-cogs" Title="Part Number">
                                         <Content>
-                                            <InputText class="input"  Placeholder="Customer Code" @bind-Value="POLineEditor.PartNumber" disabled />
+                                            <InputText class="input"  Placeholder="Part Number" @bind-Value="POLineEditor.PartNumber" disabled />
                                         </Content>
                                     </FormField>
                                     <FormField Icon="fa-align-left" Title="Part Description">
                                         <Content>
-                                            <InputText class="input" Placeholder="Customer Code" @bind-Value="POLineEditor.PartDescription" disabled />
+                                            <InputText class="input" Placeholder="Part Description" @bind-Value="POLineEditor.PartDescription" disabled />
                                         </Content>
                                     </FormField>
                                     <FormField Icon="fa-cubes" Title="Quantity">
                                         <Content>
-                                            <InputNumber class="input is-danger"  Placeholder="Customer Code" @bind-Value="POLineEditor.Quantity" style="75px" />
+                                            <InputNumber class="input is-danger"  Placeholder="Quantity " @bind-Value="POLineEditor.Quantity" />
                                             <ValidationMessage For="@(() => POLineEditor.Quantity)" />
                                         </Content>
                                     </FormField>

@@ -26,6 +26,67 @@
     </ModalPopup>
 }
 
+@if (LineUpdate != null)
+{
+
+    var partLine = PartList?.FirstOrDefault(x => x.FormID == LineUpdate.FormID);
+
+    if (Order != null && partLine != null)
+    {
+        <ModalPopup Title="Edit Order Line" OnClose="() => LineEdit_Toggle(null)" Messages=Layout.Messages>
+            <Content>
+            <div class="columns is-centered">
+                <div class="column is-half">
+                    <EditForm Model="@LineUpdate" OnValidSubmit="LineEdit_Save">
+                        <CardComponent Title="Order Line" Icon="fa-list">
+                            <CardBody>
+                                <DataAnnotationsValidator />
+                                    <FormField Icon="fa-cogs" Title="Part Number">
+                                        <Content>
+                                            <InputText class="input" Placeholder="Part Number" @bind-Value="partLine.PartNumber" disabled />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-align-left" Title="Part Description">
+                                        <Content>
+                                            <InputText class="input" Placeholder="Part Description" @bind-Value="partLine.PartDescription" disabled />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-file-invoice" Title="Purchase Order">
+                                        <Content>
+                                        <PurchaseOrderDropDown PartID=@partLine.PartID
+                                            ProjectID=@Order.ProjectID
+                                            SelectedValue=@LineUpdate.Poid
+                                            SelectedValueChanged="PO_Change" />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-warehouse" Title="Stock Group">
+                                        <Content>
+                                            <StockGroupDropDown SelectedValue="LineUpdate.StockGroupID" SelectedValueChanged="StockGroup_Change" />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-hashtag" Title="Serial Number">
+                                        <Content>
+                                            <InputText class="input is-primary" Placeholder="Serial Number" @bind-Value="LineUpdate.SerialNumber" />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-cubes" Title="Quantity">
+                                        <Content>
+                                            <InputNumber class="input is-danger" Placeholder="Quantity" @bind-Value="LineUpdate.Quantity" />
+                                        </Content>
+                                    </FormField>
+                            </CardBody>
+                            <Footer>
+                                <FormButton Title="Save" Style="card-footer-item" Icon="fa-plus" />
+                            </Footer>
+                        </CardComponent>
+                    </EditForm> 
+                </div>
+            </div>
+        </Content>
+    </ModalPopup>
+    }
+}
+
 
 <div class="box">
     <OrderTabSwitcher Section=2 FormID=@FormID />
@@ -184,7 +245,7 @@
                                         <tr>
                                             <td>
                                                 <div class="buttons">
-                                                    <FormButton Title="Edit" Style="is-small" Icon="fa-edit" />
+                                                    <FormButton Title="Edit" Style="is-small" Icon="fa-edit" OnClick="() => LineEdit_Toggle(line.FormID)" />
                                                     <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
                                                 </div>
                                             </td>

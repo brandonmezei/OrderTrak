@@ -20,6 +20,7 @@ namespace OrderTrak.Client.Models
             CreateMap<POLineDTO, POUpdateLineDTO>();
             CreateMap<ReceivingDTO, ReceivingUpdateDTO>();
             CreateMap<OrderHeaderDTO, OrderHeaderUpdateDTO>();
+            CreateMap<OrderPartListDTO, OrderPartListUpdate>();
         }
     }
 }
