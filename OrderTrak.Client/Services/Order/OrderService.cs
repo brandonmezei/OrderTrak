@@ -31,6 +31,11 @@ namespace OrderTrak.Client.Services.Order
             return [.. await ApiClient.GetOrderLineAsync(orderID)];
         }
 
+        public async Task<OrderShipDTO> GetOrderShippingAsync(Guid orderID)
+        {
+            return await ApiClient.GetOrderShippingAsync(orderID);
+        }
+
         public async Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(SearchQueryDTO searchQuery)
         {
             return await ApiClient.SearchOrderAsync(searchQuery);

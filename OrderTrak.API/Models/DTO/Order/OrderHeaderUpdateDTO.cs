@@ -5,7 +5,7 @@ namespace OrderTrak.API.Models.DTO.Order
     public class OrderHeaderUpdateDTO
     {
         [Required]
-        public Guid? FormID { get; set; }
+        public Guid FormID { get; set; }
 
         public DateTime? RequestedShipDate { get; set; }
         public DateTime? RequestedDeliveryDate { get; set; }

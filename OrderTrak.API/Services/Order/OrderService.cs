@@ -64,6 +64,9 @@ namespace OrderTrak.API.Services.Order
 
         public async Task CreateOrderLineAsync(OrderCreateLineDTO orderCreateLineDTO)
         {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderCreateLineDTO.OrderID);
+
             // Get Order making sure it's not shipped
             var order = await DB.ORD_Order
                 .Include(x => x.ORD_Status)
@@ -301,6 +304,9 @@ namespace OrderTrak.API.Services.Order
 
         public async Task UpdateOrderHeaderAsync(OrderHeaderUpdateDTO orderHeaderUpdateDTO)
         {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderHeaderUpdateDTO.FormID);
+
             // Get Order making sure it's not shipped
             var order = await DB.ORD_Order
                 .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.FormID
@@ -333,10 +339,14 @@ namespace OrderTrak.API.Services.Order
             var orderLine = await DB.ORD_Line
                 .Include(x => x.ORD_PickList)
                     .ThenInclude(x => x.INV_Stock)
+                .Include(x => x.ORD_Order)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(x => x.FormID == lineID
                     && x.ORD_Order.ORD_Status.Status != OrderStatus.Shipped)
                 ?? throw new ValidationException("Order Line not found or Order is shipped.");
+
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderLine.ORD_Order.FormID);
 
             // Soft Delete Order Line
             orderLine.IsDelete = true;
@@ -366,9 +376,13 @@ namespace OrderTrak.API.Services.Order
             var orderLine = await DB.ORD_Line
                 .Include(x => x.ORD_PickList)
                     .ThenInclude(x => x.INV_Stock)
+                .Include(x => x.ORD_Order)
                 .FirstOrDefaultAsync(x => x.FormID == orderPartListUpdateDTO.FormID
                     && x.ORD_Order.ORD_Status.Status != OrderStatus.Shipped)
                 ?? throw new ValidationException("Order Line not found or Order is shipped.");
+
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderLine.ORD_Order.FormID);
 
             // Check if QTY > 0
             if (orderPartListUpdateDTO.Quantity <= 0)
@@ -411,6 +425,40 @@ namespace OrderTrak.API.Services.Order
             // Save
             await DB.SaveChangesAsync();
 
+        }
+
+        public async Task<OrderShipDTO> GetOrderShippingAsync(Guid orderID)
+        {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderID);
+
+            // Get Order By OrderID
+            return await DB.ORD_Order
+                .Include(x => x.UPL_Project)
+                    .ThenInclude(x => x.UPL_Customer)
+                .Include(x => x.ORD_Status)
+                .Where(x => x.FormID == orderID)
+                .AsNoTracking()
+                .Select(x => new OrderShipDTO
+                {
+                    FormID = x.FormID,
+                    ProjectID = x.UPL_Project.FormID,
+                    CustomerCode = x.UPL_Project.UPL_Customer.CustomerCode,
+                    ProjectCode = x.UPL_Project.ProjectCode,
+                    OrderStatus = x.ORD_Status.Status,
+                    OrderID = x.Id,
+                    Address1 = x.Address1,
+                    Address2 = x.Address2,
+                    City = x.City,
+                    State = x.State,
+                    Zip = x.Zip,
+                    ShipContact = x.ShipContact,
+                    ShipPhone = x.ShipPhone,
+                    ShipEmail = x.ShipEmail,
+                    Carrier = x.Carrier
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new ValidationException("Order not found.");
         }
     }
 }

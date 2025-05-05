@@ -49,6 +49,23 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("GetOrderShipping/{orderID}")]
+        public async Task<ActionResult<OrderShipDTO>> GetOrderShippingAsync(Guid orderID)
+        {
+            try
+            {
+                return Ok(await orderService.GetOrderShippingAsync(orderID));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region POST
