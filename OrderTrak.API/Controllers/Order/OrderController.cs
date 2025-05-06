@@ -66,6 +66,23 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("GetOrderActivation/{orderID}")]
+        public async Task<ActionResult<OrderActivationDTO>> GetOrderActivationAsync(Guid orderID)
+        {
+            try
+            {
+                return Ok(await orderService.GetOrderActivationAsync(orderID));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region POST

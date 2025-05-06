@@ -34,11 +34,12 @@ namespace OrderTrak.Client.Pages.Order
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
-            Layout.UpdateHeader("Order Admin", "Create and edit orders.");
 
             try
             {
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
+
+                Layout.UpdateHeader("Order Admin", $"Order: {Order.OrderID}");
             }
             catch (ApiException ex)
             {

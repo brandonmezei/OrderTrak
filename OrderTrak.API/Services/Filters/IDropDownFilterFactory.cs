@@ -11,5 +11,6 @@ namespace OrderTrak.API.Services.Filters
         Task<List<DropDownFilterDTO>> GetProjectsAsync(Guid CustomerID);
         Task<List<DropDownFilterDTO>> GetStockGroupAsync();
         Task<List<DropDownFilterDTO>> GetPOListGroupAsync(POListFilterDTO pOListFilterDTO);
+        Task<List<DropDownFilterDTO>> GetOrderStatusListAsync();
     }
 }

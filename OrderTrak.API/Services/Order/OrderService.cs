@@ -491,5 +491,25 @@ namespace OrderTrak.API.Services.Order
             // Save
             await DB.SaveChangesAsync();
         }
+
+        public async Task<OrderActivationDTO> GetOrderActivationAsync(Guid orderID)
+        {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderID);
+
+            // Get Order By OrderID
+            return await DB.ORD_Order
+                .Include(x => x.ORD_StatusBeforeHold)
+                .Where(x => x.FormID == orderID)
+                .AsNoTracking()
+                .Select(x => new OrderActivationDTO
+                {
+                    FormID = x.FormID,
+                    StatusID = x.ORD_StatusBeforeHold != null ? x.ORD_StatusBeforeHold.FormID : null,
+                    OrderNote = x.OrderNote
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new ValidationException("Order not found.");
+        }
     }
 }

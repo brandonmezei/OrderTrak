@@ -6,7 +6,7 @@ using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Order
 {
-    public partial class OrderSection3
+    public partial class OrderSection4
     {
         [Parameter]
         public Guid FormID { get; set; }
@@ -16,18 +16,21 @@ namespace OrderTrak.Client.Pages.Order
 
         protected OrderHeaderDTO? Order { get; set; }
 
-        protected OrderShipDTO? OrderShipping { get; set; }
+        protected OrderActivationDTO? OrderActivation { get; set; }
+
+        public List<string> ExcludeOrderStatus { get; set; } = [OrderStatus.Draft, OrderStatus.Hold, OrderStatus.Cancel, OrderStatus.Shipped];
 
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
+            Layout.UpdateHeader("Order Admin", "Create and edit orders.");
 
             try
             {
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
-                OrderShipping = await OrderService.GetOrderShippingAsync(FormID);
+                OrderActivation = await OrderService.GetOrderActivationAsync(FormID);
 
-                Layout.UpdateHeader("Order Admin", $"Order: {Order.OrderID}");
+                Layout.UpdateHeader("Order Admin", $"Order: { Order.OrderID }");
             }
             catch (ApiException ex)
             {
@@ -41,29 +44,10 @@ namespace OrderTrak.Client.Pages.Order
             IsCardLoading = true;
         }
 
-        protected async Task Save_Click()
+        protected void Status_Change(Guid? FormID)
         {
-            Layout.ClearMessages();
-
-            try
-            {
-                if (OrderShipping != null)
-                {
-
-                    // Save Upper Level Info
-                    await OrderService.UpdateOrderShippingAsync(MapperService.Map<OrderShipUpdateDTO>(OrderShipping));
-
-                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
-                }
-            }
-            catch (ApiException ex)
-            {
-                Layout.AddMessage(ex.Response, MessageType.Error);
-            }
-            catch (Exception ex)
-            {
-                Layout.AddMessage(ex.Message, MessageType.Error);
-            }
+            if (OrderActivation != null)
+                OrderActivation.StatusID = FormID;
         }
     }
 }

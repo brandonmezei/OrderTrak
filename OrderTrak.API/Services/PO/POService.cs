@@ -2,6 +2,7 @@
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.PO;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Static;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrak.API.Services.PO
@@ -179,8 +180,9 @@ namespace OrderTrak.API.Services.PO
 
             // Get Part
             var part = await DB.UPL_PartInfo
-                .FirstOrDefaultAsync(x => x.FormID == poLineCreateDTO.PartID)
-                ?? throw new ValidationException("Part not found.");
+                .FirstOrDefaultAsync(x => x.FormID == poLineCreateDTO.PartID
+                    && (x.UPL_UOM.UnitOfMeasurement == UOM.Feet || x.UPL_UOM.UnitOfMeasurement == UOM.Inches))
+                ?? throw new ValidationException("Part not found or not available for PO entry.");
 
             // Check if Part already exists in PO
             if (await DB.PO_Line.AnyAsync(x => x.UPL_PartInfo.FormID == part.FormID && x.PO_Header.FormID == po.FormID))

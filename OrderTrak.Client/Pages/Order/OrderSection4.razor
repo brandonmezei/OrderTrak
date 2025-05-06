@@ -1,0 +1,51 @@
+﻿@page "/order/section4/{FormID:guid}"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.Order
+@using OrderTrak.Client.Shared.SearchComponents
+@inherits OrderTrakBasePage
+
+<PageTitle>Order - OrderTrak</PageTitle>
+
+@if (Order != null && OrderActivation != null)
+{
+    <div class="box">
+        <OrderTabSwitcher Section=4 FormID=@FormID />
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <CardComponent Title="Activation" Icon="fa-toggle-on">
+                    <CardBody>
+                        <FormField Title="Activation Note">
+                            <Content>
+                                <InputTextArea class="textarea" Placeholder="Activation Note" @bind-Value="OrderActivation.OrderNote" />
+                            </Content>
+                        </FormField>
+                        @if (OrderActivation.StatusID.HasValue)
+                        {
+                            <FormField Icon="fa-chart-line" Title="Order Status">
+                                <Content>
+                                    <OrderStatusDropDown SelectedValue=@OrderActivation.StatusID
+                                                         SelectedValueChanged="Status_Change"
+                                                         ExcludeList=@ExcludeOrderStatus />
+                                </Content>
+                            </FormField>
+                        }
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/order/search" />
+            @if (!Order.IsClosed)
+            {
+                <FormButton Title="Save" Style="is-success" Icon="fa-save" />
+            }
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

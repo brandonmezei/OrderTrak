@@ -99,6 +99,23 @@ namespace OrderTrak.API.Controllers.Filters
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("GetOrderStatusListDropDown")]
+        public async Task<ActionResult<List<DropDownFilterDTO>>> GetOrderStatusListAsync()
+        {
+            try
+            {
+                return Ok(await DropDownService.GetOrderStatusListAsync());
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region POST
