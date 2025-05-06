@@ -15,6 +15,8 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public int StatusID { get; set; }
 
+        public int? StatusIDBeforeHold { get; set; }
+
         public DateTime? RequestedShipDate { get; set; }
         public DateTime? RequestedDeliveryDate { get; set; }
         public DateTime? ActualShipDate { get; set; }
@@ -38,6 +40,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public string? ShipPhone { get; set; }
         public string? ShipEmail { get; set; }
         public string? Carrier { get; set; }
+        public string? OrderNote { get; set; }
 
         public virtual ICollection<ORD_Line> ORD_Line { get; set; } = [];
 
@@ -46,5 +49,8 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         [ForeignKey("StatusID")]
         public virtual ORD_Status ORD_Status { get; set; } = null!;
+
+        [ForeignKey("StatusIDBeforeHold")]
+        public virtual ORD_Status ORD_StatusBeforeHold { get; set; } = null!;
     }
 }

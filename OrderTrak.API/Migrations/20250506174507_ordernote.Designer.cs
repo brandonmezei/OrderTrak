@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250506174507_ordernote")]
+    partial class ordernote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -357,9 +360,6 @@ namespace OrderTrak.API.Migrations
                     b.Property<int>("StatusID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusIDBeforeHold")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
@@ -375,8 +375,6 @@ namespace OrderTrak.API.Migrations
                     b.HasIndex("ProjectID");
 
                     b.HasIndex("StatusID");
-
-                    b.HasIndex("StatusIDBeforeHold");
 
                     b.ToTable("ORD_Order");
                 });
@@ -1303,18 +1301,12 @@ namespace OrderTrak.API.Migrations
                         .IsRequired();
 
                     b.HasOne("OrderTrak.API.Models.OrderTrakDB.ORD_Status", "ORD_Status")
-                        .WithMany("ORD_Orders")
+                        .WithMany("ORD_Order")
                         .HasForeignKey("StatusID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OrderTrak.API.Models.OrderTrakDB.ORD_Status", "ORD_StatusBeforeHold")
-                        .WithMany("ORD_OrdersBeforeHold")
-                        .HasForeignKey("StatusIDBeforeHold");
-
                     b.Navigation("ORD_Status");
-
-                    b.Navigation("ORD_StatusBeforeHold");
 
                     b.Navigation("UPL_Project");
                 });
@@ -1467,9 +1459,7 @@ namespace OrderTrak.API.Migrations
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Status", b =>
                 {
-                    b.Navigation("ORD_Orders");
-
-                    b.Navigation("ORD_OrdersBeforeHold");
+                    b.Navigation("ORD_Order");
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>

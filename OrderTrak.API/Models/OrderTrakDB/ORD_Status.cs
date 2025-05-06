@@ -12,6 +12,10 @@ namespace OrderTrak.API.Models.OrderTrakDB
         [Required]
         public string Status { get; set; } = string.Empty;
 
-        public virtual ICollection<ORD_Order> ORD_Order { get; set; } = [];
+        [InverseProperty(nameof(ORD_Order.ORD_Status))]
+        public virtual ICollection<ORD_Order> ORD_Orders { get; set; } = [];
+
+        [InverseProperty(nameof(ORD_Order.ORD_StatusBeforeHold))]
+        public virtual ICollection<ORD_Order> ORD_OrdersBeforeHold { get; set; } = [];
     }
 }

@@ -23,6 +23,9 @@ namespace OrderTrak.API.Services.Order
 
             if (order != null)
             {
+                // Set Order Status Before Hold
+                order.ORD_StatusBeforeHold = order.ORD_Status;
+
                 // Get Hold Status
                 var holdStatus = await DB.ORD_Status
                     .FirstOrDefaultAsync(x => x.Status == OrderStatus.Hold)
