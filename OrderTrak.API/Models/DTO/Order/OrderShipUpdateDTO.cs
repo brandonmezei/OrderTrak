@@ -1,7 +1,10 @@
-﻿namespace OrderTrak.API.Models.DTO.Order
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OrderTrak.API.Models.DTO.Order
 {
-    public class OrderShipDTO
+    public class OrderShipUpdateDTO
     {
+        [Required]
         public Guid FormID { get; set; }
         public string? Address1 { get; set; }
         public string? Address2 { get; set; }

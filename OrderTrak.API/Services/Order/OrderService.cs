@@ -307,27 +307,33 @@ namespace OrderTrak.API.Services.Order
             // Place Order on Hold
             await PlaceOrderOnHoldAsync(orderHeaderUpdateDTO.FormID);
 
-            // Get Order making sure it's not shipped
+            // Get Order
             var order = await DB.ORD_Order
-                .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.FormID
-                    && x.ORD_Status.Status != OrderStatus.Shipped)
-                ?? throw new ValidationException("Order not found or shipped.");
+                .Include(x => x.ORD_Status)
+                .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.FormID)
+                ?? throw new ValidationException("Order not found.");
 
-            // Update Order
-            order.RequestedShipDate = orderHeaderUpdateDTO.RequestedShipDate;
-            order.RequestedDeliveryDate = orderHeaderUpdateDTO.RequestedDeliveryDate;
-            order.ActualShipDate = orderHeaderUpdateDTO.ActualShipDate;
-            order.StakeHolderEmail = orderHeaderUpdateDTO.StakeHolderEmail;
-            order.OrderUDF1 = orderHeaderUpdateDTO.OrderUDF1;
-            order.OrderUDF2 = orderHeaderUpdateDTO.OrderUDF2;
-            order.OrderUDF3 = orderHeaderUpdateDTO.OrderUDF3;
-            order.OrderUDF4 = orderHeaderUpdateDTO.OrderUDF4;
-            order.OrderUDF5 = orderHeaderUpdateDTO.OrderUDF5;
-            order.OrderUDF6 = orderHeaderUpdateDTO.OrderUDF6;
-            order.OrderUDF7 = orderHeaderUpdateDTO.OrderUDF7;
-            order.OrderUDF8 = orderHeaderUpdateDTO.OrderUDF8;
-            order.OrderUDF9 = orderHeaderUpdateDTO.OrderUDF9;
-            order.OrderUDF10 = orderHeaderUpdateDTO.OrderUDF10;
+            // Update Order if it's shipped only update actual ship date
+            if (order.ORD_Status.Status == OrderStatus.Shipped)
+            {
+                order.ActualShipDate = orderHeaderUpdateDTO.ActualShipDate;
+            }
+            else
+            {
+                order.RequestedShipDate = orderHeaderUpdateDTO.RequestedShipDate;
+                order.RequestedDeliveryDate = orderHeaderUpdateDTO.RequestedDeliveryDate;
+                order.StakeHolderEmail = orderHeaderUpdateDTO.StakeHolderEmail;
+                order.OrderUDF1 = orderHeaderUpdateDTO.OrderUDF1;
+                order.OrderUDF2 = orderHeaderUpdateDTO.OrderUDF2;
+                order.OrderUDF3 = orderHeaderUpdateDTO.OrderUDF3;
+                order.OrderUDF4 = orderHeaderUpdateDTO.OrderUDF4;
+                order.OrderUDF5 = orderHeaderUpdateDTO.OrderUDF5;
+                order.OrderUDF6 = orderHeaderUpdateDTO.OrderUDF6;
+                order.OrderUDF7 = orderHeaderUpdateDTO.OrderUDF7;
+                order.OrderUDF8 = orderHeaderUpdateDTO.OrderUDF8;
+                order.OrderUDF9 = orderHeaderUpdateDTO.OrderUDF9;
+                order.OrderUDF10 = orderHeaderUpdateDTO.OrderUDF10;
+            }
 
             // Save
             await DB.SaveChangesAsync();
@@ -442,11 +448,6 @@ namespace OrderTrak.API.Services.Order
                 .Select(x => new OrderShipDTO
                 {
                     FormID = x.FormID,
-                    ProjectID = x.UPL_Project.FormID,
-                    CustomerCode = x.UPL_Project.UPL_Customer.CustomerCode,
-                    ProjectCode = x.UPL_Project.ProjectCode,
-                    OrderStatus = x.ORD_Status.Status,
-                    OrderID = x.Id,
                     Address1 = x.Address1,
                     Address2 = x.Address2,
                     City = x.City,
@@ -459,6 +460,33 @@ namespace OrderTrak.API.Services.Order
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Order not found.");
+        }
+
+        public async Task UpdateOrderShippingAsync(OrderShipUpdateDTO orderShipUpdateDTO)
+        {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderShipUpdateDTO.FormID);
+
+            // Get Order
+            var order = await DB.ORD_Order
+                .Include(x => x.ORD_Status)
+                .FirstOrDefaultAsync(x => x.FormID == orderShipUpdateDTO.FormID
+                    && x.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order not found or it is shipped.");
+
+            // Update Ship Info
+            order.Address1 = orderShipUpdateDTO.Address1;
+            order.Address2 = orderShipUpdateDTO.Address2;
+            order.City = orderShipUpdateDTO.City;
+            order.State = orderShipUpdateDTO.State;
+            order.Zip = orderShipUpdateDTO.Zip;
+            order.ShipContact = orderShipUpdateDTO.ShipContact;
+            order.ShipPhone = orderShipUpdateDTO.ShipPhone;
+            order.ShipEmail = orderShipUpdateDTO.ShipEmail;
+            order.Carrier = orderShipUpdateDTO.Carrier;
+
+            // Save
+            await DB.SaveChangesAsync();
         }
     }
 }

@@ -156,6 +156,24 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("UpdateOrderShipping")]
+        public async Task<ActionResult> UpdateOrderShippingAsync([FromBody] OrderShipUpdateDTO orderShipUpdateDTO)
+        {
+            try
+            {
+                await orderService.UpdateOrderShippingAsync(orderShipUpdateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE
