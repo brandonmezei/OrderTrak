@@ -7,7 +7,7 @@ namespace OrderTrak.Client.Services.Order
         Task<Guid> CreateOrderAsync(OrderCreateDTO orderCreateDTO);
         Task UpdateOrderHeaderAsync(OrderHeaderUpdateDTO orderHeaderUpdateDTO);
         Task<OrderHeaderDTO> GetOrderHeaderAsync(Guid orderID);
-        Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(SearchQueryDTO searchQuery);
+        Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(OrderSearchDTO searchQuery);
         Task CreateOrderLineAsync(OrderCreateLineDTO orderCreateLineDTO);
         Task<List<OrderPartListDTO>> GetOrderLineAsync(Guid orderID);
         Task DeleteOrderLineAsync(Guid lineID);
@@ -15,5 +15,6 @@ namespace OrderTrak.Client.Services.Order
         Task<OrderShipDTO> GetOrderShippingAsync(Guid orderID);
         Task UpdateOrderShippingAsync(OrderShipUpdateDTO orderShipUpdateDTO);
         Task<OrderActivationDTO> GetOrderActivationAsync(Guid orderID);
+        Task UpdateOrderActivationAsync(OrderActivationUpdateDTO orderActivationUpdateDTO);
     }
 }

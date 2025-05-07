@@ -11,7 +11,7 @@
 @if (Order != null)
 {
     <div class="box">
-        <OrderTabSwitcher Section=1 FormID=@FormID />
+        <OrderTabSwitcher Section=1 FormID=@FormID OnClick="Save_Click" />
         <div class="columns is-centered">
             <div class="column is-one-third">
                 <CardComponent Title="Information" Icon="fa-info-circle">

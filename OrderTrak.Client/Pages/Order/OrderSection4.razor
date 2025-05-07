@@ -40,7 +40,7 @@
             <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/order/search" />
             @if (!Order.IsClosed)
             {
-                <FormButton Title="Save" Style="is-success" Icon="fa-save" />
+                <FormButton Title="Activate" Style="is-success" Icon="fa-play" OnClick="Activation_Click" />
             }
         </div>
     </div>

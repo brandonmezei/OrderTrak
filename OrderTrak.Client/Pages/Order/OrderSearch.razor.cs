@@ -12,9 +12,12 @@ namespace OrderTrak.Client.Pages.Order
         private IOrderService OrderService { get; set; } = default!;
 
         [SupplyParameterFromQuery]
-        public bool Cancel { get; set; }
+        public int? CancelID { get; set; }
 
-        protected SearchQueryDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        [SupplyParameterFromQuery]
+        public int? ActiveID { get; set; }
+
+        protected OrderSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
         protected OrderCreateDTO? CreateOrder { get; set; }
 
@@ -25,8 +28,11 @@ namespace OrderTrak.Client.Pages.Order
             Layout.ClearMessages();
             Layout.UpdateHeader("Order Admin", "Create and edit orders.");
 
-            if (Cancel)
-                Layout.AddMessage(Messages.CancelSuccessful, MessageType.Success);
+            if (CancelID.HasValue)
+                Layout.AddMessage($"Order {CancelID} successfully canceled.", MessageType.Success);
+
+            if (ActiveID.HasValue)
+                Layout.AddMessage($"Order {ActiveID} successfully activated.", MessageType.Success);
 
             IsCardLoading = true;
         }
@@ -41,7 +47,7 @@ namespace OrderTrak.Client.Pages.Order
                     await Task.Delay(500);
 
                     // Get Orders from API
-                    SearchFilters = await LocalStorage.GetItemAsync<SearchQueryDTO>("search") ?? SearchFilters;
+                    SearchFilters = await LocalStorage.GetItemAsync<OrderSearchDTO>("search") ?? SearchFilters;
                     ReturnTable = await OrderService.SearchOrderAsync(SearchFilters);
                 }
                 catch (ApiException ex)
@@ -202,6 +208,18 @@ namespace OrderTrak.Client.Pages.Order
         {
             if (CreateOrder != null && FormID.HasValue)
                 CreateOrder.ProjectID = FormID.Value;
+        }
+
+        protected async Task Cancel_Change()
+        {
+            SearchFilters.ShowCancel = !SearchFilters.ShowCancel;
+            await Search_Click();
+        }
+
+        protected async Task Shipped_Change()
+        {
+            SearchFilters.ShowShipped = !SearchFilters.ShowShipped;
+            await Search_Click();
         }
     }
 }

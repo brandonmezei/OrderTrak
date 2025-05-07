@@ -49,5 +49,33 @@ namespace OrderTrak.Client.Pages.Order
             if (OrderActivation != null)
                 OrderActivation.StatusID = FormID;
         }
+
+        protected async Task Activation_Click()
+        {
+            Layout.ClearMessages();
+
+            try
+            {
+                if (OrderActivation != null && Order != null)
+                {
+
+                    // Save Activation
+                    await OrderService.UpdateOrderActivationAsync(MapperService.Map<OrderActivationUpdateDTO>(OrderActivation));
+
+                    // Redirect
+                    Navigation.NavigateTo($"/order/search?ActiveID={ Order.OrderID }");
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
     }
 }

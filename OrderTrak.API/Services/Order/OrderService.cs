@@ -15,6 +15,7 @@ namespace OrderTrak.API.Services.Order
         {
             // Get Order making sure it's not shipped or draft or already on hold
             var order = await DB.ORD_Order
+                .Include(x => x.ORD_Status)
                 .FirstOrDefaultAsync(x => x.FormID == orderID
                     && x.ORD_Status.Status != OrderStatus.Shipped
                     && x.ORD_Status.Status != OrderStatus.Draft
@@ -190,8 +191,8 @@ namespace OrderTrak.API.Services.Order
                         && y.PartID == x.PartID
                         && y.ORD_Order.ProjectID == x.ORD_Order.ProjectID
                         && (y.ORD_Order.ORD_Status.Status == OrderStatus.PickReady || y.ORD_Order.ORD_Status.Status == OrderStatus.Picking)
-                        && (!x.POHeaderID.HasValue || y.POHeaderID == x.POHeaderID)
-                        && (!x.StockGroupID.HasValue || y.StockGroupID == x.StockGroupID)
+                        && (!y.POHeaderID.HasValue || y.POHeaderID == x.POHeaderID)
+                        && (!y.StockGroupID.HasValue || y.StockGroupID == x.StockGroupID)
                         && (x.SerialNumber == null || y.SerialNumber == x.SerialNumber))
                     .Select(y => y.Quantity - y.ORD_PickList.Sum(p => (int?)p.INV_Stock.Quantity) ?? 0)
                     .Sum(),
@@ -211,7 +212,7 @@ namespace OrderTrak.API.Services.Order
             return returnList;
         }
 
-        public async Task<PagedTable<OrderSearchReturnDTO>> SearchOrderAsync(SearchQueryDTO searchQuery)
+        public async Task<PagedTable<OrderSearchReturnDTO>> SearchOrderAsync(OrderSearchDTO searchQuery)
         {
             // Build base Query
             var query = DB.ORD_Order
@@ -240,6 +241,14 @@ namespace OrderTrak.API.Services.Order
                     );
                 }
             }
+
+            // Cancel Filter
+            if(!searchQuery.ShowCancel)
+                query = query.Where(x => x.ORD_Status.Status != OrderStatus.Cancel);
+            
+            // Ship Filter
+            if (!searchQuery.ShowShipped)
+                query = query.Where(x => x.ORD_Status.Status != OrderStatus.Shipped);
 
             // Apply Order By
             switch (searchQuery.SortColumn)
@@ -426,7 +435,10 @@ namespace OrderTrak.API.Services.Order
                 orderLine.StockGroupID = null;
 
             // Update Serial Number
-            orderLine.SerialNumber = orderPartListUpdateDTO.SerialNumber;
+            if(string.IsNullOrEmpty(orderPartListUpdateDTO.SerialNumber))
+                orderLine.SerialNumber = null;
+            else
+                orderLine.SerialNumber = orderPartListUpdateDTO.SerialNumber;
 
             // Update Quantity
             orderLine.Quantity = orderPartListUpdateDTO.Quantity;
@@ -510,6 +522,93 @@ namespace OrderTrak.API.Services.Order
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Order not found.");
+        }
+
+        public async Task UpdateOrderActivationAsync(OrderActivationUpdateDTO orderActivationUpdateDTO)
+        {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderActivationUpdateDTO.FormID);
+
+            // Get Order
+            var order = await DB.ORD_Order
+                .Include(x => x.ORD_Status)
+                .FirstOrDefaultAsync(x => x.FormID == orderActivationUpdateDTO.FormID
+                    && x.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order not found or it is shipped.");
+
+            // If draft set update status to PickReady
+            var updateStatus = order.ORD_Status.Status == OrderStatus.Draft
+                    ? await DB.ORD_Status.FirstOrDefaultAsync(x => x.Status == OrderStatus.PickReady)
+                        ?? throw new ValidationException("Cannot find Pick Ready Status.")
+                    : await DB.ORD_Status.FirstOrDefaultAsync(x => x.FormID == orderActivationUpdateDTO.StatusID)
+                        ?? throw new ValidationException("Cannot find Status.");
+
+            // Error Check RequestedShipDate has to be greater than equal to today and exist
+            if (!order.RequestedShipDate.HasValue || order.RequestedShipDate.Value.Date < DateTime.UtcNow.Date)
+                throw new ValidationException("Requested date required and cannot be in the past.");
+
+            // Error Check RequestedDeliveryDate has to exist and be greater than or equal to RequestedShipDate
+            if(!order.RequestedDeliveryDate.HasValue || order.RequestedDeliveryDate.Value.Date < order.RequestedShipDate.Value.Date)
+                throw new ValidationException("Requested delivery date required and cannot be before requested ship date.");
+
+            // Error Check Address1
+            if (string.IsNullOrEmpty(order.Address1))
+                throw new ValidationException("Address1 is required.");
+
+            // Error Check City
+            if (string.IsNullOrEmpty(order.City))
+                throw new ValidationException("City is required.");
+
+            // Error Check State
+            if (string.IsNullOrEmpty(order.State))
+                throw new ValidationException("State is required.");
+
+            // Error Check Zip
+            if (string.IsNullOrEmpty(order.Zip))
+                throw new ValidationException("Zip is required.");
+
+            // Error Check ShipContact
+            if (string.IsNullOrEmpty(order.ShipContact))
+                throw new ValidationException("Ship Contact is required.");
+
+            // Error Check ShipPhone
+            if (string.IsNullOrEmpty(order.ShipPhone))
+                throw new ValidationException("Ship Phone is required.");
+
+            // Error Check ShipEmail
+            if (string.IsNullOrEmpty(order.ShipEmail))
+                throw new ValidationException("Ship Email is required.");
+
+            // Error Check Carrier
+            if (string.IsNullOrEmpty(order.Carrier))
+                throw new ValidationException("Carrier is required.");
+
+            // Get Order Lines
+            var orderLines = await GetOrderLineAsync(order.FormID);
+
+            // Check if Order Lines are empty
+            if (orderLines.Count == 0)
+                throw new ValidationException("Order must have at least one line.");
+
+            // Check if Order Lines have enough qty
+            foreach (var line in orderLines)
+            {
+                if (line.PickedQuantity > line.Quantity)
+                    throw new ValidationException($"Order Line {line.PartNumber} has invalid picked quantity.");
+
+                var neededQty = line.Quantity - line.PickedQuantity;
+
+                // Check if Order Line has enough qty
+                if((line.InStockQuantity - line.CommittedQuantity) < neededQty)
+                    throw new ValidationException($"Order Line {line.PartNumber} does not have enough qty. {neededQty} needed.");
+            }
+
+            // Update Order
+            order.ORD_Status = updateStatus;
+            order.OrderNote = orderActivationUpdateDTO.OrderNote;
+
+            // Save
+            await DB.SaveChangesAsync();
         }
     }
 }

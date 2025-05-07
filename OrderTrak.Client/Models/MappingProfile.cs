@@ -30,6 +30,7 @@ namespace OrderTrak.Client.Models
             CreateMap<OrderHeaderDTO, OrderHeaderUpdateDTO>();
             CreateMap<OrderPartListDTO, OrderPartListUpdate>();
             CreateMap<OrderShipDTO, OrderShipUpdateDTO>();
+            CreateMap<OrderActivationDTO, OrderActivationUpdateDTO>();
         }
     }
 }

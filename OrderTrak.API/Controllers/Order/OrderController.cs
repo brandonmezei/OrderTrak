@@ -122,7 +122,7 @@ namespace OrderTrak.API.Controllers.Order
         }
 
         [HttpPost("SearchOrder")]
-        public async Task<ActionResult<PagedTable<OrderSearchReturnDTO>>> SearchOrderAsync([FromBody] SearchQueryDTO searchQuery)
+        public async Task<ActionResult<PagedTable<OrderSearchReturnDTO>>> SearchOrderAsync([FromBody] OrderSearchDTO searchQuery)
         {
             try
             {
@@ -180,6 +180,24 @@ namespace OrderTrak.API.Controllers.Order
             try
             {
                 await orderService.UpdateOrderShippingAsync(orderShipUpdateDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("UpdateOrderActivation")]
+        public async Task<ActionResult> UpdateOrderActivationAsync([FromBody] OrderActivationUpdateDTO orderActivationUpdateDTO)
+        {
+            try
+            {
+                await orderService.UpdateOrderActivationAsync(orderActivationUpdateDTO);
                 return Ok();
             }
             catch (ValidationException ex)

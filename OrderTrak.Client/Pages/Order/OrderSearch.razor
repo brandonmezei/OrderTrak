@@ -62,6 +62,15 @@
                                             </button>
                                         </div>
                                     </div>
+                                    <hr />
+                                    <div class="field">
+                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.ShowCancel" id="ShowCancel" @onclick="Cancel_Change" />
+                                        <label for="ShowCancel">Show Canceled Orders</label>
+                                    </div>
+                                    <div class="field">
+                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.ShowShipped" id="ShowShipped" @onclick="Shipped_Change" />
+                                        <label for="ShowShipped">Show Shipped Orders</label>
+                                    </div>
                                 </EditForm>
                             </div>
                         </div>

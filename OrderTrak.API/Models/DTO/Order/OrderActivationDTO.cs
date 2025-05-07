@@ -1,4 +1,4 @@
-﻿namespace OrderTrak.API.Models.DTO.Order
+﻿ namespace OrderTrak.API.Models.DTO.Order
 {
     public class OrderActivationDTO
     {

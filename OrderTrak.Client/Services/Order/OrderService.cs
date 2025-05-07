@@ -41,9 +41,14 @@ namespace OrderTrak.Client.Services.Order
             return await ApiClient.GetOrderShippingAsync(orderID);
         }
 
-        public async Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(SearchQueryDTO searchQuery)
+        public async Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(OrderSearchDTO searchQuery)
         {
             return await ApiClient.SearchOrderAsync(searchQuery);
+        }
+
+        public async Task UpdateOrderActivationAsync(OrderActivationUpdateDTO orderActivationUpdateDTO)
+        {
+            await ApiClient.UpdateOrderActivationAsync(orderActivationUpdateDTO);
         }
 
         public async Task UpdateOrderHeaderAsync(OrderHeaderUpdateDTO orderHeaderUpdateDTO)
