@@ -8199,6 +8199,9 @@ namespace OrderTrak.Client.Services.API
         [Newtonsoft.Json.JsonProperty("showShipped", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool ShowShipped { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("pickingOnly", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool PickingOnly { get; set; }
+
         [Newtonsoft.Json.JsonProperty("searchFilter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string SearchFilter { get; set; }
 

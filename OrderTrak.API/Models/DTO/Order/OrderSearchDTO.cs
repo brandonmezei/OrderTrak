@@ -4,5 +4,6 @@
     {
         public bool ShowCancel { get; set; }
         public bool ShowShipped { get; set; }
+        public bool PickingOnly { get; set; }
     }
 }

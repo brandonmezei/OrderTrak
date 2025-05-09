@@ -10,7 +10,7 @@ namespace OrderTrak.API.Controllers.Order
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "Order")]
+    [Authorize(Policy = "PickingOrOrder")]
     public class OrderController(IOrderService orderService) : ControllerBase
     {
         private readonly IOrderService orderService = orderService;
@@ -69,6 +69,7 @@ namespace OrderTrak.API.Controllers.Order
         #endregion
 
         #region POST
+        [Authorize(Policy = "Order")]
         [HttpPost("CreateOrder")]
         public async Task<ActionResult<Guid>> CreateOrderAsync([FromBody] OrderCreateDTO orderCreateDTO)
         {
@@ -86,6 +87,7 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Order")]
         [HttpPost("UpdateOrderHeader")]
         public async Task<ActionResult> UpdateOrderHeaderAsync([FromBody] OrderHeaderUpdateDTO orderHeaderUpdateDTO)
         {
@@ -121,6 +123,7 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Order")]
         [HttpPost("CreateOrderLine")]
         public async Task<ActionResult> CreateOrderLineAsync([FromBody] OrderCreateLineDTO orderCreateLineDTO)
         {
@@ -139,6 +142,7 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Order")]
         [HttpPost("UpdateOrderLine")]
         public async Task<ActionResult> UpdateOrderLineAsync([FromBody] OrderPartListUpdate orderPartListUpdateDTO)
         {
@@ -157,6 +161,7 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Order")]
         [HttpPost("UpdateOrderShipping")]
         public async Task<ActionResult> UpdateOrderShippingAsync([FromBody] OrderShipUpdateDTO orderShipUpdateDTO)
         {
@@ -175,6 +180,7 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Order")]
         [HttpPost("UpdateOrderActivation")]
         public async Task<ActionResult> UpdateOrderActivationAsync([FromBody] OrderActivationUpdateDTO orderActivationUpdateDTO)
         {
@@ -210,6 +216,7 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Order")]
         [HttpPost("CancelOrder")]
         public async Task<ActionResult> CancelOrderAsync([FromBody] OrderCancelDTO orderCancelDTO)
         {
@@ -230,6 +237,7 @@ namespace OrderTrak.API.Controllers.Order
         #endregion
 
         #region DELETE
+        [Authorize(Policy = "Order")]
         [HttpDelete("DeleteOrderLine/{lineID}")]
         public async Task<ActionResult> DeleteOrderLineAsync(Guid lineID)
         {

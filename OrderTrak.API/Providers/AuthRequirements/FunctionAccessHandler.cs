@@ -20,7 +20,7 @@
 
             var email = context.User.FindFirst(ClaimTypes.Email)?.Value;
 
-            if (email == null)
+            if (string.IsNullOrWhiteSpace(email))
             {
                 context.Fail();
                 return;
@@ -28,7 +28,8 @@
 
             var user = await _dbContext.SYS_Users
                 .Include(x => x.SYS_Roles)
-                    .ThenInclude(x => x.SYS_RolesToFunction.Where(i => i.SYS_Function.FunctionName == requirement.FunctionName))
+                    .ThenInclude(x => x.SYS_RolesToFunction)
+                        .ThenInclude(x => x.SYS_Function)
                 .FirstOrDefaultAsync(x => x.Email == email && x.Approved && x.RoleID.HasValue);
 
             if (user == null)
@@ -37,17 +38,18 @@
                 return;
             }
 
-            var hasAccess = user.SYS_Roles.SYS_RolesToFunction.Any(x => x.CanAccess);
+            // Parse compound function names like "OrderOrPickingOrReceiving"
+            var requiredFunctions = requirement.FunctionName.Split("Or", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            var hasAccess = user.SYS_Roles.SYS_RolesToFunction.Any(x =>
+                x.CanAccess && requiredFunctions.Contains(x.SYS_Function.FunctionName));
 
             if (hasAccess)
-            {
                 context.Succeed(requirement);
-            }
             else
-            {
                 context.Fail();
-            }
         }
+
     }
 
 }

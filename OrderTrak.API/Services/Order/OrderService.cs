@@ -257,6 +257,10 @@ namespace OrderTrak.API.Services.Order
             if (!searchQuery.ShowShipped)
                 query = query.Where(x => x.ORD_Status.Status != OrderStatus.Shipped);
 
+            // Picking Only Filter
+            if (searchQuery.PickingOnly)
+                query = query.Where(x => x.ORD_Status.Status == OrderStatus.PickReady || x.ORD_Status.Status == OrderStatus.Picking);
+
             // Apply Order By
             switch (searchQuery.SortColumn)
             {

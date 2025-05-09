@@ -42,6 +42,10 @@
                         {
                             <NavBarItem Label="Receiving" Icon="fa-receipt" URL="/receiving/search" />
                         }
+                        @if (Permissions.Any(x => x == "Picking"))
+                        {
+                            <NavBarItem Label="Picking" Icon="fa-dolly" URL="/picking/search" />
+                        }
                         <hr class="navbar-divider" />
                         @if (Permissions.Any(x => x == "Location"))
                         {
