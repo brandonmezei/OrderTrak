@@ -11,7 +11,7 @@
 @if (Order != null)
 {
     <div class="box">
-        <OrderTabSwitcher Section=1 FormID=@FormID OnClick="Save_Click" />
+        <OrderTabSwitcher Section=1 FormID=@FormID />
         <div class="columns is-centered">
             <div class="column is-one-third">
                 <CardComponent Title="Information" Icon="fa-info-circle">
@@ -57,7 +57,7 @@
                                     </Content>
                                 </FormField>
                             </div>
-                            @if (Order.IsClosed)
+                            @if (Order.IsClosed && !Order.IsCanceled)
                             {
                                 <div class="column is-half">
                                     <FormField Icon="fa-box-open" Title="Actual Delivery Date">
@@ -193,7 +193,10 @@
         <hr />
         <div class="buttons">
             <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/order/search" />
-            <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
+            @if (!Order.IsCanceled)
+            {
+                <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
+            }
         </div>
     </div>
 }

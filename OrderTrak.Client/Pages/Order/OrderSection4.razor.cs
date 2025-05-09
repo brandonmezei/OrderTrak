@@ -64,8 +64,6 @@ namespace OrderTrak.Client.Pages.Order
 
                     // Redirect
                     Navigation.NavigateTo($"/order/search?ActiveID={ Order.OrderID }");
-
-                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                 }
             }
             catch (ApiException ex)

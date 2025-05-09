@@ -17,5 +17,6 @@ namespace OrderTrak.API.Services.Order
         Task UpdateOrderShippingAsync(OrderShipUpdateDTO orderShipUpdateDTO);
         Task<OrderActivationDTO> GetOrderActivationAsync(Guid orderID);
         Task UpdateOrderActivationAsync(OrderActivationUpdateDTO orderActivationUpdateDTO);
+        Task CancelOrderAsync(OrderCancelDTO orderCancelDTO);
     }
 }

@@ -2,12 +2,11 @@ using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Order;
-using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Order
 {
-    public partial class OrderSection2
+    public partial class OrderSection5
     {
         [Parameter]
         public Guid FormID { get; set; }
@@ -25,11 +24,7 @@ namespace OrderTrak.Client.Pages.Order
 
         protected int SortColumn { get; set; } = 1;
 
-        protected bool NewPart { get; set; }
-
-        protected Guid? DeleteID { get; set; }
-
-        protected OrderPartListUpdate? LineUpdate { get; set; }
+        protected bool IsCancel { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -190,71 +185,27 @@ namespace OrderTrak.Client.Pages.Order
             }
         }
 
-        protected void AddPart_Toggle()
+        protected void Cancel_Toggle()
         {
-            Layout.ClearMessages();
-            NewPart = !NewPart;
+            IsCancel = !IsCancel;
         }
 
-        protected async Task AddPart_Click(Guid? PartID)
-        {
-            Layout.ClearMessages();
-
-            if (PartID.HasValue)
-            {
-                try
-                {
-                    // Add Line
-                    await OrderService.CreateOrderLineAsync(new OrderCreateLineDTO
-                    {
-                        OrderID = FormID,
-                        PartID = PartID.Value
-                    });
-
-                    // Refresh
-                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
-                    FilteredPartList = PartList;
-
-                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
-                }
-                catch (ApiException ex)
-                {
-                    Layout.AddMessage(ex.Response, MessageType.Error);
-                }
-                catch (Exception ex)
-                {
-                    Layout.AddMessage(ex.Message, MessageType.Error);
-                }
-                finally
-                {
-                    NewPart = false;
-                }
-            }
-        }
-
-        protected void Delete_Toggle(Guid? FormID)
-        {
-            Layout.ClearMessages();
-
-            DeleteID = FormID;
-        }
-
-        protected async Task DeleteConfirm_Click()
+        protected async Task CancelConfirm_Click()
         {
             Layout.ClearMessages();
 
             try
             {
-                if (DeleteID.HasValue)
+                if (Order != null)
                 {
-                    // Delete the Line
-                    await OrderService.DeleteOrderLineAsync(DeleteID.Value);
+                    // Cancel Order
+                    await OrderService.CancelOrderAsync(new OrderCancelDTO
+                    {
+                        FormID = Order.FormID,
+                    });
 
-                    // Refresh
-                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
-                    FilteredPartList = PartList;
-
-                    Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
+                    // Redirect
+                    Navigation.NavigateTo($"/order/search?CancelID={Order.OrderID}");
                 }
             }
             catch (ApiException ex)
@@ -267,67 +218,8 @@ namespace OrderTrak.Client.Pages.Order
             }
             finally
             {
-                DeleteID = null;
+                IsCancel = false;
             }
-        }
-
-        protected void LineEdit_Toggle(Guid? FormID)
-        {
-            Layout.ClearMessages();
-
-            if (FormID.HasValue)
-            {
-                var partLine = PartList?.FirstOrDefault(x => x.FormID == FormID);
-
-                if (partLine != null)
-                    LineUpdate = MapperService.Map<OrderPartListUpdate>(partLine);
-            }
-            else
-                LineUpdate = null;
-        }
-
-        protected async Task LineEdit_Save()
-        {
-            Layout.ClearMessages();
-
-            if (LineUpdate != null)
-            {
-                try
-                {
-                    // Update the Line
-                    await OrderService.UpdateOrderLineAsync(LineUpdate);
-
-                    // Refresh
-                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
-                    FilteredPartList = PartList;
-
-                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
-                }
-                catch (ApiException ex)
-                {
-                    Layout.AddMessage(ex.Response, MessageType.Error);
-                }
-                catch (Exception ex)
-                {
-                    Layout.AddMessage(ex.Message, MessageType.Error);
-                }
-                finally
-                {
-                    LineUpdate = null;
-                }
-            }
-        }
-
-        protected void PO_Change(Guid? FormID)
-        {
-            if (LineUpdate != null)
-                LineUpdate.Poid = FormID;
-        }
-
-        protected void StockGroup_Change(Guid? FormID)
-        {
-            if (LineUpdate != null)
-                LineUpdate.StockGroupID = FormID;
         }
     }
 }

@@ -19,17 +19,8 @@ namespace OrderTrak.Client.Shared.Order
         [Parameter]
         public Guid? FormID { get; set; }
 
-        [Parameter]
-        public EventCallback OnClick { get; set; }
-
         private async Task OnClick_Handler(int redirect)
         {
-            if (OnClick.HasDelegate)
-            {
-                await OnClick.InvokeAsync();
-                StateHasChanged();
-            }
-
             switch (redirect)
             {
                 case 1:
@@ -50,7 +41,6 @@ namespace OrderTrak.Client.Shared.Order
                 default:
                     break;
             }
-
         }
     }
 }

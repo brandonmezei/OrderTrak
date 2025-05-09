@@ -22,6 +22,15 @@
         </Content>
     </FormField>
 }
+else
+{
+    <FormField Icon="fa-users" Title="Customer">
+        <Content>
+            <input class="input" type="text" value="No Customers found." disabled>
+        </Content>
+    </FormField>
+}
+
 @if (ProjectDropDownFilters.Count > 0)
 {
     <FormField Icon="fa-project-diagram" Title="Project">
@@ -44,5 +53,12 @@
             </div>
         </Content>
     </FormField>
-
+}
+else
+{
+    <FormField Icon="fa-project-diagram" Title="Project">
+        <Content>
+            <input class="input" type="text" value="No Projects found." disabled>
+        </Content>
+    </FormField>
 }

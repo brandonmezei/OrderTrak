@@ -209,6 +209,24 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("CancelOrder")]
+        public async Task<ActionResult> CancelOrderAsync([FromBody] OrderCancelDTO orderCancelDTO)
+        {
+            try
+            {
+                await orderService.CancelOrderAsync(orderCancelDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE

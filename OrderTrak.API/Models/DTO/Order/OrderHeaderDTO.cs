@@ -35,5 +35,6 @@
         public string? OrderUDF9 { get; set; }
         public string? OrderUDF10 { get; set; }
         public bool IsClosed { get; set; }
+        public bool IsCanceled { get; set; }
     }
 }

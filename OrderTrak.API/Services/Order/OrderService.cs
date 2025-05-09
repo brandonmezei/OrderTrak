@@ -13,13 +13,14 @@ namespace OrderTrak.API.Services.Order
 
         private async Task PlaceOrderOnHoldAsync(Guid orderID)
         {
-            // Get Order making sure it's not shipped or draft or already on hold
+            // Get Order making sure it's not shipped, draft, Cancel or already on hold
             var order = await DB.ORD_Order
                 .Include(x => x.ORD_Status)
                 .FirstOrDefaultAsync(x => x.FormID == orderID
                     && x.ORD_Status.Status != OrderStatus.Shipped
                     && x.ORD_Status.Status != OrderStatus.Draft
                     && x.ORD_Status.Status != OrderStatus.Hold
+                    && x.ORD_Status.Status != OrderStatus.Cancel
                     );
 
             if (order != null)
@@ -152,7 +153,8 @@ namespace OrderTrak.API.Services.Order
                     OrderUDF8 = x.OrderUDF8,
                     OrderUDF9 = x.OrderUDF9,
                     OrderUDF10 = x.OrderUDF10,
-                    IsClosed = x.ORD_Status.Status == OrderStatus.Shipped
+                    IsClosed = x.ORD_Status.Status == OrderStatus.Shipped || x.ORD_Status.Status == OrderStatus.Cancel,
+                    IsCanceled = x.ORD_Status.Status == OrderStatus.Cancel
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new ValidationException("Order not found.");
@@ -611,6 +613,37 @@ namespace OrderTrak.API.Services.Order
             // Update Order
             order.ORD_Status = updateStatus;
             order.OrderNote = orderActivationUpdateDTO.OrderNote;
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task CancelOrderAsync(OrderCancelDTO orderCancelDTO)
+        {
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(orderCancelDTO.FormID);
+
+            // Get Order
+            var order = await DB.ORD_Order
+                .Include(x => x.ORD_Status)
+                .FirstOrDefaultAsync(x => x.FormID == orderCancelDTO.FormID
+                    && x.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order not found or it is shipped.");
+
+            // Get Cancel Status
+            var cancelStatus = await DB.ORD_Status
+                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Cancel)
+                ?? throw new ValidationException("Cannot find Cancel Status");
+
+            // Get Order Lines
+            var orderLines = await GetOrderLineAsync(new OrderPartListSearchDTO { FormID = order.FormID });
+
+            // Remove Order Lines
+            foreach(var line in orderLines)
+                await DeleteOrderLineAsync(line.FormID);
+
+            // Update Order to Cancel
+            order.ORD_Status = cancelStatus;
 
             // Save
             await DB.SaveChangesAsync();

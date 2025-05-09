@@ -6,6 +6,11 @@ namespace OrderTrak.Client.Services.Order
     {
         private readonly IClient ApiClient = client;
 
+        public async Task CancelOrderAsync(OrderCancelDTO orderCancelDTO)
+        {
+            await ApiClient.CancelOrderAsync(orderCancelDTO);
+        }
+
         public async Task<Guid> CreateOrderAsync(OrderCreateDTO orderCreateDTO)
         {
             return await ApiClient.CreateOrderAsync(orderCreateDTO);
