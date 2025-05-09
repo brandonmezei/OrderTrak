@@ -181,7 +181,7 @@ namespace OrderTrak.API.Services.PO
             // Get Part
             var part = await DB.UPL_PartInfo
                 .FirstOrDefaultAsync(x => x.FormID == poLineCreateDTO.PartID
-                    && (x.UPL_UOM.UnitOfMeasurement == UOM.Feet || x.UPL_UOM.UnitOfMeasurement == UOM.Inches))
+                    && x.IsStock)
                 ?? throw new ValidationException("Part not found or not available for PO entry.");
 
             // Check if Part already exists in PO

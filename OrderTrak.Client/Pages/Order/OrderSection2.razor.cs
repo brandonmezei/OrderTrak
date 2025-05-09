@@ -62,7 +62,7 @@ namespace OrderTrak.Client.Pages.Order
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
-                    PartList = await OrderService.GetOrderLineAsync(FormID);
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
                     FilteredPartList = PartList;
                 }
                 catch (ApiException ex)
@@ -163,6 +163,7 @@ namespace OrderTrak.Client.Pages.Order
                             8 => [.. FilteredPartList.OrderBy(x => x.InStockQuantity)],
                             9 => [.. FilteredPartList.OrderBy(x => x.InStockQuantity - x.CommittedQuantity)],
                             10 => [.. FilteredPartList.OrderBy(x => x.SerialNumber)],
+                            11 => [.. FilteredPartList.OrderBy(x => x.IsStock)],
                             _ => [.. FilteredPartList.OrderBy(x => x.PartNumber)],
                         };
                         break;
@@ -180,6 +181,7 @@ namespace OrderTrak.Client.Pages.Order
                             8 => [.. FilteredPartList.OrderByDescending(x => x.InStockQuantity)],
                             9 => [.. FilteredPartList.OrderByDescending(x => x.InStockQuantity - x.CommittedQuantity)],
                             10 => [.. FilteredPartList.OrderByDescending(x => x.SerialNumber)],
+                            11 => [.. FilteredPartList.OrderByDescending(x => x.IsStock)],
                             _ => [.. FilteredPartList.OrderByDescending(x => x.PartNumber)],
                         };
                         break;
@@ -209,7 +211,7 @@ namespace OrderTrak.Client.Pages.Order
                     });
 
                     // Refresh
-                    PartList = await OrderService.GetOrderLineAsync(FormID);
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
                     FilteredPartList = PartList;
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
@@ -248,7 +250,7 @@ namespace OrderTrak.Client.Pages.Order
                     await OrderService.DeleteOrderLineAsync(DeleteID.Value);
 
                     // Refresh
-                    PartList = await OrderService.GetOrderLineAsync(FormID);
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
                     FilteredPartList = PartList;
 
                     Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
@@ -295,7 +297,7 @@ namespace OrderTrak.Client.Pages.Order
                     await OrderService.UpdateOrderLineAsync(LineUpdate);
 
                     // Refresh
-                    PartList = await OrderService.GetOrderLineAsync(FormID);
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
                     FilteredPartList = PartList;
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);

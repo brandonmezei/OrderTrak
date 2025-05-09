@@ -15,5 +15,6 @@
         public int PickedQuantity { get; set; }
         public int CommittedQuantity { get; set; }
         public int InStockQuantity { get; set; }
+        public bool IsStock { get; set; }
     }
 }

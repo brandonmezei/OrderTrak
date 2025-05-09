@@ -33,23 +33,6 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
-        [HttpGet("GetOrderLine/{orderID}")]
-        public async Task<ActionResult<List<OrderPartListDTO>>> GetOrderLineAsync(Guid orderID)
-        {
-            try
-            {
-                return Ok(await orderService.GetOrderLineAsync(orderID));
-            }
-            catch (ValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
         [HttpGet("GetOrderShipping/{orderID}")]
         public async Task<ActionResult<OrderShipDTO>> GetOrderShippingAsync(Guid orderID)
         {
@@ -199,6 +182,23 @@ namespace OrderTrak.API.Controllers.Order
             {
                 await orderService.UpdateOrderActivationAsync(orderActivationUpdateDTO);
                 return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("GetOrderLine")]
+        public async Task<ActionResult<List<OrderPartListDTO>>> GetOrderLineAsync([FromBody] OrderPartListSearchDTO orderPartListSearchDTO)
+        {
+            try
+            {
+                return Ok(await orderService.GetOrderLineAsync(orderPartListSearchDTO));
             }
             catch (ValidationException ex)
             {

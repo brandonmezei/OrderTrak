@@ -31,9 +31,9 @@ namespace OrderTrak.Client.Services.Order
             return await ApiClient.GetOrderHeaderAsync(orderID);
         }
 
-        public async Task<List<OrderPartListDTO>> GetOrderLineAsync(Guid orderID)
+        public async Task<List<OrderPartListDTO>> GetOrderLineAsync(OrderPartListSearchDTO orderPartListSearchDTO)
         {
-            return [.. await ApiClient.GetOrderLineAsync(orderID)];
+            return [.. await ApiClient.GetOrderLineAsync(orderPartListSearchDTO)];
         }
 
         public async Task<OrderShipDTO> GetOrderShippingAsync(Guid orderID)

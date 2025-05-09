@@ -10,7 +10,7 @@
 
 @if (NewPart)
 {
-    <PartNumberSearch IsStockOnly=true OnClose="AddPart_Toggle" OnClick="AddPart_Click" />
+    <PartNumberSearch OnClose="AddPart_Toggle" OnClick="AddPart_Click" />
 }
 
 @if (DeleteID.HasValue)
@@ -52,24 +52,27 @@
                                             <InputText class="input" Placeholder="Part Description" @bind-Value="partLine.PartDescription" disabled />
                                         </Content>
                                     </FormField>
-                                    <FormField Icon="fa-file-invoice" Title="Purchase Order">
-                                        <Content>
-                                            <PurchaseOrderDropDown PartID=@partLine.PartID
-                                                                   ProjectID=@Order.ProjectID
-                                                                   SelectedValue=@LineUpdate.Poid
-                                                                   SelectedValueChanged="PO_Change" />
-                                        </Content>
-                                    </FormField>
-                                    <FormField Icon="fa-warehouse" Title="Stock Group">
-                                        <Content>
-                                            <StockGroupDropDown SelectedValue="LineUpdate.StockGroupID" SelectedValueChanged="StockGroup_Change" />
-                                        </Content>
-                                    </FormField>
-                                    <FormField Icon="fa-hashtag" Title="Serial Number">
-                                        <Content>
-                                            <InputText class="input is-primary" Placeholder="Serial Number" @bind-Value="LineUpdate.SerialNumber" />
-                                        </Content>
-                                    </FormField>
+                                    @if (partLine.IsStock)
+                                    {
+                                        <FormField Icon="fa-file-invoice" Title="Purchase Order">
+                                            <Content>
+                                                <PurchaseOrderDropDown PartID=@partLine.PartID
+                                                ProjectID=@Order.ProjectID
+                                                SelectedValue=@LineUpdate.Poid
+                                                SelectedValueChanged="PO_Change" />
+                                            </Content>
+                                        </FormField>
+                                        <FormField Icon="fa-warehouse" Title="Stock Group">
+                                            <Content>
+                                                <StockGroupDropDown SelectedValue="LineUpdate.StockGroupID" SelectedValueChanged="StockGroup_Change" />
+                                            </Content>
+                                        </FormField>
+                                        <FormField Icon="fa-hashtag" Title="Serial Number">
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="Serial Number" @bind-Value="LineUpdate.SerialNumber" />
+                                            </Content>
+                                        </FormField>
+                                    }
                                     <FormField Icon="fa-cubes" Title="Quantity">
                                         <Content>
                                             <InputNumber class="input is-danger" Placeholder="Quantity" @bind-Value="LineUpdate.Quantity" />
@@ -148,6 +151,17 @@
                                                 <a @onclick="() => SortSwitch_Click(2)">
                                                     <span>Description</span>
                                                     @if (SortColumn == 2)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(11)">
+                                                    <span>Stock / Tangible</span>
+                                                    @if (SortColumn == 11)
                                                     {
                                                         <span class="icon">
                                                             <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
@@ -260,6 +274,7 @@
                                                 </td>
                                                 <td>@line.PartNumber</td>
                                                 <td>@line.PartDescription</td>
+                                                <td>@(line.IsStock ? "Stock" : "Tangible")</td>
                                                 <td>@line.Po</td>
                                                 <td>@line.StockGroup</td>
                                                 <td>@line.SerialNumber</td>

@@ -158,20 +158,26 @@ namespace OrderTrak.API.Services.Order
                 ?? throw new ValidationException("Order not found.");
         }
 
-        public async Task<List<OrderPartListDTO>> GetOrderLineAsync(Guid orderID)
+        public async Task<List<OrderPartListDTO>> GetOrderLineAsync(OrderPartListSearchDTO orderPartListSearchDTO)
         {
             // Place Order on Hold
-            await PlaceOrderOnHoldAsync(orderID);
+            await PlaceOrderOnHoldAsync(orderPartListSearchDTO.FormID);
 
-            var returnList = await DB.ORD_Line
+            var orderLineQuery = DB.ORD_Line
                 .Include(x => x.UPL_PartInfo)
                 .Include(x => x.PO_Header)
                 .Include(x => x.UPL_StockGroup)
                 .Include(x => x.ORD_PickList)
                     .ThenInclude(x => x.INV_Stock)
                 .AsSplitQuery()
-                .Where(x => x.ORD_Order.FormID == orderID)
-                .AsNoTracking()
+                .Where(x => x.ORD_Order.FormID == orderPartListSearchDTO.FormID)
+                .AsNoTracking();
+
+            // Stock Only Filter
+            if (orderPartListSearchDTO.StockOnly)
+                orderLineQuery = orderLineQuery.Where(x => x.UPL_PartInfo.IsStock);
+
+            return await orderLineQuery
                 .Select(x => new OrderPartListDTO
                 {
                     FormID = x.FormID,
@@ -205,11 +211,10 @@ namespace OrderTrak.API.Services.Order
                         (!x.POHeaderID.HasValue || y.PO_Line.POHeaderID == x.POHeaderID) &&
                         (!x.StockGroupID.HasValue || y.StockGroupID == x.StockGroupID) &&
                         (x.SerialNumber == null || y.SerialNumber == x.SerialNumber))
-                    .Sum(s => s.Quantity)
+                    .Sum(s => s.Quantity),
+                    IsStock = x.UPL_PartInfo.IsStock
                 })
                 .ToListAsync();
-
-            return returnList;
         }
 
         public async Task<PagedTable<OrderSearchReturnDTO>> SearchOrderAsync(OrderSearchDTO searchQuery)
@@ -243,9 +248,9 @@ namespace OrderTrak.API.Services.Order
             }
 
             // Cancel Filter
-            if(!searchQuery.ShowCancel)
+            if (!searchQuery.ShowCancel)
                 query = query.Where(x => x.ORD_Status.Status != OrderStatus.Cancel);
-            
+
             // Ship Filter
             if (!searchQuery.ShowShipped)
                 query = query.Where(x => x.ORD_Status.Status != OrderStatus.Shipped);
@@ -435,7 +440,7 @@ namespace OrderTrak.API.Services.Order
                 orderLine.StockGroupID = null;
 
             // Update Serial Number
-            if(string.IsNullOrEmpty(orderPartListUpdateDTO.SerialNumber))
+            if (string.IsNullOrEmpty(orderPartListUpdateDTO.SerialNumber))
                 orderLine.SerialNumber = null;
             else
                 orderLine.SerialNumber = orderPartListUpdateDTO.SerialNumber;
@@ -548,7 +553,7 @@ namespace OrderTrak.API.Services.Order
                 throw new ValidationException("Requested date required and cannot be in the past.");
 
             // Error Check RequestedDeliveryDate has to exist and be greater than or equal to RequestedShipDate
-            if(!order.RequestedDeliveryDate.HasValue || order.RequestedDeliveryDate.Value.Date < order.RequestedShipDate.Value.Date)
+            if (!order.RequestedDeliveryDate.HasValue || order.RequestedDeliveryDate.Value.Date < order.RequestedShipDate.Value.Date)
                 throw new ValidationException("Requested delivery date required and cannot be before requested ship date.");
 
             // Error Check Address1
@@ -584,11 +589,11 @@ namespace OrderTrak.API.Services.Order
                 throw new ValidationException("Carrier is required.");
 
             // Get Order Lines
-            var orderLines = await GetOrderLineAsync(order.FormID);
+            var orderLines = await GetOrderLineAsync(new OrderPartListSearchDTO { FormID = order.FormID, StockOnly = true });
 
             // Check if Order Lines are empty
             if (orderLines.Count == 0)
-                throw new ValidationException("Order must have at least one line.");
+                throw new ValidationException("Order must have at least one stock line.");
 
             // Check if Order Lines have enough qty
             foreach (var line in orderLines)
@@ -599,7 +604,7 @@ namespace OrderTrak.API.Services.Order
                 var neededQty = line.Quantity - line.PickedQuantity;
 
                 // Check if Order Line has enough qty
-                if((line.InStockQuantity - line.CommittedQuantity) < neededQty)
+                if ((line.InStockQuantity - line.CommittedQuantity) < neededQty)
                     throw new ValidationException($"Order Line {line.PartNumber} does not have enough qty. {neededQty} needed.");
             }
 
