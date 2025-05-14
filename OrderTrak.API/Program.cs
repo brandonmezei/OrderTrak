@@ -134,7 +134,7 @@ builder.Services.AddAuthorization(options =>
         policy.Requirements.Add(new FunctionAccessRequirement("Picking")));
 
     options.AddPolicy("PickingOrOrder", policy =>
-        policy.Requirements.Add(new FunctionAccessRequirement("Picking")));
+        policy.Requirements.Add(new FunctionAccessRequirement("Picking", "Order")));
 });
 
 builder.Services.AddCors(options =>

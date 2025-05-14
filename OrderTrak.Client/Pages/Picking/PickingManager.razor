@@ -1,0 +1,186 @@
+﻿@page "/picking/{FormID:guid}"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.DropDowns
+@inherits OrderTrakBasePage
+
+<PageTitle>Picking - OrderTrak</PageTitle>
+
+@if (Order != null)
+{
+    <div class="box">
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <CardComponent Title="Information" Icon="fa-info-circle">
+                    <CardBody>
+                        <FormField Icon="fa-box" Title="Order">
+                            <Content>
+                                <InputNumber class="input" Placeholder="Order ID" @bind-Value="Order.OrderID" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-id-card" Title="Customer">
+                            <Content>
+                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.CustomerCode" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-project-diagram" Title="Project">
+                            <Content>
+                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.ProjectCode" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-chart-line" Title="Status">
+                            <Content>
+                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.OrderStatus" disabled />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column">
+                <CardComponent Title="Order Line(s)" Icon="fa-list" RightTitle="@($"{ FilteredPartList?.Count } record(s)")" IsCardLoading=IsCardLoading>
+                    <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column is-half">
+                                <div class="box">
+                                    <EditForm Model="@SearchFilter" OnValidSubmit="@PartListSearch_Click">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <InputText class="input" @bind-Value="SearchFilter.SearchText" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                    <span>Search</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        @if (FilteredPartList?.Count > 0)
+                        {
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(1)">
+                                                    <span>Part</span>
+                                                    @if (SortColumn == 1)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(2)">
+                                                    <span>Description</span>
+                                                    @if (SortColumn == 2)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(3)">
+                                                    <span>PO</span>
+                                                    @if (SortColumn == 3)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(4)">
+                                                    <span>StockGroup</span>
+                                                    @if (SortColumn == 4)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(10)">
+                                                    <span>Serial</span>
+                                                    @if (SortColumn == 10)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(5)">
+                                                    <span>Quantity</span>
+                                                    @if (SortColumn == 5)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(6)">
+                                                    <span>Picked</span>
+                                                    @if (SortColumn == 6)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var line in FilteredPartList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @if (!Order.IsClosed)
+                                                    {
+                                                        <div class="buttons">
+@*                                                             <FormButton Title="Edit" Style="is-small" Icon="fa-edit" OnClick="() => LineEdit_Toggle(line.FormID)" />
+                                                            <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
+ *@                                                        </div>
+                                                    }
+                                                </td>
+                                                <td>@line.PartNumber</td>
+                                                <td>@line.PartDescription</td>
+                                                <td>@line.Po</td>
+                                                <td>@line.StockGroup</td>
+                                                <td>@line.SerialNumber</td>
+                                                <td>@line.Quantity</td>
+                                                <td>@line.PickedQuantity</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/order/search" />
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

@@ -4,11 +4,11 @@ namespace OrderTrak.API.Providers.AuthRequirements
 {
     public class FunctionAccessRequirement : IAuthorizationRequirement
     {
-        public string FunctionName { get; }
+        public HashSet<string> AllowedFunctions  { get; }
 
-        public FunctionAccessRequirement(string functionName)
+        public FunctionAccessRequirement(params string[] functionNames)
         {
-            FunctionName = functionName;
+            AllowedFunctions  = new HashSet<string>(functionNames);
         }
     }
 

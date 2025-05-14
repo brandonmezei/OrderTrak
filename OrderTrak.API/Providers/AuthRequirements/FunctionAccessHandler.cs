@@ -20,7 +20,7 @@
 
             var email = context.User.FindFirst(ClaimTypes.Email)?.Value;
 
-            if (string.IsNullOrWhiteSpace(email))
+            if (email == null)
             {
                 context.Fail();
                 return;
@@ -38,17 +38,15 @@
                 return;
             }
 
-            // Parse compound function names like "OrderOrPickingOrReceiving"
-            var requiredFunctions = requirement.FunctionName.Split("Or", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-            var hasAccess = user.SYS_Roles.SYS_RolesToFunction.Any(x =>
-                x.CanAccess && requiredFunctions.Contains(x.SYS_Function.FunctionName));
+            var hasAccess = user.SYS_Roles.SYS_RolesToFunction
+                .Any(x => x.CanAccess && requirement.AllowedFunctions.Contains(x.SYS_Function.FunctionName));
 
             if (hasAccess)
                 context.Succeed(requirement);
             else
                 context.Fail();
         }
+
 
     }
 
