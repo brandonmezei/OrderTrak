@@ -13,7 +13,6 @@ namespace OrderTrak.API.Services.ChangeLog
         {
             // Get Change Logs
             var query = DB.SYS_ChangeLog
-                .Include(x => x.SYS_ChangeLogDetails)
                 .AsQueryable();
 
             // Apply pagination and projection

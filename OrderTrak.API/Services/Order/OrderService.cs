@@ -111,14 +111,8 @@ namespace OrderTrak.API.Services.Order
 
         public async Task<OrderHeaderDTO> GetOrderHeaderAsync(Guid orderID)
         {
-            // Place Order on Hold
-            await PlaceOrderOnHoldAsync(orderID);
-
             // Get Order By OrderID
             return await DB.ORD_Order
-                .Include(x => x.UPL_Project)
-                    .ThenInclude(x => x.UPL_Customer)
-                .Include(x => x.ORD_Status)
                 .Where(x => x.FormID == orderID)
                 .AsNoTracking()
                 .Select(x => new OrderHeaderDTO
@@ -162,15 +156,8 @@ namespace OrderTrak.API.Services.Order
 
         public async Task<List<OrderPartListDTO>> GetOrderLineAsync(OrderPartListSearchDTO orderPartListSearchDTO)
         {
-            // Place Order on Hold
-            await PlaceOrderOnHoldAsync(orderPartListSearchDTO.FormID);
 
             var orderLineQuery = DB.ORD_Line
-                .Include(x => x.UPL_PartInfo)
-                .Include(x => x.PO_Header)
-                .Include(x => x.UPL_StockGroup)
-                .Include(x => x.ORD_PickList)
-                    .ThenInclude(x => x.INV_Stock)
                 .AsSplitQuery()
                 .Where(x => x.ORD_Order.FormID == orderPartListSearchDTO.FormID)
                 .AsNoTracking();
@@ -223,8 +210,6 @@ namespace OrderTrak.API.Services.Order
         {
             // Build base Query
             var query = DB.ORD_Order
-                .Include(x => x.UPL_Project)
-                .Include(x => x.ORD_Status)
                 .AsQueryable();
 
             // Filters
@@ -262,42 +247,28 @@ namespace OrderTrak.API.Services.Order
                 query = query.Where(x => x.ORD_Status.Status == OrderStatus.PickReady || x.ORD_Status.Status == OrderStatus.Picking);
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Id)
-                        : query.OrderByDescending(x => x.Id);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.UPL_Project.ProjectCode)
-                        : query.OrderByDescending(x => x.UPL_Project.ProjectCode);
-                    break;
-                case 3:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.ORD_Status.Status)
-                        : query.OrderByDescending(x => x.ORD_Status.Status);
-                    break;
-                case 4:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.RequestedShipDate)
-                        : query.OrderByDescending(x => x.RequestedShipDate);
-                    break;
-                case 5:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.RequestedDeliveryDate)
-                        : query.OrderByDescending(x => x.RequestedDeliveryDate);
-                    break;
-                case 6:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.ActualShipDate)
-                        : query.OrderByDescending(x => x.ActualShipDate);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Id)
+                                        : query.OrderByDescending(x => x.Id),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UPL_Project.ProjectCode)
+                                        : query.OrderByDescending(x => x.UPL_Project.ProjectCode),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.ORD_Status.Status)
+                                        : query.OrderByDescending(x => x.ORD_Status.Status),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.RequestedShipDate)
+                                        : query.OrderByDescending(x => x.RequestedShipDate),
+                5 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.RequestedDeliveryDate)
+                                        : query.OrderByDescending(x => x.RequestedDeliveryDate),
+                6 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.ActualShipDate)
+                                        : query.OrderByDescending(x => x.ActualShipDate),
+                _ => query.OrderBy(x => x.Id),
+            };
 
             // Apply pagination and projection
             var orderList = await query
@@ -461,14 +432,8 @@ namespace OrderTrak.API.Services.Order
 
         public async Task<OrderShipDTO> GetOrderShippingAsync(Guid orderID)
         {
-            // Place Order on Hold
-            await PlaceOrderOnHoldAsync(orderID);
-
             // Get Order By OrderID
             return await DB.ORD_Order
-                .Include(x => x.UPL_Project)
-                    .ThenInclude(x => x.UPL_Customer)
-                .Include(x => x.ORD_Status)
                 .Where(x => x.FormID == orderID)
                 .AsNoTracking()
                 .Select(x => new OrderShipDTO
@@ -517,12 +482,8 @@ namespace OrderTrak.API.Services.Order
 
         public async Task<OrderActivationDTO> GetOrderActivationAsync(Guid orderID)
         {
-            // Place Order on Hold
-            await PlaceOrderOnHoldAsync(orderID);
-
             // Get Order By OrderID
             return await DB.ORD_Order
-                .Include(x => x.ORD_StatusBeforeHold)
                 .Where(x => x.FormID == orderID)
                 .AsNoTracking()
                 .Select(x => new OrderActivationDTO

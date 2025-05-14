@@ -381,7 +381,7 @@ namespace OrderTrak.Client.Pages.Receiving
                     {
                         // Create PO Line
                         await ReceivingService.CreateReceivingLineAsync(NewReceipt);
-                        
+
                         // Clear Receipt
                         NewReceipt = null;
 
@@ -395,6 +395,8 @@ namespace OrderTrak.Client.Pages.Receiving
 
                         Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
                     }
+                    else
+                        SelectPOLine_Click(NewReceipt.PoLineID);
                 }
             }
             catch (ApiException ex)

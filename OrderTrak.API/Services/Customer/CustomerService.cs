@@ -79,7 +79,6 @@ namespace OrderTrak.API.Services.Customer
         {
             // Get Customer
             return await DB.UPL_Customer
-                .Include(x => x.UPL_Projects)
                 .Where(x => x.FormID == customerId)
                 .AsNoTracking()
                 .Select(x => new CustomerDTO
@@ -102,7 +101,6 @@ namespace OrderTrak.API.Services.Customer
         {
             // Get Customers
             var query = DB.UPL_Customer
-                .Include(x => x.UPL_Projects)
                 .AsQueryable();
 
             // Filters
@@ -130,32 +128,22 @@ namespace OrderTrak.API.Services.Customer
                 query = query.Where(x => !x.UPL_Projects.Any());
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.CustomerCode)
-                        : query.OrderByDescending(x => x.CustomerCode);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.CustomerName)
-                        : query.OrderByDescending(x => x.CustomerName);
-                    break;
-                case 3:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Phone)
-                        : query.OrderByDescending(x => x.Phone);
-                    break;
-                case 4:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.UPL_Projects.Count)
-                        : query.OrderByDescending(x => x.UPL_Projects.Count);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.CustomerCode)
+                                        : query.OrderByDescending(x => x.CustomerCode),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.CustomerName)
+                                        : query.OrderByDescending(x => x.CustomerName),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Phone)
+                                        : query.OrderByDescending(x => x.Phone),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UPL_Projects.Count)
+                                        : query.OrderByDescending(x => x.UPL_Projects.Count),
+                _ => query.OrderBy(x => x.Id),
+            };
 
             // Apply pagination and projection
             var customerList = await query

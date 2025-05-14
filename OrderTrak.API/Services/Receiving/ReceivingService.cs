@@ -57,12 +57,6 @@ namespace OrderTrak.API.Services.Receiving
         {
             // Get Receipt
             return await DB.INV_Receipt
-                .Include(x => x.INV_Stock)
-                    .ThenInclude(x => x.PO_Line)
-                        .ThenInclude(x => x.UPL_PartInfo)
-                 .Include(x => x.INV_Stock)
-                    .ThenInclude(x => x.PO_Line)
-                        .ThenInclude(x => x.PO_Header)
                 .Where(x => x.FormID == recID)
                 .AsNoTracking()
                 .Select(x => new ReceivingDTO
@@ -96,8 +90,6 @@ namespace OrderTrak.API.Services.Receiving
         {
             // Get Rec
             var query = DB.INV_Receipt
-                .Include(x => x.INV_Stock)
-                    .ThenInclude(x => x.PO_Line.PO_Header)
                 .AsQueryable();
 
             // Filters
@@ -125,37 +117,25 @@ namespace OrderTrak.API.Services.Receiving
                 query = query.Where(x => x.CreateDate.Date == DateTime.Today.Date);
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.TrackingNumber)
-                        : query.OrderByDescending(x => x.TrackingNumber);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Carrier)
-                        : query.OrderByDescending(x => x.Carrier);
-                    break;
-                case 3:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count())
-                        : query.OrderByDescending(x => x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count());
-                    break;
-                case 4:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.INV_Stock.Sum(x => x.Quantity))
-                        : query.OrderByDescending(x => x.INV_Stock.Sum(x => x.Quantity));
-                    break;
-                case 5:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.CreateDate)
-                        : query.OrderByDescending(x => x.CreateDate);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.TrackingNumber)
+                                        : query.OrderByDescending(x => x.TrackingNumber),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Carrier)
+                                        : query.OrderByDescending(x => x.Carrier),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count())
+                                        : query.OrderByDescending(x => x.INV_Stock.Select(i => i.PO_Line.PO_Header.Id).Distinct().Count()),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.INV_Stock.Sum(x => x.Quantity))
+                                        : query.OrderByDescending(x => x.INV_Stock.Sum(x => x.Quantity)),
+                5 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.CreateDate)
+                                        : query.OrderByDescending(x => x.CreateDate),
+                _ => query.OrderBy(x => x.Id),
+            };
 
             // Apply pagination and projection
             var trackingList = await query

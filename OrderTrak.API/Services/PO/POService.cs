@@ -55,10 +55,6 @@ namespace OrderTrak.API.Services.PO
         public async Task<PoDTO> GetPOAsync(Guid partID)
         {
             return await DB.PO_Header
-                .Include(x => x.UPL_Project)
-                    .ThenInclude(x => x.UPL_Customer)
-                .Include(x => x.PO_Line)
-                    .ThenInclude(x => x.UPL_PartInfo)
                 .Where(x => x.FormID == partID)
                 .AsNoTracking()
                 .Select(x => new PoDTO
@@ -87,7 +83,6 @@ namespace OrderTrak.API.Services.PO
         public async Task<PagedTable<POSearchReturnDTO>> SearchPOAsync(POSearchDTO searchQuery)
         {
             var query = DB.PO_Header
-               .Include(x => x.UPL_Project)
                .AsQueryable();
 
             // Filters
@@ -112,22 +107,16 @@ namespace OrderTrak.API.Services.PO
                 query = query.Where(x => !x.PO_Line.All(i => i.INV_Stock.Count == 0));
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.PONumber)
-                        : query.OrderByDescending(x => x.PONumber);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.UPL_Project.ProjectCode)
-                        : query.OrderByDescending(x => x.UPL_Project.ProjectCode);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PONumber)
+                                        : query.OrderByDescending(x => x.PONumber),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UPL_Project.ProjectCode)
+                                        : query.OrderByDescending(x => x.UPL_Project.ProjectCode),
+                _ => query.OrderBy(x => x.Id),
+            };
 
             // Apply pagination and projection
             var POList = await query
@@ -248,9 +237,6 @@ namespace OrderTrak.API.Services.PO
         public async Task<PagedTable<POLineSearchReturnDTO>> SearchPOLineAsync(SearchQueryDTO searchQuery)
         {
             var query = DB.PO_Line
-              .Include(x => x.PO_Header.UPL_Project)
-              .Include(x => x.UPL_PartInfo)
-              .Include(x => x.INV_Stock)
               .Where(x => x.Quantity > x.INV_Stock.Sum(i => i.Quantity));
 
             // Filters
@@ -273,42 +259,28 @@ namespace OrderTrak.API.Services.PO
             }
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.PO_Header.PONumber)
-                        : query.OrderByDescending(x => x.PO_Header.PONumber);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.PO_Header.UPL_Project.ProjectCode)
-                        : query.OrderByDescending(x => x.PO_Header.UPL_Project.ProjectCode);
-                    break;
-                case 3:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.UPL_PartInfo.PartNumber)
-                        : query.OrderByDescending(x => x.UPL_PartInfo.PartNumber);
-                    break;
-                case 4:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Quantity)
-                        : query.OrderByDescending(x => x.Quantity);
-                    break;
-                case 5:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.INV_Stock.Sum(i => i.Quantity))
-                        : query.OrderByDescending(x => x.INV_Stock.Sum(i => i.Quantity));
-                    break;
-                case 6:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.IsSerialized)
-                        : query.OrderByDescending(x => x.IsSerialized);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PO_Header.PONumber)
+                                        : query.OrderByDescending(x => x.PO_Header.PONumber),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PO_Header.UPL_Project.ProjectCode)
+                                        : query.OrderByDescending(x => x.PO_Header.UPL_Project.ProjectCode),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UPL_PartInfo.PartNumber)
+                                        : query.OrderByDescending(x => x.UPL_PartInfo.PartNumber),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Quantity)
+                                        : query.OrderByDescending(x => x.Quantity),
+                5 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.INV_Stock.Sum(i => i.Quantity))
+                                        : query.OrderByDescending(x => x.INV_Stock.Sum(i => i.Quantity)),
+                6 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.IsSerialized)
+                                        : query.OrderByDescending(x => x.IsSerialized),
+                _ => query.OrderBy(x => x.Id),
+            };
 
             // Apply pagination and projection
             var POPartList = await query

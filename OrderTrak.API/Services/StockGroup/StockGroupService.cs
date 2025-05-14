@@ -78,18 +78,13 @@ namespace OrderTrak.API.Services.StockGroup
             }
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.StockGroupTitle)
-                        : query.OrderByDescending(x => x.StockGroupTitle);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
-
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.StockGroupTitle)
+                                        : query.OrderByDescending(x => x.StockGroupTitle),
+                _ => query.OrderBy(x => x.Id),
+            };
             var stockGroupList = await query
                 .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                 .Take(searchQuery.RecordSize)

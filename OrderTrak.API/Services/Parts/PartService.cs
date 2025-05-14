@@ -109,7 +109,6 @@ namespace OrderTrak.API.Services.Parts
         public async Task<PartDTO> GetPartAsync(Guid partID)
         {
             return await DB.UPL_PartInfo
-                .Include(x => x.UPL_UOM)
                 .Where(x => x.FormID == partID)
                  .AsNoTracking()
                 .Select(x => new PartDTO
@@ -158,32 +157,22 @@ namespace OrderTrak.API.Services.Parts
                 query = query.Where(x => x.IsStock);
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.PartNumber)
-                        : query.OrderByDescending(x => x.PartNumber);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.PartDescription)
-                        : query.OrderByDescending(x => x.PartDescription);
-                    break;
-                case 3:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.PartType)
-                        : query.OrderByDescending(x => x.PartType);
-                    break;
-                case 4:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.IsStock)
-                        : query.OrderByDescending(x => x.IsStock);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PartNumber)
+                                        : query.OrderByDescending(x => x.PartNumber),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PartDescription)
+                                        : query.OrderByDescending(x => x.PartDescription),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PartType)
+                                        : query.OrderByDescending(x => x.PartType),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.IsStock)
+                                        : query.OrderByDescending(x => x.IsStock),
+                _ => query.OrderBy(x => x.Id),
+            };
 
             // Apply pagination and projection
             var customerList = await query

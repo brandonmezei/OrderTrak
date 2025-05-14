@@ -82,33 +82,22 @@ namespace OrderTrak.API.Services.Profile
             }
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.FirstName)
-                        : query.OrderByDescending(x => x.FirstName);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.LastName)
-                        : query.OrderByDescending(x => x.LastName);
-                    break;
-                case 3:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Email)
-                        : query.OrderByDescending(x => x.Email);
-                    break;
-                case 4:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Approved)
-                        : query.OrderByDescending(x => x.Approved);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
-
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.FirstName)
+                                        : query.OrderByDescending(x => x.FirstName),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.LastName)
+                                        : query.OrderByDescending(x => x.LastName),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Email)
+                                        : query.OrderByDescending(x => x.Email),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Approved)
+                                        : query.OrderByDescending(x => x.Approved),
+                _ => query.OrderBy(x => x.Id),
+            };
             var profileList = await query
                .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                .Take(searchQuery.RecordSize)

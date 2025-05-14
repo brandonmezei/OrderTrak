@@ -11,6 +11,7 @@ using OrderTrak.Client.Services.Auth;
 using OrderTrak.Client.Services.ChangeLog;
 using OrderTrak.Client.Services.Customer;
 using OrderTrak.Client.Services.Filters;
+using OrderTrak.Client.Services.Inventory;
 using OrderTrak.Client.Services.Location;
 using OrderTrak.Client.Services.Order;
 using OrderTrak.Client.Services.Parts;
@@ -51,6 +52,7 @@ builder.Services.AddScoped<IStockGroupService, StockGroupService>();
 builder.Services.AddScoped<IPOService, POService>();
 builder.Services.AddScoped<IReceivingService, ReceivingService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 builder.Services.AddTransient<TokenHttpClientHandler>();
 

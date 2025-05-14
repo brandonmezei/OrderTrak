@@ -100,7 +100,6 @@ namespace OrderTrak.API.Services.Project
         {
             // Get Project
             return await DB.UPL_Project
-                .Include(x => x.UPL_Customer)
                  .AsNoTracking()
                 .Select(x => new ProjectDTO
                 {

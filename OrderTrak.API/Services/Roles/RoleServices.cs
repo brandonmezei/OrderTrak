@@ -95,7 +95,6 @@ namespace OrderTrak.API.Services.Roles
         public async Task<PagedTable<RoleSearchReturnDTO>> SearchRolesAsync(RoleSearchDTO searchQuery)
         {
             var query = DB.SYS_Roles
-                .Include(x => x.SYS_User)
                 .AsQueryable();
 
             // Filters
@@ -115,22 +114,16 @@ namespace OrderTrak.API.Services.Roles
                 query = query.Where(x => !x.SYS_User.Any());
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.RoleName)
-                        : query.OrderByDescending(x => x.RoleName);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.SYS_User.Count)
-                        : query.OrderByDescending(x => x.SYS_User.Count);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.RoleName)
+                                        : query.OrderByDescending(x => x.RoleName),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.SYS_User.Count)
+                                        : query.OrderByDescending(x => x.SYS_User.Count),
+                _ => query.OrderBy(x => x.Id),
+            };
 
             // Apply pagination and projection
             var roleList = await query
@@ -157,7 +150,6 @@ namespace OrderTrak.API.Services.Roles
         public async Task<List<RoleToFunctionDTO>> GetRoleToFunctionByRoleIDAsync(Guid roleID)
         {
             return await DB.SYS_RolesToFunction
-                .Include(x => x.SYS_Function)
                 .Where(x => x.SYS_Roles.FormID == roleID)
                 .OrderBy(x => x.SYS_Function.FunctionName)
                  .AsNoTracking()
@@ -215,22 +207,16 @@ namespace OrderTrak.API.Services.Roles
             }
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.FirstName)
-                        : query.OrderByDescending(x => x.FirstName);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Email)
-                        : query.OrderByDescending(x => x.Email);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.FirstName);
-                    break;
-            }
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.FirstName)
+                                        : query.OrderByDescending(x => x.FirstName),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Email)
+                                        : query.OrderByDescending(x => x.Email),
+                _ => query.OrderBy(x => x.FirstName),
+            };
 
             // Apply pagination and projection
             var userList = await query

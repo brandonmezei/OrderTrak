@@ -59,7 +59,6 @@ namespace OrderTrak.API.Services.Location
         public async Task<LocationDTO> GetLocationAsync(Guid locationID)
         {
             return await DB.UPL_Location
-                .Include(x => x.UPL_UOM)
                 .Where(x => x.FormID == locationID)
                  .AsNoTracking()
                 .Select(x => new LocationDTO
@@ -79,7 +78,6 @@ namespace OrderTrak.API.Services.Location
         {
             // Get Location Query
             var query = DB.UPL_Location
-                .Include(x => x.UPL_UOM)
                 .AsQueryable();
 
             // Filters
@@ -100,28 +98,19 @@ namespace OrderTrak.API.Services.Location
             }
 
             // Apply Order By
-            switch (searchQuery.SortColumn)
+            query = searchQuery.SortColumn switch
             {
-                case 1:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.LocationNumber)
-                        : query.OrderByDescending(x => x.LocationNumber);
-                    break;
-                case 2:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.Height * x.Width * x.Depth)
-                        : query.OrderByDescending(x => x.Height * x.Width * x.Depth);
-                    break;
-                case 3:
-                    query = searchQuery.SortOrder == 1
-                        ? query.OrderBy(x => x.UPL_UOM.UnitOfMeasurement)
-                        : query.OrderByDescending(x => x.UPL_UOM.UnitOfMeasurement);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Id);
-                    break;
-            }
-
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.LocationNumber)
+                                        : query.OrderByDescending(x => x.LocationNumber),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Height * x.Width * x.Depth)
+                                        : query.OrderByDescending(x => x.Height * x.Width * x.Depth),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UPL_UOM.UnitOfMeasurement)
+                                        : query.OrderByDescending(x => x.UPL_UOM.UnitOfMeasurement),
+                _ => query.OrderBy(x => x.Id),
+            };
             var locationList = await query
                 .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
                 .Take(searchQuery.RecordSize)

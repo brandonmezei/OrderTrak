@@ -41,7 +41,6 @@ namespace OrderTrak.API.Services.Filters
         public async Task<List<DropDownFilterDTO>> GetCustomersAsync()
         {
             return await DB.UPL_Customer
-                 .Include(x => x.UPL_Projects)
                  .Where(x => x.UPL_Projects.Count != 0)
                  .OrderBy(x => x.CustomerCode)
                  .AsNoTracking()
