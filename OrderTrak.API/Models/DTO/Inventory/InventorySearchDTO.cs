@@ -4,5 +4,7 @@
     {
        public Guid? OrderLineID { get; set; }
        public Guid? InventoryID { get; set; }
+
+       public bool ShowPickedOnly { get; set; }
     }
 }

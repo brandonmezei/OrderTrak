@@ -93,6 +93,11 @@
 }
 
 
+@if (PickLineID.HasValue)
+{
+    <InventorySearch OnClose="PickLine_Toggle" OnClick="PickRemove_Click" OrderLineID=@PickLineID ShowPickedOnly=true />
+}
+
 @if (Order != null)
 {
     <div class="box">
@@ -270,6 +275,10 @@
                                                         <div class="buttons">
                                                             <FormButton Title="Edit" Style="is-small" Icon="fa-edit" OnClick="() => LineEdit_Toggle(line.FormID)" />
                                                             <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
+                                                            @if(line.PickedQuantity > 0)
+                                                            {
+                                                                <FormButton Title="Picked" Style="is-small" Icon="fa-dolly" OnClick="() => PickLine_Toggle(line.FormID)" />
+                                                            }
                                                         </div>
                                                     }
                                                 </td>

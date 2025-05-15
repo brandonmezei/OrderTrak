@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Order;
+using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Picking
@@ -34,7 +35,15 @@ namespace OrderTrak.Client.Pages.Picking
             {
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
 
-                Layout.UpdateHeader("Picking", $"Order: {Order.OrderID}");
+                if(Order != null)
+                {
+                    // Done Check
+                    if(await OrderService.IsDonePickAsync(new OrderPickDoneDTO { OrderID = FormID}))
+                        Navigation.NavigateTo($"/picking/search?PickedID={Order.OrderID}");
+
+                    Layout.UpdateHeader("Picking", $"Order: {Order.OrderID}");
+
+                }               
             }
             catch (ApiException ex)
             {
@@ -197,9 +206,50 @@ namespace OrderTrak.Client.Pages.Picking
             PickLineID = null;
         }
 
-        protected async Task Pick_Click(Guid? FormID)
+        protected async Task Pick_Click(Guid? PickID)
         {
+            Layout.ClearMessages();
 
+            if (PickID.HasValue && PickLineID.HasValue)
+            {
+                try
+                {
+                    // Add Line
+                    await OrderService.PickToOrderAsync(new OrderPickDTO
+                    {
+                        OrderLineID = PickLineID.Value,
+                        InventoryID = PickID.Value
+                    });
+
+                    // Refresh
+                    Order = await OrderService.GetOrderHeaderAsync(FormID);
+
+                    if(Order != null)
+                    {
+                        // Done Check
+                        if (await OrderService.IsDonePickAsync(new OrderPickDoneDTO { OrderID = FormID }))
+                            Navigation.NavigateTo($"/picking/search?PickedID={Order.OrderID}");
+                    }
+
+                    // Get Order Line by filter
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID, StockOnly = true });
+                    FilteredPartList = PartList;
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    PickLineID = null;
+                }
+            }
         }
 
     }

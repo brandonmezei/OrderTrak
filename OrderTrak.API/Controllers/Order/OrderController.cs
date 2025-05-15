@@ -253,6 +253,44 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [Authorize(Policy = "Picking")]
+        [HttpPost("IsDonePicking")]
+        public async Task<ActionResult<bool>> IsDonePickingAsync([FromBody] OrderPickDoneDTO orderPickDoneDTO)
+        {
+            try
+            {
+                return Ok(await orderService.IsDonePickAsync(orderPickDoneDTO));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "Order")]
+        [HttpPost("RemovePickFromOrder")]
+        public async Task<ActionResult> RemovePickFromOrderAsync([FromBody] OrderPickRemoveDTO orderPickRemoveDTO)
+        {
+            try
+            {
+                await orderService.RemovePickFromOrderAsync(orderPickRemoveDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         #endregion
 
         #region DELETE

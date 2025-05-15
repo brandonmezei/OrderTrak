@@ -9,7 +9,6 @@
 
 @if (Order != null)
 {
-
     @if(PickLineID.HasValue)
     {
         <InventorySearch OnClose="PickLine_Toggle" OnClick="Pick_Click" OrderLineID=@PickLineID />
@@ -156,7 +155,7 @@
                                         {
                                             <tr>
                                                 <td>
-                                                    @if (!Order.IsClosed)
+                                                    @if (line.Quantity > line.PickedQuantity)
                                                     {
                                                         <div class="buttons">
                                                             <FormButton Title="Pick" Style="is-small" Icon="fa-dolly" OnClick="() => PickLine_Toggle(line.FormID)" />

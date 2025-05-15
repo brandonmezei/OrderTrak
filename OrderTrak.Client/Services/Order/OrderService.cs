@@ -46,9 +46,19 @@ namespace OrderTrak.Client.Services.Order
             return await ApiClient.GetOrderShippingAsync(orderID);
         }
 
+        public async Task<bool> IsDonePickAsync(OrderPickDoneDTO orderPickDoneDTO)
+        {
+            return await ApiClient.IsDonePickingAsync(orderPickDoneDTO);
+        }
+
         public async Task PickToOrderAsync(OrderPickDTO orderPickDTO)
         {
             await ApiClient.PickToOrderAsync(orderPickDTO);
+        }
+
+        public async Task RemovePickFromOrderAsync(OrderPickRemoveDTO orderPickRemoveDTO)
+        {
+            await ApiClient.RemovePickFromOrderAsync(orderPickRemoveDTO);
         }
 
         public async Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(OrderSearchDTO searchQuery)

@@ -43,24 +43,31 @@ namespace OrderTrak.API.Services.Inventory
             // Order Line Filter
             if (searchQuery.OrderLineID.HasValue)
             {
-                // Get Order Line
-                var orderLine = await DB.ORD_Line
-                    .Include(x => x.ORD_Order)
-                    .FirstOrDefaultAsync(x => x.FormID == searchQuery.OrderLineID.Value)
-                    ?? throw new ValidationException("Order Line not found.");
+                if (searchQuery.ShowPickedOnly)
+                {
+                    query = query.Where(x => x.ORD_PickList.Any(y => y.ORD_Line.FormID == searchQuery.OrderLineID.Value));
+                }
+                else
+                {
+                    // Get Order Line
+                    var orderLine = await DB.ORD_Line
+                        .Include(x => x.ORD_Order)
+                        .FirstOrDefaultAsync(x => x.FormID == searchQuery.OrderLineID.Value)
+                        ?? throw new ValidationException("Order Line not found.");
 
-                query = query.Where(x => x.PO_Line.PartID == orderLine.PartID
-                    && x.PO_Line.PO_Header.ProjectID == orderLine.ORD_Order.ProjectID
-                    && x.INV_StockStatus.StockStatus == StockStatus.InStock
-                    && (!orderLine.POHeaderID.HasValue || x.PO_Line.POHeaderID == orderLine.POHeaderID)
-                    && (!orderLine.StockGroupID.HasValue || x.StockGroupID == orderLine.StockGroupID)
-                    && (orderLine.SerialNumber == null || x.SerialNumber == orderLine.SerialNumber)
-                    );
+                    query = query.Where(x => x.PO_Line.PartID == orderLine.PartID
+                        && x.PO_Line.PO_Header.ProjectID == orderLine.ORD_Order.ProjectID
+                        && x.INV_StockStatus.StockStatus == StockStatus.InStock
+                        && (!orderLine.POHeaderID.HasValue || x.PO_Line.POHeaderID == orderLine.POHeaderID)
+                        && (!orderLine.StockGroupID.HasValue || x.StockGroupID == orderLine.StockGroupID)
+                        && (orderLine.SerialNumber == null || x.SerialNumber == orderLine.SerialNumber)
+                        );
+                }
             }
 
             // Inventory Filter
-            if(searchQuery.InventoryID.HasValue)
-                query = query.Where(x => x.FormID == searchQuery.InventoryID);
+            if (searchQuery.InventoryID.HasValue)
+            query = query.Where(x => x.FormID == searchQuery.InventoryID);
 
             // Apply Order By
             query = searchQuery.SortColumn switch

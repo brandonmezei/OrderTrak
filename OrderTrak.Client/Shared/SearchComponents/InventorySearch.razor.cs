@@ -25,9 +25,13 @@ namespace OrderTrak.Client.Shared.SearchComponents
         [Parameter]
         public EventCallback<Guid?> OnClick { get; set; }
 
+        [Parameter]
+        public bool ShowPickedOnly { get; set; }
+
         protected override void OnInitialized()
         {
             SearchFilters.OrderLineID = OrderLineID;
+            SearchFilters.ShowPickedOnly = ShowPickedOnly;
             IsCardLoading = true;
         }
 

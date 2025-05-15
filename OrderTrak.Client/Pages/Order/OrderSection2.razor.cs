@@ -31,6 +31,8 @@ namespace OrderTrak.Client.Pages.Order
 
         protected OrderPartListUpdate? LineUpdate { get; set; }
 
+        protected Guid? PickLineID { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -329,5 +331,54 @@ namespace OrderTrak.Client.Pages.Order
             if (LineUpdate != null)
                 LineUpdate.StockGroupID = FormID;
         }
+
+        protected void PickLine_Toggle(Guid? PickID)
+        {
+            Layout.ClearMessages();
+
+            PickLineID = PickID;
+        }
+
+        protected void PickLine_Toggle()
+        {
+            PickLineID = null;
+        }
+
+        protected async Task PickRemove_Click(Guid? PickID)
+        {
+            Layout.ClearMessages();
+
+            if (PickID.HasValue && PickLineID.HasValue)
+            {
+                try
+                {
+                    // Remove Line
+                    await OrderService.RemovePickFromOrderAsync(new OrderPickRemoveDTO
+                    {
+                        OrderLineID = PickLineID.Value,
+                        InventoryID = PickID.Value
+                    });
+
+                    // Refresh
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
+                    FilteredPartList = PartList;
+
+                    Layout.AddMessage(Messages.DeleteSuccessful, MessageType.Success);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    PickLineID = null;
+                }
+            }
+        }
+
     }
 }

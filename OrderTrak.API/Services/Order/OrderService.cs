@@ -608,7 +608,7 @@ namespace OrderTrak.API.Services.Order
             var orderLines = await GetOrderLineAsync(new OrderPartListSearchDTO { FormID = order.FormID });
 
             // Remove Order Lines
-            foreach(var line in orderLines)
+            foreach (var line in orderLines)
                 await DeleteOrderLineAsync(line.FormID);
 
             // Update Order to Cancel
@@ -670,7 +670,7 @@ namespace OrderTrak.API.Services.Order
             {
                 // Split Box
                 var splitBoxID = await InventoryService.SplitBoxIDAsync(pickedStock.FormID, orderLine.Quantity - pickedQTY);
-                
+
                 // Get New Box
                 pickedStock = await DB.INV_Stock
                     .FirstOrDefaultAsync(x => x.FormID == splitBoxID)
@@ -689,10 +689,71 @@ namespace OrderTrak.API.Services.Order
 
             // Update Stock Status to On Order
             pickList.INV_Stock.INV_StockStatus = onOrderStatus;
-            
+
 
             orderLine.ORD_Order.ORD_Status = pickingStatus;
 
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsDonePickAsync(OrderPickDoneDTO orderPickDoneDTO)
+        {
+            // Get Order Lines
+            var orderLines = await GetOrderLineAsync(new OrderPartListSearchDTO { FormID = orderPickDoneDTO.OrderID, StockOnly = true });
+
+            if (!orderLines.All(x => x.Quantity == x.PickedQuantity))
+                return false;
+
+            // Get Order
+            var order = await DB.ORD_Order
+                .FirstOrDefaultAsync(x => x.FormID == orderPickDoneDTO.OrderID
+                    && (x.ORD_Status.Status == OrderStatus.PickReady || x.ORD_Status.Status == OrderStatus.Picking));
+
+            if (order != null)
+            {
+                // Get Picked Status
+                var pickedStatus = await DB.ORD_Status
+                    .FirstOrDefaultAsync(x => x.Status == OrderStatus.Picked)
+                    ?? throw new ValidationException("Cannot find Picked Status");
+
+                // Update Order
+                order.ORD_Status = pickedStatus;
+
+                // Save
+                await DB.SaveChangesAsync();
+            }
+
+            return true;
+        }
+
+        public async Task RemovePickFromOrderAsync(OrderPickRemoveDTO orderPickRemoveDTO)
+        {
+            // Get order line checking if order isn't shipped
+            var pickedConnection = await DB.ORD_PickList
+                .Include(x => x.INV_Stock)
+                .Include(x => x.ORD_Line)
+                    .ThenInclude(x => x.ORD_Order)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.INV_Stock.FormID == orderPickRemoveDTO.InventoryID
+                    && x.ORD_Line.FormID == orderPickRemoveDTO.OrderLineID
+                    && x.ORD_Line.ORD_Order.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Pick not found or order has already been shipped.");
+
+            // Place Order on Hold
+            await PlaceOrderOnHoldAsync(pickedConnection.ORD_Line.ORD_Order.FormID);
+
+            // Get In Stock Stock Status
+            var inStockStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.InStock)
+                ?? throw new ValidationException("Cannot find In Stock Status");
+
+            // Soft Delete Pick List
+            pickedConnection.IsDelete = true;
+
+            // Update Stock Back to In Stock
+            pickedConnection.INV_Stock.INV_StockStatus = inStockStatus;
+            
             // Save
             await DB.SaveChangesAsync();
         }

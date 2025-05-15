@@ -49,6 +49,17 @@
                                                     </a>
                                                 </th>
                                                 <th>
+                                                    <a @onclick="() => SortSwitch_Click(3)">
+                                                        <span>Part</span>
+                                                        @if (SearchFilters.SortColumn == 3)
+                                                        {
+                                                            <span class="icon">
+                                                                <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                            </span>
+                                                        }
+                                                    </a>
+                                                </th>
+                                                <th>
                                                     <a @onclick="() => SortSwitch_Click(5)">
                                                         <span>Location</span>
                                                         @if (SearchFilters.SortColumn == 5)
@@ -111,10 +122,18 @@
                                                 <tr>
                                                     <td>
                                                         <div class="buttons">
+                                                            @if (ShowPickedOnly)
+                                                            {
+                                                                <FormButton Title="Remove" Style="is-small" Icon="fa-trash" OnClick="() => OnClick_Handler(line.FormID)" />
+                                                            }
+                                                            else
+                                                            {
                                                             <FormButton Title="Select" Style="is-small" Icon="fa-mouse-pointer" OnClick="() => OnClick_Handler(line.FormID)" />
+                                                            }
                                                         </div>
                                                     </td>
                                                     <td>@line.BoxID</td>
+                                                    <td>@line.PartNumber</td>
                                                     <td>@line.Location</td>
                                                     <td>@line.Po</td>
                                                     <td>@line.StockGroup</td>

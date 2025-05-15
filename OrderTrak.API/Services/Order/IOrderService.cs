@@ -19,5 +19,7 @@ namespace OrderTrak.API.Services.Order
         Task UpdateOrderActivationAsync(OrderActivationUpdateDTO orderActivationUpdateDTO);
         Task CancelOrderAsync(OrderCancelDTO orderCancelDTO);
         Task PickToOrderAsync(OrderPickDTO orderPickDTO);
+        Task<bool> IsDonePickAsync(OrderPickDoneDTO orderPickDoneDTO);
+        Task RemovePickFromOrderAsync(OrderPickRemoveDTO orderPickRemoveDTO);
     }
 }
