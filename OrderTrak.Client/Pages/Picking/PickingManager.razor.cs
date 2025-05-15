@@ -24,6 +24,8 @@ namespace OrderTrak.Client.Pages.Picking
 
         protected int SortColumn { get; set; } = 1;
 
+        protected Guid? PickLineID { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -182,5 +184,23 @@ namespace OrderTrak.Client.Pages.Picking
                 }
             }
         }
+
+        protected void PickLine_Toggle(Guid? PickID)
+        {
+            Layout.ClearMessages();
+
+            PickLineID = PickID;
+        }
+
+        protected void PickLine_Toggle()
+        {
+            PickLineID = null;
+        }
+
+        protected async Task Pick_Click(Guid? FormID)
+        {
+
+        }
+
     }
 }

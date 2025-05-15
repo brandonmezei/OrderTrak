@@ -3,5 +3,6 @@
     public class InventorySearchDTO : SearchQueryDTO
     {
        public Guid? OrderLineID { get; set; }
+       public Guid? InventoryID { get; set; }
     }
 }

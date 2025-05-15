@@ -2,12 +2,19 @@
 @using OrderTrak.Client.Shared
 @using OrderTrak.Client.Shared.FormComponents
 @using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Shared.SearchComponents
 @inherits OrderTrakBasePage
 
 <PageTitle>Picking - OrderTrak</PageTitle>
 
 @if (Order != null)
 {
+
+    @if(PickLineID.HasValue)
+    {
+        <InventorySearch OnClose="PickLine_Toggle" OnClick="Pick_Click" OrderLineID=@PickLineID />
+    }
+
     <div class="box">
         <div class="columns is-centered">
             <div class="column is-one-third">
@@ -152,9 +159,8 @@
                                                     @if (!Order.IsClosed)
                                                     {
                                                         <div class="buttons">
-@*                                                             <FormButton Title="Edit" Style="is-small" Icon="fa-edit" OnClick="() => LineEdit_Toggle(line.FormID)" />
-                                                            <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
- *@                                                        </div>
+                                                            <FormButton Title="Pick" Style="is-small" Icon="fa-dolly" OnClick="() => PickLine_Toggle(line.FormID)" />
+                                                        </div>
                                                     }
                                                 </td>
                                                 <td>@line.PartNumber</td>

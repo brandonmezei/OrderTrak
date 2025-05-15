@@ -58,6 +58,10 @@ namespace OrderTrak.API.Services.Inventory
                     );
             }
 
+            // Inventory Filter
+            if(searchQuery.InventoryID.HasValue)
+                query = query.Where(x => x.FormID == searchQuery.InventoryID);
+
             // Apply Order By
             query = searchQuery.SortColumn switch
             {
@@ -118,6 +122,53 @@ namespace OrderTrak.API.Services.Inventory
                 TotalRecords = await query.CountAsync(),
                 PageIndex = searchQuery.Page
             };
+        }
+
+        public async Task<Guid> SplitBoxIDAsync(Guid FormID, int qty)
+        {
+            // Get the Inv Stock
+            var invStock = await DB.INV_Stock
+                .FirstOrDefaultAsync(x => x.FormID == FormID)
+                ?? throw new ValidationException("Inventory not found.");
+
+            // Check if the quantity is valid
+            if (qty <= 0 || qty >= invStock.Quantity)
+                throw new ValidationException("Invalid quantity.");
+
+            // Create a new Inv Stock
+            var newStock = new INV_Stock
+            {
+                ReceiptID = invStock.ReceiptID,
+                POLineID = invStock.POLineID,
+                StatusID = invStock.StatusID,
+                StockGroupID = invStock.StockGroupID,
+                LocationID = invStock.LocationID,
+                Quantity = qty,
+                SerialNumber = invStock.SerialNumber,
+                AssetTag = invStock.AssetTag,
+                UDF1 = invStock.UDF1,
+                UDF2 = invStock.UDF2,
+                UDF3 = invStock.UDF3,
+                UDF4 = invStock.UDF4,
+                UDF5 = invStock.UDF5,
+                UDF6 = invStock.UDF6,
+                UDF7 = invStock.UDF7,
+                UDF8 = invStock.UDF8,
+                UDF9 = invStock.UDF9,
+                UDF10 = invStock.UDF10
+            };
+
+            // Add the new stock to the database
+            await DB.INV_Stock.AddAsync(newStock);
+
+            // Update the original stock quantity
+            invStock.Quantity -= qty;
+
+            // Save changes to the database
+            await DB.SaveChangesAsync();
+
+            // Return the new stock ID
+            return newStock.FormID;
         }
     }
 }

@@ -1,15 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderTrak.API.Models.DTO;
+using OrderTrak.API.Models.DTO.Inventory;
 using OrderTrak.API.Models.DTO.Order;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Services.Inventory;
 using OrderTrak.API.Static;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrak.API.Services.Order
 {
-    public class OrderService(OrderTrakContext orderTrakContext) : IOrderService
+    public class OrderService(OrderTrakContext orderTrakContext, IInventoryService inventoryService) : IOrderService
     {
         private readonly OrderTrakContext DB = orderTrakContext;
+
+        private readonly IInventoryService InventoryService = inventoryService;
 
         private async Task PlaceOrderOnHoldAsync(Guid orderID)
         {
@@ -609,6 +613,85 @@ namespace OrderTrak.API.Services.Order
 
             // Update Order to Cancel
             order.ORD_Status = cancelStatus;
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task PickToOrderAsync(OrderPickDTO orderPickDTO)
+        {
+
+            // Get Order Line
+            var orderLine = await DB.ORD_Line
+                .Include(x => x.ORD_Order)
+                    .ThenInclude(x => x.ORD_Status)
+                .Include(x => x.ORD_PickList)
+                    .ThenInclude(x => x.INV_Stock)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.FormID == orderPickDTO.OrderLineID
+                    && (x.ORD_Order.ORD_Status.Status == OrderStatus.PickReady || x.ORD_Order.ORD_Status.Status == OrderStatus.Picking))
+                ?? throw new ValidationException("Order Line not found or the order is not in a pickable state.");
+
+            // Make Sure the line isn't already picked in full
+            var pickedQTY = orderLine.ORD_PickList.Sum(x => x.INV_Stock.Quantity);
+
+            if (pickedQTY >= orderLine.Quantity)
+                throw new ValidationException("Order Line already picked in full.");
+
+            // Get Inventory
+            var inventory = await InventoryService.SearchInventoryAsync(new InventorySearchDTO
+            {
+                OrderLineID = orderPickDTO.OrderLineID,
+                InventoryID = orderPickDTO.InventoryID
+            });
+
+            if (inventory.Data.Count == 0)
+                throw new ValidationException("Inventory not found.");
+
+            var inv = inventory.Data.First();
+
+            // Get On Order Inventory Status
+            var onOrderStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.OnOrder)
+                ?? throw new ValidationException("Cannot find On Order Status");
+
+            // Get Picking Order Status
+            var pickingStatus = await DB.ORD_Status
+                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Picking)
+                ?? throw new ValidationException("Cannot find Picking Status");
+
+            // Get Inventory
+            var pickedStock = await DB.INV_Stock
+                .FirstOrDefaultAsync(x => x.FormID == inv.FormID)
+                ?? throw new ValidationException("Inventory not found.");
+
+            // If Inventory will exceed the order line quantity split and select new box
+            if (pickedStock.Quantity + pickedQTY > orderLine.Quantity)
+            {
+                // Split Box
+                var splitBoxID = await InventoryService.SplitBoxIDAsync(pickedStock.FormID, orderLine.Quantity - pickedQTY);
+                
+                // Get New Box
+                pickedStock = await DB.INV_Stock
+                    .FirstOrDefaultAsync(x => x.FormID == splitBoxID)
+                    ?? throw new ValidationException("Inventory not found.");
+            }
+
+            // Create Pick List
+            var pickList = new ORD_PickList
+            {
+                ORD_Line = orderLine,
+                INV_Stock = pickedStock
+            };
+
+            // Add to Order Line
+            orderLine.ORD_PickList.Add(pickList);
+
+            // Update Stock Status to On Order
+            pickList.INV_Stock.INV_StockStatus = onOrderStatus;
+            
+
+            orderLine.ORD_Order.ORD_Status = pickingStatus;
 
             // Save
             await DB.SaveChangesAsync();

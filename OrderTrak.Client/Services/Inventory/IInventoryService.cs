@@ -6,14 +6,4 @@ namespace OrderTrak.Client.Services.Inventory
     {
         Task<PagedTableOfInventorySearchReturnDTO> SearchInventoryAsync(InventorySearchDTO searchQuery);
     }
-
-    public class InventoryService(IClient client) : IInventoryService
-    {
-        private readonly IClient ApiClient = client;
-
-        public async Task<PagedTableOfInventorySearchReturnDTO> SearchInventoryAsync(InventorySearchDTO searchQuery)
-        {
-            return await ApiClient.SearchInventoryAsync(searchQuery);
-        }
-    }
 }

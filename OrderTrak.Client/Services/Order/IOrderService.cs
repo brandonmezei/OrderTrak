@@ -17,5 +17,6 @@ namespace OrderTrak.Client.Services.Order
         Task<OrderActivationDTO> GetOrderActivationAsync(Guid orderID);
         Task UpdateOrderActivationAsync(OrderActivationUpdateDTO orderActivationUpdateDTO);
         Task CancelOrderAsync(OrderCancelDTO orderCancelDTO);
+        Task PickToOrderAsync(OrderPickDTO orderPickDTO);
     }
 }

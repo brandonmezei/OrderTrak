@@ -6,7 +6,7 @@ using OrderTrak.API.Models.DTO.Inventory;
 using OrderTrak.API.Services.Inventory;
 using System.ComponentModel.DataAnnotations;
 
-namespace OrderTrak.API.Controllers
+namespace OrderTrak.API.Controllers.Inventory
 {
     [Route("api/[controller]")]
     [ApiController]

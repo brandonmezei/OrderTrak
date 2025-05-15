@@ -234,6 +234,25 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [Authorize(Policy = "Picking")]
+        [HttpPost("PickToOrder")]
+        public async Task<ActionResult> PickToOrderAsync([FromBody] OrderPickDTO orderPickDTO)
+        {
+            try
+            {
+                await orderService.PickToOrderAsync(orderPickDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE
