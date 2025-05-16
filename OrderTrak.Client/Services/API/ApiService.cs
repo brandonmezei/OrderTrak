@@ -8484,9 +8484,6 @@ namespace OrderTrak.Client.Services.API
         [Newtonsoft.Json.JsonProperty("requestedDeliveryDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset? RequestedDeliveryDate { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualShipDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? ActualShipDate { get; set; }
-
         [Newtonsoft.Json.JsonProperty("stakeHolderEmail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string StakeHolderEmail { get; set; }
 
@@ -8710,6 +8707,9 @@ namespace OrderTrak.Client.Services.API
 
         [Newtonsoft.Json.JsonProperty("pickingOnly", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool PickingOnly { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("shipReadyOnly", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool ShipReadyOnly { get; set; }
 
         [Newtonsoft.Json.JsonProperty("searchFilter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string SearchFilter { get; set; }

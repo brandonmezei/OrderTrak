@@ -1,0 +1,28 @@
+﻿<div class="tabs is-centered is-boxed">
+    <ul>
+        <li class="@(Section == 1 ? "is-active" : string.Empty)">
+            <a @onclick="() => OnClick_Handler(1)">
+                <span class="icon is-small">
+                    <i class="fas fa-box" aria -hidden="true"></i> <!-- Order -->
+                </span>
+                <span>Order</span>
+            </a>
+        </li>
+        <li class="@(Section == 2 ? "is-active" : string.Empty)">
+            <a @onclick="() => OnClick_Handler(2)">
+                <span class="icon is-small">
+                    <i class="fas fa-list" aria-hidden="true"></i> <!-- Part List -->
+                </span>
+                <span>Part List</span>
+            </a>
+        </li>
+        <li class="@(Section == 3 ? "is-active" : string.Empty)">
+            <a @onclick="() => OnClick_Handler(3)">
+                <span class="icon is-small">
+                    <i class="fas fa-truck" aria-hidden="true"></i> <!-- Shipping -->
+                </span>
+                <span>Shipping</span>
+            </a>
+        </li>
+    </ul>
+</div>

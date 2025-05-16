@@ -2,12 +2,11 @@ using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Models;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Order;
-using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
-namespace OrderTrak.Client.Pages.Picking
+namespace OrderTrak.Client.Pages.Shipping
 {
-    public partial class PickingManager
+    public partial class ShippingSection2
     {
         [Parameter]
         public Guid FormID { get; set; }
@@ -16,7 +15,6 @@ namespace OrderTrak.Client.Pages.Picking
         private IOrderService OrderService { get; set; } = default!;
 
         protected OrderHeaderDTO? Order { get; set; }
-        protected OrderActivationDTO? OrderActivation { get; set; }
         protected List<OrderPartListDTO>? PartList { get; set; }
         protected List<OrderPartListDTO>? FilteredPartList { get; set; }
 
@@ -26,8 +24,6 @@ namespace OrderTrak.Client.Pages.Picking
 
         protected int SortColumn { get; set; } = 1;
 
-        protected Guid? PickLineID { get; set; }
-
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -35,17 +31,8 @@ namespace OrderTrak.Client.Pages.Picking
             try
             {
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
-                OrderActivation = await OrderService.GetOrderActivationAsync(FormID);
 
-                if (Order != null)
-                {
-                    // Done Check
-                    if(await OrderService.IsDonePickAsync(new OrderPickDoneDTO { OrderID = FormID}))
-                        Navigation.NavigateTo($"/picking/search?PickedID={Order.OrderID}");
-
-                    Layout.UpdateHeader("Picking", $"Order: {Order.OrderID}");
-
-                }               
+                Layout.UpdateHeader("Shipping", $"Order: {Order.OrderID}");
             }
             catch (ApiException ex)
             {
@@ -68,7 +55,7 @@ namespace OrderTrak.Client.Pages.Picking
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
-                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID, StockOnly = true });
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
                     FilteredPartList = PartList;
                 }
                 catch (ApiException ex)
@@ -195,64 +182,5 @@ namespace OrderTrak.Client.Pages.Picking
                 }
             }
         }
-
-        protected void PickLine_Toggle(Guid? PickID)
-        {
-            Layout.ClearMessages();
-
-            PickLineID = PickID;
-        }
-
-        protected void PickLine_Toggle()
-        {
-            PickLineID = null;
-        }
-
-        protected async Task Pick_Click(Guid? PickID)
-        {
-            Layout.ClearMessages();
-
-            if (PickID.HasValue && PickLineID.HasValue)
-            {
-                try
-                {
-                    // Add Line
-                    await OrderService.PickToOrderAsync(new OrderPickDTO
-                    {
-                        OrderLineID = PickLineID.Value,
-                        InventoryID = PickID.Value
-                    });
-
-                    // Refresh
-                    Order = await OrderService.GetOrderHeaderAsync(FormID);
-
-                    if(Order != null)
-                    {
-                        // Done Check
-                        if (await OrderService.IsDonePickAsync(new OrderPickDoneDTO { OrderID = FormID }))
-                            Navigation.NavigateTo($"/picking/search?PickedID={Order.OrderID}");
-                    }
-
-                    // Get Order Line by filter
-                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID, StockOnly = true });
-                    FilteredPartList = PartList;
-
-                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
-                }
-                catch (ApiException ex)
-                {
-                    Layout.AddMessage(ex.Response, MessageType.Error);
-                }
-                catch (Exception ex)
-                {
-                    Layout.AddMessage(ex.Message, MessageType.Error);
-                }
-                finally
-                {
-                    PickLineID = null;
-                }
-            }
-        }
-
     }
 }

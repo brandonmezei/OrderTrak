@@ -1,17 +1,18 @@
-﻿@page "/order/section1/{FormID:guid}"
+﻿@page "/shipping/section1/{FormID:guid}"
 @using OrderTrak.Client.Shared
 @using OrderTrak.Client.Shared.DropDowns
 @using OrderTrak.Client.Shared.FormComponents
 @using OrderTrak.Client.Shared.Order
 @using OrderTrak.Client.Shared.SearchComponents
+@using OrderTrak.Client.Shared.Shipping
 @inherits OrderTrakBasePage
 
-<PageTitle>Order - OrderTrak</PageTitle>
+<PageTitle>Shipping - OrderTrak</PageTitle>
 
-@if (Order != null)
+@if (Order != null && OrderActivation != null)
 {
     <div class="box">
-        <OrderTabSwitcher Section=1 FormID=@FormID />
+        <ShippingTabSwitcher Section=1 FormID=@FormID />
         <div class="columns is-centered">
             <div class="column is-one-third">
                 <CardComponent Title="Information" Icon="fa-info-circle">
@@ -38,22 +39,24 @@
                         </FormField>
                     </CardBody>
                 </CardComponent>
+                <CardComponent Title="Note" Icon="fa-sticky-note">
+                    <CardBody>
+                        <FormField Title="Activation Note">
+                            <Content>
+                                <InputTextArea class="textarea" Placeholder="Activation Note" @bind-Value="OrderActivation.OrderNote" disabled />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
             </div>
             <div class="column is-one-third">
-                <CardComponent Title="Dates" Icon="fa-calendar">
+                <CardComponent Title="Date(s)" Icon="fa-calendar">
                     <CardBody>
                         <div class="columns is-centered is-flex-wrap-wrap">
                             <div class="column is-half">
                                 <FormField Icon="fa-truck" Title="Requested Ship Date">
                                     <Content>
-                                        <InputDate class="input is-danger" Placeholder="Requested Ship Date" @bind-Value="Order.RequestedShipDate" />
-                                    </Content>
-                                </FormField>
-                            </div>
-                            <div class="column is-half">
-                                <FormField Icon="fa-dolly" Title="Requested Delivery Date">
-                                    <Content>
-                                        <InputDate class="input is-danger" Placeholder="Requested Delivery Date" @bind-Value="Order.RequestedDeliveryDate" />
+                                        <InputDate class="input" Placeholder="Requested Ship Date" @bind-Value="Order.RequestedShipDate" disabled />
                                     </Content>
                                 </FormField>
                             </div>
@@ -74,7 +77,7 @@
                     <CardBody>
                         <FormField Title="Stake Holder Email(s)">
                             <Content>
-                                <InputTextArea class="textarea" Placeholder="Stake Holder Email" @bind-Value="Order.StakeHolderEmail" />
+                                <InputTextArea class="textarea" Placeholder="Stake Holder Email" @bind-Value="Order.StakeHolderEmail" disabled />
                             </Content>
                         </FormField>
                     </CardBody>
@@ -89,7 +92,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel1>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel1" @bind-Value="Order.OrderUDF1" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel1" @bind-Value="Order.OrderUDF1" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -99,7 +102,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel2>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel2" @bind-Value="Order.OrderUDF2" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel2" @bind-Value="Order.OrderUDF2" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -109,7 +112,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel3>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel3" @bind-Value="Order.OrderUDF3" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel3" @bind-Value="Order.OrderUDF3" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -119,7 +122,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel4>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel4" @bind-Value="Order.OrderUDF4" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel4" @bind-Value="Order.OrderUDF4" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -129,7 +132,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel5>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel5" @bind-Value="Order.OrderUDF5" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel5" @bind-Value="Order.OrderUDF5" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -139,7 +142,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel6>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel6" @bind-Value="Order.OrderUDF6" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel6" @bind-Value="Order.OrderUDF6" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -149,7 +152,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel7>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel7" @bind-Value="Order.OrderUDF7" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel7" @bind-Value="Order.OrderUDF7" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -159,7 +162,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel8>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel8" @bind-Value="Order.OrderUDF8" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel8" @bind-Value="Order.OrderUDF8" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -169,7 +172,7 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel9>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel9" @bind-Value="Order.OrderUDF9" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel9" @bind-Value="Order.OrderUDF9" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -179,12 +182,11 @@
                                 <div class="column is-half">
                                     <FormField Icon="fa-hashtag" Title=@Order.OrderUDFLabel10>
                                         <Content>
-                                            <InputText class="input is-primary" Placeholder="@Order.OrderUDFLabel10" @bind-Value="Order.OrderUDF10" />
+                                            <InputText class="input" Placeholder="@Order.OrderUDFLabel10" @bind-Value="Order.OrderUDF10" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
                             }
-
                         </div>
                     </CardBody>
                 </CardComponent>
@@ -192,11 +194,7 @@
         </div>
         <hr />
         <div class="buttons">
-            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/order/search" />
-            @if (!Order.IsCanceled)
-            {
-                <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
-            }
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/shipping/search" />
         </div>
     </div>
 }

@@ -250,6 +250,10 @@ namespace OrderTrak.API.Services.Order
             if (searchQuery.PickingOnly)
                 query = query.Where(x => x.ORD_Status.Status == OrderStatus.PickReady || x.ORD_Status.Status == OrderStatus.Picking);
 
+            // Ship Ready Only Filter
+            if (searchQuery.ShipReadyOnly)
+                query = query.Where(x => x.ORD_Status.Status == OrderStatus.Picked || x.ORD_Status.Status == OrderStatus.Shipped);
+
             // Apply Order By
             query = searchQuery.SortColumn switch
             {
@@ -311,27 +315,21 @@ namespace OrderTrak.API.Services.Order
                 .FirstOrDefaultAsync(x => x.FormID == orderHeaderUpdateDTO.FormID)
                 ?? throw new ValidationException("Order not found.");
 
-            // Update Order if it's shipped only update actual ship date
-            if (order.ORD_Status.Status == OrderStatus.Shipped)
-            {
-                order.ActualShipDate = orderHeaderUpdateDTO.ActualShipDate;
-            }
-            else
-            {
-                order.RequestedShipDate = orderHeaderUpdateDTO.RequestedShipDate;
-                order.RequestedDeliveryDate = orderHeaderUpdateDTO.RequestedDeliveryDate;
-                order.StakeHolderEmail = orderHeaderUpdateDTO.StakeHolderEmail;
-                order.OrderUDF1 = orderHeaderUpdateDTO.OrderUDF1;
-                order.OrderUDF2 = orderHeaderUpdateDTO.OrderUDF2;
-                order.OrderUDF3 = orderHeaderUpdateDTO.OrderUDF3;
-                order.OrderUDF4 = orderHeaderUpdateDTO.OrderUDF4;
-                order.OrderUDF5 = orderHeaderUpdateDTO.OrderUDF5;
-                order.OrderUDF6 = orderHeaderUpdateDTO.OrderUDF6;
-                order.OrderUDF7 = orderHeaderUpdateDTO.OrderUDF7;
-                order.OrderUDF8 = orderHeaderUpdateDTO.OrderUDF8;
-                order.OrderUDF9 = orderHeaderUpdateDTO.OrderUDF9;
-                order.OrderUDF10 = orderHeaderUpdateDTO.OrderUDF10;
-            }
+            // Update Order Header
+            order.RequestedShipDate = orderHeaderUpdateDTO.RequestedShipDate;
+            order.RequestedDeliveryDate = orderHeaderUpdateDTO.RequestedDeliveryDate;
+            order.StakeHolderEmail = orderHeaderUpdateDTO.StakeHolderEmail;
+            order.OrderUDF1 = orderHeaderUpdateDTO.OrderUDF1;
+            order.OrderUDF2 = orderHeaderUpdateDTO.OrderUDF2;
+            order.OrderUDF3 = orderHeaderUpdateDTO.OrderUDF3;
+            order.OrderUDF4 = orderHeaderUpdateDTO.OrderUDF4;
+            order.OrderUDF5 = orderHeaderUpdateDTO.OrderUDF5;
+            order.OrderUDF6 = orderHeaderUpdateDTO.OrderUDF6;
+            order.OrderUDF7 = orderHeaderUpdateDTO.OrderUDF7;
+            order.OrderUDF8 = orderHeaderUpdateDTO.OrderUDF8;
+            order.OrderUDF9 = orderHeaderUpdateDTO.OrderUDF9;
+            order.OrderUDF10 = orderHeaderUpdateDTO.OrderUDF10;
+            
 
             // Save
             await DB.SaveChangesAsync();

@@ -135,8 +135,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Picking", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("Picking")));
 
-    options.AddPolicy("PickingOrOrder", policy =>
-        policy.Requirements.Add(new FunctionAccessRequirement("Picking", "Order")));
+    options.AddPolicy("Shipping", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Shipping")));
+
+    options.AddPolicy("PickingOrderShipping", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("Picking", "Order", "Shipping")));
 
     options.AddPolicy("InventoryLookup", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("InventoryLookup")));

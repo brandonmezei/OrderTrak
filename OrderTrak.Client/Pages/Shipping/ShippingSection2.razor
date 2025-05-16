@@ -1,56 +1,19 @@
-﻿@page "/picking/{FormID:guid}"
+﻿@page "/shipping/section2/{FormID:guid}"
 @using OrderTrak.Client.Shared
-@using OrderTrak.Client.Shared.FormComponents
 @using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.Order
 @using OrderTrak.Client.Shared.SearchComponents
+@using OrderTrak.Client.Shared.Shipping
 @inherits OrderTrakBasePage
 
-<PageTitle>Picking - OrderTrak</PageTitle>
+<PageTitle>Shipping - OrderTrak</PageTitle>
 
-@if (Order != null && OrderActivation != null)
+@if (Order != null)
 {
-    @if (PickLineID.HasValue)
-    {
-        <InventorySearch OnClose="PickLine_Toggle" OnClick="Pick_Click" OrderLineID=@PickLineID />
-    }
-
     <div class="box">
+        <ShippingTabSwitcher Section=2 FormID=@FormID />
         <div class="columns is-centered">
-            <div class="column is-one-third">
-                <CardComponent Title="Information" Icon="fa-info-circle">
-                    <CardBody>
-                        <FormField Icon="fa-box" Title="Order">
-                            <Content>
-                                <InputNumber class="input" Placeholder="Order ID" @bind-Value="Order.OrderID" disabled />
-                            </Content>
-                        </FormField>
-                        <FormField Icon="fa-id-card" Title="Customer">
-                            <Content>
-                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.CustomerCode" disabled />
-                            </Content>
-                        </FormField>
-                        <FormField Icon="fa-project-diagram" Title="Project">
-                            <Content>
-                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.ProjectCode" disabled />
-                            </Content>
-                        </FormField>
-                        <FormField Icon="fa-chart-line" Title="Status">
-                            <Content>
-                                <InputText class="input" Placeholder="Order ID" @bind-Value="Order.OrderStatus" disabled />
-                            </Content>
-                        </FormField>
-                    </CardBody>
-                </CardComponent>
-                <CardComponent Title="Note" Icon="fa-sticky-note">
-                    <CardBody>
-                        <FormField Title="Activation Note">
-                            <Content>
-                                <InputTextArea class="textarea" Placeholder="Activation Note" @bind-Value="OrderActivation.OrderNote" disabled />
-                            </Content>
-                        </FormField>
-                    </CardBody>
-                </CardComponent>
-            </div>
             <div class="column">
                 <CardComponent Title="Order Line(s)" Icon="fa-list" RightTitle="@($"{ FilteredPartList?.Count } record(s)")" IsCardLoading=IsCardLoading>
                     <CardBody>
@@ -79,7 +42,6 @@
                                 <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                     <thead>
                                         <tr>
-                                            <th></th>
                                             <th>
                                                 <a @onclick="() => SortSwitch_Click(1)">
                                                     <span>Part</span>
@@ -95,6 +57,17 @@
                                                 <a @onclick="() => SortSwitch_Click(2)">
                                                     <span>Description</span>
                                                     @if (SortColumn == 2)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(11)">
+                                                    <span>Stock / Tangible</span>
+                                                    @if (SortColumn == 11)
                                                     {
                                                         <span class="icon">
                                                             <i class="fas @(SortOrder == 1 ? "fa-chevron-down" : "fa-chevron-up")"></i>
@@ -163,16 +136,9 @@
                                         @foreach (var line in FilteredPartList)
                                         {
                                             <tr>
-                                                <td>
-                                                    @if (line.Quantity > line.PickedQuantity)
-                                                    {
-                                                        <div class="buttons">
-                                                            <FormButton Title="Pick" Style="is-small" Icon="fa-dolly" OnClick="() => PickLine_Toggle(line.FormID)" />
-                                                        </div>
-                                                    }
-                                                </td>
                                                 <td>@line.PartNumber</td>
                                                 <td>@line.PartDescription</td>
+                                                <td>@(line.IsStock ? "Stock" : "Tangible")</td>
                                                 <td>@line.Po</td>
                                                 <td>@line.StockGroup</td>
                                                 <td>@line.SerialNumber</td>
@@ -190,7 +156,7 @@
         </div>
         <hr />
         <div class="buttons">
-            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/picking/search" />
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/shipping/search" />
         </div>
     </div>
 }

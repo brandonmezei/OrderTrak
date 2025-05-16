@@ -1,0 +1,108 @@
+﻿@page "/shipping/section3/{FormID:guid}"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.Order
+@using OrderTrak.Client.Shared.SearchComponents
+@using OrderTrak.Client.Shared.Shipping
+@inherits OrderTrakBasePage
+
+<PageTitle>Shipping - OrderTrak</PageTitle>
+
+@if (Order != null && OrderShipping != null)
+{
+    <div class="box">
+        <ShippingTabSwitcher Section=3 FormID=@FormID />
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+                <CardComponent Title="Carrier" Icon="fa-truck">
+                    <CardBody>
+                        <FormField Icon="fa-truck" Title="Carrier">
+                            <Content>
+                                <InputText class="input" Placeholder="Carrier" @bind-Value="OrderShipping.Carrier" disabled />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+                <CardComponent Title="Ship Contact" Icon="fa-user">
+                    <CardBody>
+                        <FormField Icon="fa-user" Title="Contact">
+                            <Content>
+                                <InputText class="input" Placeholder="Contact" @bind-Value="OrderShipping.ShipContact" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-phone" Title="Contact Phone">
+                            <Content>
+                                <InputText class="input" Placeholder="Contact Phone" @bind-Value="OrderShipping.ShipPhone" disabled />
+                            </Content>
+                        </FormField>
+                        <FormField Icon="fa-envelope" Title="Contact Email">
+                            <Content>
+                                <InputText class="input" Placeholder="Contact Phone" @bind-Value="OrderShipping.ShipEmail" disabled />
+                            </Content>
+                        </FormField>
+                    </CardBody>
+                </CardComponent>
+            </div>
+            <div class="column">
+                <CardComponent Title="Address" Icon="fa-map-marker-alt">
+                    <CardBody>
+                        <div class="columns is-centered is-flex-wrap-wrap">
+                            <div class="column is-half">
+                                <FormField Icon="fa-map-marker-alt" Title="Address">
+                                    <Content>
+                                        <InputText class="input" Placeholder="Address" @bind-Value="OrderShipping.Address1" disabled />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-map-marker-alt" Title="Address 2">
+                                    <Content>
+                                        <InputText class="input" Placeholder="Address" @bind-Value="OrderShipping.Address2" disabled />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-city" Title="City">
+                                    <Content>
+                                        <InputText class="input" Placeholder="City" @bind-Value="OrderShipping.City" disabled />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-flag" Title="State">
+                                    <Content>
+                                        <InputText class="input" Placeholder="State" @bind-Value="OrderShipping.State" disabled />
+                                    </Content>
+                                </FormField>
+                            </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-envelope" Title="Zip">
+                                    <Content>
+                                        <InputText class="input" Placeholder="Zip" @bind-Value="OrderShipping.Zip" disabled />
+                                    </Content>
+                                </FormField>
+                            </div>
+                        </div>
+                    </CardBody>
+                </CardComponent>
+                <CardComponent Title="Tracking" Icon="fa-route">
+                    <CardBody>
+                    </CardBody>
+                </CardComponent>
+            </div>
+        </div>
+        <hr />
+        <div class="buttons">
+            <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/shipping/search" />
+            @if (!Order.IsClosed)
+            {
+                <FormButton Title="Ship" Style="is-success" Icon="fa-truck-fast" />
+            }
+        </div>
+    </div>
+}
+else
+{
+    <OrderTrakLoading />
+}

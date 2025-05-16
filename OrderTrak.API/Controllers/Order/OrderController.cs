@@ -10,7 +10,7 @@ namespace OrderTrak.API.Controllers.Order
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "PickingOrOrder")]
+    [Authorize(Policy = "PickingOrderShipping")]
     public class OrderController(IOrderService orderService) : ControllerBase
     {
         private readonly IOrderService orderService = orderService;

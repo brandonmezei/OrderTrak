@@ -9,7 +9,6 @@ namespace OrderTrak.API.Models.DTO.Order
 
         public DateTime? RequestedShipDate { get; set; }
         public DateTime? RequestedDeliveryDate { get; set; }
-        public DateTime? ActualShipDate { get; set; }
         public string? StakeHolderEmail { get; set; }
         public string? OrderUDF1 { get; set; }
         public string? OrderUDF2 { get; set; }

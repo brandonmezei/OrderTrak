@@ -1,0 +1,142 @@
+﻿@page "/shipping/search"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.DropDowns
+@inherits OrderTrakBasePage
+
+<PageTitle>Shipping - OrderTrak</PageTitle>
+
+<div class="box">
+    <div class="columns is-centered">
+        <div class="column">
+            <CardComponent Title="Orders(s)" Icon="fa-box" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
+                <CardBody>
+                    <div class="columns is-centered">
+                        <div class="column is-half">
+                            <div class="box">
+                                <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                    <div class="field has-addons">
+                                        <div class="control is-expanded">
+                                            <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                        </div>
+                                        <div class="control">
+                                            <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                <span>Search</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="field">
+                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.ShowShipped" id="ShowShipped" @onclick="Shipped_Change" />
+                                        <label for="ShowShipped">Show Shipped Orders</label>
+                                    </div>
+                                </EditForm>
+                            </div>
+                        </div>
+                    </div>
+                    @if (ReturnTable?.Data.Count > 0)
+                    {
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(1)">
+                                                <span>Order</span>
+                                                @if (SearchFilters.SortColumn == 1)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(2)">
+                                                <span>Project</span>
+                                                @if (SearchFilters.SortColumn == 2)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(3)">
+                                                <span>Status</span>
+                                                @if (SearchFilters.SortColumn == 3)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(4)">
+                                                <span>Requested Ship Date</span>
+                                                @if (SearchFilters.SortColumn == 4)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(5)">
+                                                <span>Requested Delivery Date</span>
+                                                @if (SearchFilters.SortColumn == 5)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(6)">
+                                                <span>Actual Delivery Date</span>
+                                                @if (SearchFilters.SortColumn == 6)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in ReturnTable.Data)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="buttons">
+                                                    <FormButton Title="Ship" Style="is-small" Icon="fa-truck" URL="@($"/shipping/section1/{ line.FormID }")" />
+                                                </div>
+                                            </td>
+                                            <td>@line.OrderID</td>
+                                            <td>@line.ProjectCode</td>
+                                            <td>@line.OrderStatus</td>
+                                            <td>@(line.RequestedShipDate?.ToString("MMM dd yyyy"))</td>
+                                            <td>@(line.RequestedDeliveryDate?.ToString("MMM dd yyyy"))</td>
+                                            <td>@(line.ActualShipDate?.ToString("MMM dd yyyy"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
+                        {
+                            <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
+                        }
+                    }
+                </CardBody>
+            </CardComponent>
+        </div>
+    </div>
+</div>
