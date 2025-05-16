@@ -61,6 +61,10 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
             modelBuilder.Entity<UPL_PartInfo>()
              .Property(l => l.PartCost)
+             .HasPrecision(10, 2); // 10 total digits, 2 decimal places
+
+            modelBuilder.Entity<ORD_Tracking>()
+             .Property(l => l.Weight)
              .HasPrecision(10, 3); // 10 total digits, 3 decimal places
 
             // Configure foreign key constraint for SYS_RolesToFunction
@@ -128,6 +132,14 @@ namespace OrderTrak.API.Models.OrderTrakDB
                 .OnDelete(DeleteBehavior.Restrict);
 
 
+            // Configure ORD_Tracking
+            modelBuilder.Entity<ORD_Tracking>()
+               .HasOne(pl => pl.ORD_Order)
+               .WithMany(pp => pp.ORD_Tracking)
+               .HasForeignKey(pl => pl.OrderID)
+               .OnDelete(DeleteBehavior.Restrict);
+
+
         }
 
         public override int SaveChanges()
@@ -192,5 +204,6 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public DbSet<ORD_Line> ORD_Line { get; set; }
         public DbSet<ORD_PickList> ORD_PickList { get; set; }
         public DbSet<ORD_Status> ORD_Status { get; set; }
+        public DbSet<ORD_Tracking> ORD_Tracking { get; set; }
     }
 }

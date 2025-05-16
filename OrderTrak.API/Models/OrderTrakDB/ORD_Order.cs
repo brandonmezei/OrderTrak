@@ -52,5 +52,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
 
         [ForeignKey("StatusIDBeforeHold")]
         public virtual ORD_Status ORD_StatusBeforeHold { get; set; } = null!;
+
+        public virtual ICollection<ORD_Tracking> ORD_Tracking { get; set; } = [];
     }
 }

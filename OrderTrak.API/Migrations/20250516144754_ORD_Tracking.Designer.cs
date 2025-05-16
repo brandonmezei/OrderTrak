@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderTrak.API.Models.OrderTrakDB;
 
@@ -11,9 +12,11 @@ using OrderTrak.API.Models.OrderTrakDB;
 namespace OrderTrak.API.Migrations
 {
     [DbContext(typeof(OrderTrakContext))]
-    partial class OrderTrakContextModelSnapshot : ModelSnapshot
+    [Migration("20250516144754_ORD_Tracking")]
+    partial class ORD_Tracking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
