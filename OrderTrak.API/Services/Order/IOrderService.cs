@@ -21,5 +21,8 @@ namespace OrderTrak.API.Services.Order
         Task PickToOrderAsync(OrderPickDTO orderPickDTO);
         Task<bool> IsDonePickAsync(OrderPickDoneDTO orderPickDoneDTO);
         Task RemovePickFromOrderAsync(OrderPickRemoveDTO orderPickRemoveDTO);
+        Task CreateTrackingForOrderAsync(OrderCreateTrackingDTO orderCreateTrackingDTO);
+
+        Task<PagedTable<OrderTrackingSearchReturnDTO>> SearchOrderTrackingAsync(SearchQueryDTO searchQueryDTO);
     }
 }

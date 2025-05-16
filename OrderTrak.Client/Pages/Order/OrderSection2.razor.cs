@@ -33,6 +33,8 @@ namespace OrderTrak.Client.Pages.Order
 
         protected Guid? PickLineID { get; set; }
 
+        protected Guid? RemovePickLineID { get; set; } 
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -344,11 +346,16 @@ namespace OrderTrak.Client.Pages.Order
             PickLineID = null;
         }
 
-        protected async Task PickRemove_Click(Guid? PickID)
+        protected async Task PickRemove_Toggle(Guid? PickID)
+        {
+            RemovePickLineID = PickID;
+        }
+
+        protected async Task PickRemove_Click()
         {
             Layout.ClearMessages();
 
-            if (PickID.HasValue && PickLineID.HasValue)
+            if (RemovePickLineID.HasValue && PickLineID.HasValue)
             {
                 try
                 {
@@ -356,7 +363,7 @@ namespace OrderTrak.Client.Pages.Order
                     await OrderService.RemovePickFromOrderAsync(new OrderPickRemoveDTO
                     {
                         OrderLineID = PickLineID.Value,
-                        InventoryID = PickID.Value
+                        InventoryID = RemovePickLineID.Value
                     });
 
                     // Refresh
@@ -376,6 +383,7 @@ namespace OrderTrak.Client.Pages.Order
                 finally
                 {
                     PickLineID = null;
+                    RemovePickLineID = null;
                 }
             }
         }

@@ -24,6 +24,8 @@ namespace OrderTrak.Client.Pages.Shipping
 
         protected int SortColumn { get; set; } = 1;
 
+        protected Guid? PickLineID { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -55,7 +57,7 @@ namespace OrderTrak.Client.Pages.Shipping
                     // Sleep for 500ms to allow the page to render before loading the data
                     await Task.Delay(500);
 
-                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID });
+                    PartList = await OrderService.GetOrderLineAsync(new OrderPartListSearchDTO { FormID = FormID, StockOnly = true });
                     FilteredPartList = PartList;
                 }
                 catch (ApiException ex)
@@ -181,6 +183,18 @@ namespace OrderTrak.Client.Pages.Shipping
                         break;
                 }
             }
+        }
+
+        protected void PickLine_Toggle(Guid? PickID)
+        {
+            Layout.ClearMessages();
+
+            PickLineID = PickID;
+        }
+
+        protected void PickLine_Toggle()
+        {
+            PickLineID = null;
         }
     }
 }

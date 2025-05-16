@@ -291,6 +291,41 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Shipping")]
+        [HttpPost("CreateTrackingForOrder")]
+        public async Task<ActionResult> CreateTrackingForOrderAsync([FromBody] OrderCreateTrackingDTO orderCreateTrackingDTO)
+        {
+            try
+            {
+                await orderService.CreateTrackingForOrderAsync(orderCreateTrackingDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("SearchOrderTracking")]
+        public async Task<ActionResult<PagedTable<OrderTrackingSearchReturnDTO>>> SearchOrderTrackingAsync([FromBody] SearchQueryDTO searchQuery)
+        {
+            try
+            {
+                return Ok(await orderService.SearchOrderTrackingAsync(searchQuery));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE

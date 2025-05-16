@@ -16,7 +16,7 @@ namespace OrderTrak.API.Models.OrderTrakDB
         public string Tracking { get; set; } = string.Empty;
 
         [Required]
-        public int BoxCount { get; set; }
+        public int BoxCount { get; set; } = 0;
 
         [Required]
         public decimal Weight { get; set; } = 0;

@@ -9,6 +9,11 @@
 
 <PageTitle>Shipping - OrderTrak</PageTitle>
 
+@if (PickLineID.HasValue)
+{
+    <InventorySearch OnClose="PickLine_Toggle" OrderLineID=@PickLineID ReadOnly=true ShowPickedOnly=true />
+}
+
 @if (Order != null)
 {
     <div class="box">
@@ -42,6 +47,7 @@
                                 <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>
                                                 <a @onclick="() => SortSwitch_Click(1)">
                                                     <span>Part</span>
@@ -136,6 +142,14 @@
                                         @foreach (var line in FilteredPartList)
                                         {
                                             <tr>
+                                                <td>
+                                                    <div class="buttons">
+                                                        @if (line.PickedQuantity > 0)
+                                                        {
+                                                            <FormButton Title="Picked" Style="is-small" Icon="fa-dolly" OnClick="() => PickLine_Toggle(line.FormID)" />
+                                                        }
+                                                    </div>
+                                                </td>
                                                 <td>@line.PartNumber</td>
                                                 <td>@line.PartDescription</td>
                                                 <td>@(line.IsStock ? "Stock" : "Tangible")</td>

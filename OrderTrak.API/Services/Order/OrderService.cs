@@ -755,5 +755,99 @@ namespace OrderTrak.API.Services.Order
             // Save
             await DB.SaveChangesAsync();
         }
+
+        public async Task CreateTrackingForOrderAsync(OrderCreateTrackingDTO orderCreateTrackingDTO)
+        {
+            // Get Order
+            var order = await DB.ORD_Order
+                .Include(x => x.ORD_Tracking)
+                .FirstOrDefaultAsync(x => x.FormID == orderCreateTrackingDTO.FormID
+                    && x.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order not found or it is shipped.");
+
+            // Check for Duplicates
+            if(order.ORD_Tracking.Any(x => x.Tracking == orderCreateTrackingDTO.TrackingNumber))
+                throw new ValidationException("Tracking number already exists.");
+
+            // Create Tracking
+            order.ORD_Tracking.Add(new ORD_Tracking
+            {
+                Tracking = orderCreateTrackingDTO.TrackingNumber,
+                BoxCount = orderCreateTrackingDTO.BoxCount,
+                Weight = orderCreateTrackingDTO.Weight,
+                PalletCount = orderCreateTrackingDTO.PalletCount
+            });
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task<PagedTable<OrderTrackingSearchReturnDTO>> SearchOrderTrackingAsync(SearchQueryDTO searchQuery)
+        {
+            // Build base Query
+            var query = DB.ORD_Tracking
+                .AsQueryable();
+
+            // Filters
+            if (!string.IsNullOrEmpty(searchQuery.SearchFilter))
+            {
+                var searchFilter = searchQuery.SearchFilter
+                    .Split(',')
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
+
+                foreach (var filter in searchFilter)
+                {
+                    query = query.Where(x =>
+                        x.Tracking.Contains(filter) ||
+                        x.BoxCount.ToString().Contains(filter) ||
+                        x.Weight.ToString().Contains(filter) ||
+                        x.PalletCount.ToString().Contains(filter)
+                    );
+                }
+            }
+
+            // Apply Order By
+            query = searchQuery.SortColumn switch
+            {
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Tracking)
+                                        : query.OrderByDescending(x => x.Tracking),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.BoxCount)
+                                        : query.OrderByDescending(x => x.BoxCount),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Weight)
+                                        : query.OrderByDescending(x => x.Weight),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PalletCount)
+                                        : query.OrderByDescending(x => x.PalletCount),
+                _ => query.OrderBy(x => x.Tracking),
+            };
+
+            // Apply pagination and projection
+            var trackingList = await query
+                .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
+                .Take(searchQuery.RecordSize)
+                .AsNoTracking()
+                .Select(x => new OrderTrackingSearchReturnDTO
+                {
+                    FormID = x.FormID,
+                    Tracking = x.Tracking,
+                    BoxCount = x.BoxCount,
+                    Weight = x.Weight,
+                    PalletCount = x.PalletCount
+                })
+                .ToListAsync();
+
+            // Return Object
+            return new PagedTable<OrderTrackingSearchReturnDTO>
+            {
+                Data = trackingList,
+                TotalRecords = await query.CountAsync(),
+                PageIndex = searchQuery.Page
+            };
+        }
     }
 }

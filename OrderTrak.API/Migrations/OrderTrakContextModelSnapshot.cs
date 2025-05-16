@@ -61,7 +61,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("INV_Receipt");
+                    b.ToTable("INV_Receipt", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_Stock", b =>
@@ -159,7 +159,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("StockGroupID");
 
-                    b.ToTable("INV_Stock");
+                    b.ToTable("INV_Stock", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_StockStatus", b =>
@@ -197,7 +197,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("INV_StockStatus");
+                    b.ToTable("INV_StockStatus", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Line", b =>
@@ -257,7 +257,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("StockGroupID");
 
-                    b.ToTable("ORD_Line");
+                    b.ToTable("ORD_Line", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Order", b =>
@@ -378,7 +378,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("StatusIDBeforeHold");
 
-                    b.ToTable("ORD_Order");
+                    b.ToTable("ORD_Order", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_PickList", b =>
@@ -422,7 +422,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("StockID");
 
-                    b.ToTable("ORD_PickList");
+                    b.ToTable("ORD_PickList", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Status", b =>
@@ -460,7 +460,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ORD_Status");
+                    b.ToTable("ORD_Status", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.ORD_Tracking", b =>
@@ -513,7 +513,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("OrderID");
 
-                    b.ToTable("ORD_Tracking");
+                    b.ToTable("ORD_Tracking", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Header", b =>
@@ -556,7 +556,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("ProjectID");
 
-                    b.ToTable("PO_Header");
+                    b.ToTable("PO_Header", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.PO_Line", b =>
@@ -606,7 +606,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("PartID");
 
-                    b.ToTable("PO_Line");
+                    b.ToTable("PO_Line", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLog", b =>
@@ -640,7 +640,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SYS_ChangeLog");
+                    b.ToTable("SYS_ChangeLog", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_ChangeLogDetails", b =>
@@ -686,7 +686,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("ChangeLogId");
 
-                    b.ToTable("SYS_ChangeLogDetails");
+                    b.ToTable("SYS_ChangeLogDetails", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_Function", b =>
@@ -724,7 +724,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SYS_Function");
+                    b.ToTable("SYS_Function", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_Roles", b =>
@@ -762,7 +762,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SYS_Roles");
+                    b.ToTable("SYS_Roles", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_RolesToFunction", b =>
@@ -809,7 +809,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("RoleID");
 
-                    b.ToTable("SYS_RolesToFunction");
+                    b.ToTable("SYS_RolesToFunction", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.SYS_User", b =>
@@ -875,7 +875,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("RoleID");
 
-                    b.ToTable("SYS_Users");
+                    b.ToTable("SYS_Users", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Customer", b =>
@@ -941,7 +941,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UPL_Customer");
+                    b.ToTable("UPL_Customer", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Location", b =>
@@ -996,7 +996,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("UOMID");
 
-                    b.ToTable("UPL_Location");
+                    b.ToTable("UPL_Location", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_PartInfo", b =>
@@ -1070,7 +1070,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("UOMID");
 
-                    b.ToTable("UPL_PartInfo");
+                    b.ToTable("UPL_PartInfo", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_Project", b =>
@@ -1192,7 +1192,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasIndex("CustomerID");
 
-                    b.ToTable("UPL_Project");
+                    b.ToTable("UPL_Project", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_StockGroup", b =>
@@ -1230,7 +1230,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UPL_StockGroup");
+                    b.ToTable("UPL_StockGroup", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.UPL_UOM", b =>
@@ -1268,7 +1268,7 @@ namespace OrderTrak.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UPL_UOM");
+                    b.ToTable("UPL_UOM", (string)null);
                 });
 
             modelBuilder.Entity("OrderTrak.API.Models.OrderTrakDB.INV_Stock", b =>

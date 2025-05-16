@@ -28,6 +28,9 @@ namespace OrderTrak.Client.Shared.SearchComponents
         [Parameter]
         public bool ShowPickedOnly { get; set; }
 
+        [Parameter]
+        public bool ReadOnly { get; set; }
+
         protected override void OnInitialized()
         {
             SearchFilters.OrderLineID = OrderLineID;

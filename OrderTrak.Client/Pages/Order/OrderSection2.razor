@@ -95,7 +95,20 @@
 
 @if (PickLineID.HasValue)
 {
-    <InventorySearch OnClose="PickLine_Toggle" OnClick="PickRemove_Click" OrderLineID=@PickLineID ShowPickedOnly=true />
+    <InventorySearch OnClose="PickLine_Toggle" OnClick="PickRemove_Toggle" OrderLineID=@PickLineID ShowPickedOnly=true />
+
+    @if (RemovePickLineID.HasValue)
+    {
+        <ModalPopup Title="Confirm Remove" OnClose="() => PickRemove_Toggle(null)" Messages=Layout.Messages>
+            <Content>
+                <p class="subtitle">Are you sure you want to remove this part?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => PickRemove_Toggle(null)" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="PickRemove_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
 }
 
 @if (Order != null)

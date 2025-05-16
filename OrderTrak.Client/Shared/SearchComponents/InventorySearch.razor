@@ -122,13 +122,16 @@
                                                 <tr>
                                                     <td>
                                                         <div class="buttons">
-                                                            @if (ShowPickedOnly)
+                                                            @if (!ReadOnly)
                                                             {
-                                                                <FormButton Title="Remove" Style="is-small" Icon="fa-trash" OnClick="() => OnClick_Handler(line.FormID)" />
-                                                            }
-                                                            else
-                                                            {
-                                                            <FormButton Title="Select" Style="is-small" Icon="fa-mouse-pointer" OnClick="() => OnClick_Handler(line.FormID)" />
+                                                                @if (ShowPickedOnly)
+                                                                {
+                                                                    <FormButton Title="Remove" Style="is-small" Icon="fa-trash" OnClick="() => OnClick_Handler(line.FormID)" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <FormButton Title="Select" Style="is-small" Icon="fa-mouse-pointer" OnClick="() => OnClick_Handler(line.FormID)" />
+                                                                }
                                                             }
                                                         </div>
                                                     </td>
