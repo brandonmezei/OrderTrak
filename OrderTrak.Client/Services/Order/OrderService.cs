@@ -81,7 +81,7 @@ namespace OrderTrak.Client.Services.Order
             return await ApiClient.SearchOrderAsync(searchQuery);
         }
 
-        public async Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(SearchQueryDTO searchQueryDTO)
+        public async Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(OrderTrackingSearchDTO searchQueryDTO)
         {
             return await ApiClient.SearchOrderTrackingAsync(searchQueryDTO);
         }

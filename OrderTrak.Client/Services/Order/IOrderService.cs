@@ -21,7 +21,7 @@ namespace OrderTrak.Client.Services.Order
         Task<bool> IsDonePickAsync(OrderPickDoneDTO orderPickDoneDTO);
         Task RemovePickFromOrderAsync(OrderPickRemoveDTO orderPickRemoveDTO);
         Task CreateTrackingForOrderAsync(OrderCreateTrackingDTO orderCreateTrackingDTO);
-        Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(SearchQueryDTO searchQueryDTO);
+        Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(OrderTrackingSearchDTO searchQueryDTO);
         Task DeleteTrackingFromOrderAsync(Guid trackingID);
         Task CompleteShippingOrderAsync(OrderCompleteShippingDTO orderCompleteShippingDTO);
     }

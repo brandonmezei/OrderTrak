@@ -85,6 +85,99 @@
                         </div>
                     </CardBody>
                 </CardComponent>
+                <CardComponent Title="Tracking" Icon="fa-route">
+                    <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column is-half">
+                                <div class="box">
+                                    <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                    <span>Search</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        @if (ReturnTable?.Data.Count > 0)
+                        {
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(1)">
+                                                    <span>Tracking</span>
+                                                    @if (SearchFilters.SortColumn == 1)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(2)">
+                                                    <span>Box(s)</span>
+                                                    @if (SearchFilters.SortColumn == 2)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(3)">
+                                                    <span>Weight</span>
+                                                    @if (SearchFilters.SortColumn == 3)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(4)">
+                                                    <span>Pallet(s)</span>
+                                                    @if (SearchFilters.SortColumn == 4)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var line in ReturnTable.Data)
+                                        {
+                                            <tr>
+                                                <td>@line.Tracking</td>
+                                                <td>@line.BoxCount</td>
+                                                <td>@line.Weight</td>
+                                                <td>@line.PalletCount</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
+                            {
+                                <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
+                            }
+                        }
+                    </CardBody>
+                </CardComponent>
             </div>
         </div>
         <hr />

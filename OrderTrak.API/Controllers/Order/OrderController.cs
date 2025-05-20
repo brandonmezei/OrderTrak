@@ -311,7 +311,7 @@ namespace OrderTrak.API.Controllers.Order
         }
 
         [HttpPost("SearchOrderTracking")]
-        public async Task<ActionResult<PagedTable<OrderTrackingSearchReturnDTO>>> SearchOrderTrackingAsync([FromBody] SearchQueryDTO searchQuery)
+        public async Task<ActionResult<PagedTable<OrderTrackingSearchReturnDTO>>> SearchOrderTrackingAsync([FromBody] OrderTrackingSearchDTO searchQuery)
         {
             try
             {
@@ -327,6 +327,7 @@ namespace OrderTrak.API.Controllers.Order
             }
         }
 
+        [Authorize(Policy = "Shipping")]
         [HttpPost("CompleteOrderShipping")]
         public async Task<ActionResult> CompleteOrderShippingAsync([FromBody] OrderCompleteShippingDTO orderCompleteShippingDTO)
         {

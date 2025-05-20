@@ -22,7 +22,7 @@ namespace OrderTrak.API.Services.Order
         Task<bool> IsDonePickAsync(OrderPickDoneDTO orderPickDoneDTO);
         Task RemovePickFromOrderAsync(OrderPickRemoveDTO orderPickRemoveDTO);
         Task CreateTrackingForOrderAsync(OrderCreateTrackingDTO orderCreateTrackingDTO);
-        Task<PagedTable<OrderTrackingSearchReturnDTO>> SearchOrderTrackingAsync(SearchQueryDTO searchQueryDTO);
+        Task<PagedTable<OrderTrackingSearchReturnDTO>> SearchOrderTrackingAsync(OrderTrackingSearchDTO searchQueryDTO);
         Task DeleteTrackingFromOrderAsync(Guid trackingID);
         Task CompleteShippingOrderAsync(OrderCompleteShippingDTO orderCompleteShippingDTO);
     }

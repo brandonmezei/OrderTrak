@@ -800,7 +800,7 @@ namespace OrderTrak.API.Services.Order
             await DB.SaveChangesAsync();
         }
 
-        public async Task<PagedTable<OrderTrackingSearchReturnDTO>> SearchOrderTrackingAsync(SearchQueryDTO searchQuery)
+        public async Task<PagedTable<OrderTrackingSearchReturnDTO>> SearchOrderTrackingAsync(OrderTrackingSearchDTO searchQuery)
         {
             // Build base Query
             var query = DB.ORD_Tracking
@@ -825,6 +825,10 @@ namespace OrderTrak.API.Services.Order
                     );
                 }
             }
+
+            // Apply Order Filter
+            if (searchQuery.OrderID.HasValue)
+                query = query.Where(x => x.ORD_Order.FormID == searchQuery.OrderID);
 
             // Apply Order By
             query = searchQuery.SortColumn switch

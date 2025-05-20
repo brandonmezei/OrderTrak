@@ -25,7 +25,7 @@ namespace OrderTrak.Client.Pages.Shipping
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
                 OrderActivation = await OrderService.GetOrderActivationAsync(FormID);
 
-                Layout.UpdateHeader("Shipping", $"Order: {Order.OrderID}");
+                Layout.UpdateHeader("Shipping", $"Order: {Order?.OrderID}");
             }
             catch (ApiException ex)
             {

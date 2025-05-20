@@ -18,7 +18,7 @@ namespace OrderTrak.Client.Pages.Shipping
 
         protected OrderShipDTO? OrderShipping { get; set; }
 
-        protected SearchQueryDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        protected OrderTrackingSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
 
         protected PagedTableOfOrderTrackingSearchReturnDTO? ReturnTable;
@@ -38,7 +38,10 @@ namespace OrderTrak.Client.Pages.Shipping
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
                 OrderShipping = await OrderService.GetOrderShippingAsync(FormID);
 
-                Layout.UpdateHeader("Order Admin", $"Order: {Order.OrderID}");
+                if (Order != null)
+                    SearchFilters.OrderID = Order.FormID;
+
+                Layout.UpdateHeader("Order Admin", $"Order: {Order?.OrderID}");
             }
             catch (ApiException ex)
             {
@@ -62,7 +65,6 @@ namespace OrderTrak.Client.Pages.Shipping
                     await Task.Delay(500);
 
                     // Get Tracking from API
-                    SearchFilters = await LocalStorage.GetItemAsync<SearchQueryDTO>("search") ?? SearchFilters;
                     ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
                 }
                 catch (ApiException ex)
@@ -94,9 +96,6 @@ namespace OrderTrak.Client.Pages.Shipping
             {
                 SearchFilters.Page = 1;
 
-                // Save Filters
-                await LocalStorage.SetItemAsync("search", SearchFilters);
-
                 // Get Tracking from API
                 ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
 
@@ -126,9 +125,6 @@ namespace OrderTrak.Client.Pages.Shipping
 
             try
             {
-                // Save Filters
-                await LocalStorage.SetItemAsync("search", SearchFilters);
-
                 // Get Tracking from API
                 ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
 
@@ -153,9 +149,6 @@ namespace OrderTrak.Client.Pages.Shipping
 
             try
             {
-                // Save Filters
-                await LocalStorage.SetItemAsync("search", SearchFilters);
-
                 // Get Tracking from API
                 ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
 

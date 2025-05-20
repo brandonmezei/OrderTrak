@@ -18,6 +18,11 @@ namespace OrderTrak.Client.Pages.Order
 
         protected OrderShipDTO? OrderShipping { get; set; }
 
+        protected OrderTrackingSearchDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+
+
+        protected PagedTableOfOrderTrackingSearchReturnDTO? ReturnTable;
+
         protected override async Task OnInitializedAsync()
         {
             Layout.ClearMessages();
@@ -27,7 +32,10 @@ namespace OrderTrak.Client.Pages.Order
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
                 OrderShipping = await OrderService.GetOrderShippingAsync(FormID);
 
-                Layout.UpdateHeader("Order Admin", $"Order: {Order.OrderID}");
+                if(Order != null)
+                    SearchFilters.OrderID = Order.FormID;
+
+                Layout.UpdateHeader("Order Admin", $"Order: {Order?.OrderID}");
             }
             catch (ApiException ex)
             {
@@ -39,6 +47,34 @@ namespace OrderTrak.Client.Pages.Order
             }
 
             IsCardLoading = true;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                try
+                {
+                    // Sleep for 500ms to allow the page to render before loading the data
+                    await Task.Delay(500);
+
+                    // Get Tracking from API
+                    ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    IsCardLoading = false;
+                    StateHasChanged();
+                }
+            }
         }
 
         protected async Task Save_Click()
@@ -54,6 +90,92 @@ namespace OrderTrak.Client.Pages.Order
                     await OrderService.UpdateOrderShippingAsync(MapperService.Map<OrderShipUpdateDTO>(OrderShipping));
 
                     Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected async Task Search_Click()
+        {
+            if (IsLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsLoading = true;
+
+            try
+            {
+                SearchFilters.Page = 1;
+
+                // Get Tracking from API
+                ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
+
+                if (ReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        protected async Task SortSwitch_Click(int column)
+        {
+            SearchFilters.SortColumn = column;
+            SearchFilters.SortOrder = SearchFilters.SortOrder == 1 ? 2 : 1;
+
+            try
+            {
+
+                // Get Tracking from API
+                ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
+
+                if (ReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected async Task PageSwitch_Click(int page)
+        {
+            SearchFilters.Page = page;
+
+            try
+            {
+
+                // Get Tracking from API
+                ReturnTable = await OrderService.SearchOrderTrackingAsync(SearchFilters);
+
+                if (ReturnTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
                 }
             }
             catch (ApiException ex)

@@ -587,12 +587,12 @@ namespace OrderTrak.Client.Services.API
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(SearchQueryDTO body);
+        System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(OrderTrackingSearchDTO body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(SearchQueryDTO body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(OrderTrackingSearchDTO body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -5872,7 +5872,7 @@ namespace OrderTrak.Client.Services.API
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(SearchQueryDTO body)
+        public virtual System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(OrderTrackingSearchDTO body)
         {
             return SearchOrderTrackingAsync(body, System.Threading.CancellationToken.None);
         }
@@ -5880,7 +5880,7 @@ namespace OrderTrak.Client.Services.API
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(SearchQueryDTO body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(OrderTrackingSearchDTO body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -9254,6 +9254,39 @@ namespace OrderTrak.Client.Services.API
 
         [Newtonsoft.Json.JsonProperty("carrier", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Carrier { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class OrderTrackingSearchDTO
+    {
+        [Newtonsoft.Json.JsonProperty("orderID", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? OrderID { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("searchFilter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SearchFilter { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("recordSize", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Range(0, 50)]
+        public int RecordSize { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
+        public int Page { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sortColumn", Required = Newtonsoft.Json.Required.Always)]
+        public int SortColumn { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sortOrder", Required = Newtonsoft.Json.Required.Always)]
+        public int SortOrder { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 

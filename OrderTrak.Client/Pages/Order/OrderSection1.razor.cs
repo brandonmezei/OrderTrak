@@ -25,7 +25,7 @@ namespace OrderTrak.Client.Pages.Order
             {
                 Order = await OrderService.GetOrderHeaderAsync(FormID);
 
-                Layout.UpdateHeader("Order Admin", $"Order: {Order.OrderID}");
+                Layout.UpdateHeader("Order Admin", $"Order: {Order?.OrderID}");
             }
             catch (ApiException ex)
             {
