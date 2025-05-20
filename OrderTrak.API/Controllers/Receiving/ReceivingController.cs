@@ -103,6 +103,23 @@ namespace OrderTrak.API.Controllers.Receiving
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("SearchReceivingPutaway")]
+        public async Task<ActionResult<PagedTable<ReceivingPutawaySearchReturnDTO>>> SearchReceivingAsync([FromBody] SearchQueryDTO searchQuery)
+        {
+            try
+            {
+                return Ok(await ReceivingService.SearchReceivingPutawayAsync(searchQuery));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE

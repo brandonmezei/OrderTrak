@@ -307,5 +307,82 @@ namespace OrderTrak.API.Services.Receiving
             // Save
             await DB.SaveChangesAsync();
         }
+
+        public async Task<PagedTable<ReceivingPutawaySearchReturnDTO>> SearchReceivingPutawayAsync(SearchQueryDTO searchQuery)
+        {
+            // Get Inventory
+            var query = DB.INV_Stock
+                .Where(x => x.INV_StockStatus.StockStatus == StockStatus.Received);
+
+            // Filters
+            if (!string.IsNullOrEmpty(searchQuery.SearchFilter))
+            {
+                var searchFilter = searchQuery.SearchFilter
+                    .Split(',')
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList();
+
+                foreach (var filter in searchFilter)
+                {
+                    query = query.Where(x => x.Id.ToString().Contains(filter) ||
+                                             x.PO_Line.UPL_PartInfo.PartNumber.Contains(filter) ||
+                                             x.PO_Line.UPL_PartInfo.PartDescription.Contains(filter) ||
+                                             x.PO_Line.PO_Header.PONumber.Contains(filter) ||
+                                             x.UPL_StockGroup.StockGroupTitle.Contains(filter) ||
+                                             x.UPL_Location.LocationNumber.Contains(filter));
+                }
+            }
+
+            // Apply Order By
+            query = searchQuery.SortColumn switch
+            {
+                1 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.Id)
+                                        : query.OrderByDescending(x => x.Id),
+                2 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PO_Line.UPL_PartInfo.PartNumber)
+                                        : query.OrderByDescending(x => x.PO_Line.UPL_PartInfo.PartNumber),
+                3 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PO_Line.UPL_PartInfo.PartDescription)
+                                        : query.OrderByDescending(x => x.PO_Line.UPL_PartInfo.PartDescription),
+                4 => searchQuery.SortOrder == 1
+                                         ? query.OrderBy(x => x.PO_Line.PO_Header.PONumber)
+                                         : query.OrderByDescending(x => x.PO_Line.PO_Header.PONumber),
+                5 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UPL_StockGroup.StockGroupTitle)
+                                        : query.OrderByDescending(x => x.UPL_StockGroup.StockGroupTitle),
+                6 => searchQuery.SortOrder == 1
+                                       ? query.OrderBy(x => x.UPL_Location.LocationNumber)
+                                       : query.OrderByDescending(x => x.UPL_Location.LocationNumber),
+                _ => query.OrderBy(x => x.Id),
+            };
+
+            // Apply pagination and projection
+            var putawayList = await query
+                .Skip(searchQuery.RecordSize * (searchQuery.Page - 1))
+                .Take(searchQuery.RecordSize)
+                .AsNoTracking()
+                .Select(x => new ReceivingPutawaySearchReturnDTO
+                {
+                    FormID = x.FormID,
+                    BoxID = x.Id,
+                    PartNumber = x.PO_Line.UPL_PartInfo.PartNumber,
+                    PartDescription = x.PO_Line.UPL_PartInfo.PartDescription,
+                    PO = x.PO_Line.PO_Header.PONumber,
+                    StockGroup = x.UPL_StockGroup.StockGroupTitle,
+                    Location = x.UPL_Location.LocationNumber,
+                    Quantity = x.Quantity
+                })
+                .ToListAsync();
+
+            // Return Object
+            return new PagedTable<ReceivingPutawaySearchReturnDTO>
+            {
+                Data = putawayList,
+                TotalRecords = await query.CountAsync(),
+                PageIndex = searchQuery.Page
+            };
+        }
     }
 }

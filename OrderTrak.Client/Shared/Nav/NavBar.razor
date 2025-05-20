@@ -41,6 +41,7 @@
                         @if (Permissions.Any(x => x == "Receiving"))
                         {
                             <NavBarItem Label="Receiving" Icon="fa-receipt" URL="/receiving/search" />
+                            <NavBarItem Label="Receiving Putaway" Icon="fa-box-open" URL="/receiving/putaway" />
                         }
                         @if (Permissions.Any(x => x == "Picking"))
                         {

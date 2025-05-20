@@ -30,6 +30,11 @@ namespace OrderTrak.Client.Services.Receiving
             return await ApiService.SearchReceivingAsync(searchQuery);
         }
 
+        public async Task<PagedTableOfReceivingPutawaySearchReturnDTO> SearchReceivingPutawayAsync(SearchQueryDTO searchQuery)
+        {
+            return await ApiService.SearchReceivingPutawayAsync(searchQuery);
+        }
+
         public async Task UpdateReceivingAsync(ReceivingUpdateDTO receivingUpdateDTO)
         {
             await ApiService.UpdateReceivingAsync(receivingUpdateDTO);

@@ -11,5 +11,6 @@ namespace OrderTrak.API.Services.Receiving
         Task UpdateReceivingAsync(ReceivingUpdateDTO receivingUpdateDTO);
         Task<PagedTable<ReceivingSearchReturnDTO>> SearchReceivingAsync(ReceivingSearchDTO searchQuery);
         Task CreateReceivingLineAsync(ReceivingLineCreateDTO receivingLineCreateDTO);
+        Task<PagedTable<ReceivingPutawaySearchReturnDTO>> SearchReceivingPutawayAsync(SearchQueryDTO searchQuery);
     }
 }
