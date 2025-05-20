@@ -11,6 +11,11 @@ namespace OrderTrak.Client.Services.Order
             await ApiClient.CancelOrderAsync(orderCancelDTO);
         }
 
+        public async Task CompleteShippingOrderAsync(OrderCompleteShippingDTO orderCompleteShippingDTO)
+        {
+            await ApiClient.CompleteOrderShippingAsync(orderCompleteShippingDTO);
+        }
+
         public async Task<Guid> CreateOrderAsync(OrderCreateDTO orderCreateDTO)
         {
             return await ApiClient.CreateOrderAsync(orderCreateDTO);
@@ -21,9 +26,19 @@ namespace OrderTrak.Client.Services.Order
             await ApiClient.CreateOrderLineAsync(orderCreateLineDTO);
         }
 
+        public async Task CreateTrackingForOrderAsync(OrderCreateTrackingDTO orderCreateTrackingDTO)
+        {
+            await ApiClient.CreateTrackingForOrderAsync(orderCreateTrackingDTO);
+        }
+
         public async Task DeleteOrderLineAsync(Guid lineID)
         {
             await ApiClient.DeleteOrderLineAsync(lineID);
+        }
+
+        public async Task DeleteTrackingFromOrderAsync(Guid trackingID)
+        {
+            await ApiClient.DeleteTrackingFromOrderAsync(trackingID);
         }
 
         public async Task<OrderActivationDTO> GetOrderActivationAsync(Guid orderID)
@@ -64,6 +79,11 @@ namespace OrderTrak.Client.Services.Order
         public async Task<PagedTableOfOrderSearchReturnDTO> SearchOrderAsync(OrderSearchDTO searchQuery)
         {
             return await ApiClient.SearchOrderAsync(searchQuery);
+        }
+
+        public async Task<PagedTableOfOrderTrackingSearchReturnDTO> SearchOrderTrackingAsync(SearchQueryDTO searchQueryDTO)
+        {
+            return await ApiClient.SearchOrderTrackingAsync(searchQueryDTO);
         }
 
         public async Task UpdateOrderActivationAsync(OrderActivationUpdateDTO orderActivationUpdateDTO)

@@ -326,6 +326,24 @@ namespace OrderTrak.API.Controllers.Order
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost("CompleteOrderShipping")]
+        public async Task<ActionResult> CompleteOrderShippingAsync([FromBody] OrderCompleteShippingDTO orderCompleteShippingDTO)
+        {
+            try
+            {
+                await orderService.CompleteShippingOrderAsync(orderCompleteShippingDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
 
         #region DELETE
@@ -336,6 +354,25 @@ namespace OrderTrak.API.Controllers.Order
             try
             {
                 await orderService.DeleteOrderLineAsync(lineID);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "Shipping")]
+        [HttpDelete("DeleteTrackingFromOrder/{trackingID}")]
+        public async Task<ActionResult> DeleteTrackingFromOrderAsync(Guid trackingID)
+        {
+            try
+            {
+                await orderService.DeleteTrackingFromOrderAsync(trackingID);
                 return Ok();
             }
             catch (ValidationException ex)

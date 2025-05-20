@@ -11,6 +11,91 @@
 
 @if (Order != null && OrderShipping != null)
 {
+    @if (CreateTracking != null)
+    {
+        <ModalPopup Title="Create Tracking" OnClose="CreateTracking_Toggle" Messages=Layout.Messages>
+            <Content>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <EditForm Model="@CreateTracking" OnValidSubmit="CreateTracking_Submit">
+                            <CardComponent Title="Tracking Information" Icon="fa-route">
+                                <CardBody>
+                                    <DataAnnotationsValidator />
+                                    <FormField Icon="fa-truck" Title="Tracking">
+                                        <Content>
+                                            <InputText class="input is-danger" Placeholder="Tracking" @bind-Value="CreateTracking.TrackingNumber" />
+                                            <ValidationMessage For="@(() => CreateTracking.TrackingNumber)" />
+                                        </Content>
+                                    </FormField>
+                                    <div class="columns is-centered">
+                                        <div class="column">
+                                            <FormField Icon="fa-cubes" Title="Box(s)">
+                                                <Content>
+                                                    <InputNumber class="input is-primary" Placeholder="Box(s)" @bind-Value="CreateTracking.BoxCount" />
+                                                    <ValidationMessage For="@(() => CreateTracking.BoxCount)" />
+                                                </Content>
+                                            </FormField>
+                                        </div>
+                                        <div class="column">
+                                            <FormField Icon="fa-weight" Title="Weight">
+                                                <Content>
+                                                    <InputNumber class="input is-primary" Placeholder="Weight" @bind-Value="CreateTracking.Weight" />
+                                                    <ValidationMessage For="@(() => CreateTracking.Weight)" />
+                                                </Content>
+                                            </FormField>
+                                        </div>
+                                        <div class="column">
+                                            <FormField Icon="fa-pallet" Title="Pallet(s)">
+                                                <Content>
+                                                    <InputNumber class="input is-primary" Placeholder="Pallet" @bind-Value="CreateTracking.PalletCount" />
+                                                    <ValidationMessage For="@(() => CreateTracking.PalletCount)" />
+                                                </Content>
+                                            </FormField>
+                                        </div>
+                                    </div>
+                                </CardBody>
+                                <Footer>
+                                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                                        <span class="icon">
+                                            <i class="fas fa-floppy-disk" />
+                                        </span>
+                                        <span>Save</span>
+                                    </button>
+                                </Footer>
+                            </CardComponent>
+                        </EditForm>
+                    </div>
+                </div>
+            </Content>
+        </ModalPopup>
+    }
+
+    @if (DeleteID.HasValue)
+    {
+        <ModalPopup Title="Confirm Delete" OnClose="() => Delete_Toggle(null)" Messages=Layout.Messages>
+            <Content>
+                <p class="subtitle">Are you sure you want to delete this tracking info?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => Delete_Toggle(null)" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="DeleteConfirm_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
+    @if(ShipConfirm)
+    {
+        <ModalPopup Title="Confirm Shipment" OnClose="ShipConfirm_Toggle" Messages=Layout.Messages>
+            <Content>
+                <p class="subtitle">Are you sure you want to ship this order?</p>
+            </Content>
+            <FooterButtons>
+                <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="ShipConfirm_Toggle" />
+                <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="ShipConfirm_Click" />
+            </FooterButtons>
+        </ModalPopup>
+    }
+
     <div class="box">
         <ShippingTabSwitcher Section=3 FormID=@FormID />
         <div class="columns is-centered">
@@ -88,7 +173,121 @@
                 </CardComponent>
                 <CardComponent Title="Tracking" Icon="fa-route">
                     <CardBody>
+                        <div class="columns is-centered">
+                            <div class="column">
+                                <div class="buttons is-pulled-right">
+                                    @if (!Order.IsClosed)
+                                    {
+                                        <FormButton Title="Add" Style="is-success" Icon="fa-plus" OnClick="CreateTracking_Toggle" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-centered">
+                            <div class="column is-half">
+                                <div class="box">
+                                    <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                        <div class="field has-addons">
+                                            <div class="control is-expanded">
+                                                <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                            </div>
+                                            <div class="control">
+                                                <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                    <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                    <span>Search</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </EditForm>
+                                </div>
+                            </div>
+                        </div>
+                        @if (ReturnTable?.Data.Count > 0)
+                        {
+                            <div class="table-container">
+                                <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(1)">
+                                                    <span>Tracking</span>
+                                                    @if (SearchFilters.SortColumn == 1)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(2)">
+                                                    <span>Box(s)</span>
+                                                    @if (SearchFilters.SortColumn == 2)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(3)">
+                                                    <span>Weight</span>
+                                                    @if (SearchFilters.SortColumn == 3)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a @onclick="() => SortSwitch_Click(4)">
+                                                    <span>Pallet(s)</span>
+                                                    @if (SearchFilters.SortColumn == 4)
+                                                    {
+                                                        <span class="icon">
+                                                            <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                        </span>
+                                                    }
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var line in ReturnTable.Data)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="buttons">
+                                                        @if(!Order.IsClosed)
+                                                        {
+                                                            <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>@line.Tracking</td>
+                                                <td>@line.BoxCount</td>
+                                                <td>@line.Weight</td>
+                                                <td>@line.PalletCount</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
+                            {
+                                <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
+                            }
+                        }
                     </CardBody>
+                    <Footer>
+                        @if (!Order.IsClosed)
+                        {
+                            <FormButton Title="Add" Style="card-footer-item" Icon="fa-plus" OnClick="CreateTracking_Toggle" />
+                        }
+                    </Footer>
                 </CardComponent>
             </div>
         </div>
@@ -97,7 +296,7 @@
             <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/shipping/search" />
             @if (!Order.IsClosed)
             {
-                <FormButton Title="Ship" Style="is-success" Icon="fa-truck-fast" />
+                <FormButton Title="Ship" Style="is-success" Icon="fa-truck-fast" OnClick="ShipConfirm_Toggle" />
             }
         </div>
     </div>

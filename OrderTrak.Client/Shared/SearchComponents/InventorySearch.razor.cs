@@ -31,6 +31,8 @@ namespace OrderTrak.Client.Shared.SearchComponents
         [Parameter]
         public bool ReadOnly { get; set; }
 
+        public Guid? DeleteID { get; set; }
+
         protected override void OnInitialized()
         {
             SearchFilters.OrderLineID = OrderLineID;
@@ -118,9 +120,16 @@ namespace OrderTrak.Client.Shared.SearchComponents
             StateHasChanged();
         }
 
+        private void OnDelete_Toggle(Guid? FormID)
+        {
+            DeleteID = FormID;
+        }
+
         private async Task OnClick_Handler(Guid? LineID)
         {
             await OnClick.InvokeAsync(LineID);
+
+            DeleteID = null;
 
             StateHasChanged();
         }

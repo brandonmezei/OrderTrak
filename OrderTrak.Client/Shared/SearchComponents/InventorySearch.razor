@@ -126,7 +126,7 @@
                                                             {
                                                                 @if (ShowPickedOnly)
                                                                 {
-                                                                    <FormButton Title="Remove" Style="is-small" Icon="fa-trash" OnClick="() => OnClick_Handler(line.FormID)" />
+                                                                    <FormButton Title="Remove" Style="is-small" Icon="fa-trash" OnClick="() => OnDelete_Toggle(line.FormID)" />
                                                                 }
                                                                 else
                                                                 {
@@ -160,3 +160,24 @@
     </div>
 </div>
 
+@if (DeleteID.HasValue)
+{
+    <div class="modal is-active">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head has-background-link">
+                <p class="modal-card-title has-text-white">Confirm Removal</p>
+                <button class="delete has-text-white" aria-label="close" @onclick="() => OnDelete_Toggle(null)"></button>
+            </header>
+            <section class="modal-card-body">
+                <p class="subtitle">Are you sure you want to remove this part?</p>
+            </section>
+            <footer class="modal-card-foot">
+                <div class="buttons">
+                    <FormButton Title="No" Style="is-danger" Icon="fa-times" OnClick="() => OnDelete_Toggle(null)" />
+                    <FormButton Title="Yes" Style="is-success" Icon="fa-check" OnClick="() => OnClick_Handler(DeleteID)" />
+                </div>
+            </footer>
+        </div>
+    </div>
+}

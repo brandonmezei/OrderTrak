@@ -60,9 +60,9 @@
                             @if (Order.IsClosed && !Order.IsCanceled)
                             {
                                 <div class="column is-half">
-                                    <FormField Icon="fa-box-open" Title="Actual Delivery Date">
+                                    <FormField Icon="fa-box-open" Title="Actual Ship Date">
                                         <Content>
-                                            <InputDate class="input" Placeholder="Actual Delivery Date" @bind-Value="Order.ActualShipDate" disabled />
+                                            <InputDate class="input" Placeholder="Actual Ship Date" @bind-Value="Order.ActualShipDate" disabled />
                                         </Content>
                                     </FormField>
                                 </div>
@@ -193,7 +193,7 @@
         <hr />
         <div class="buttons">
             <FormButton Title="Back" Style="is-danger" Icon="fa-arrow-left" URL="/order/search" />
-            @if (!Order.IsCanceled)
+            @if (!Order.IsClosed)
             {
                 <FormButton Title="Save" Style="is-success" Icon="fa-save" OnClick="Save_Click" />
             }

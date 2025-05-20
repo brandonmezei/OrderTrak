@@ -21,7 +21,7 @@
                                 <InputTextArea class="textarea" Placeholder="Activation Note" @bind-Value="OrderActivation.OrderNote" />
                             </Content>
                         </FormField>
-                        @if (OrderActivation.StatusID.HasValue)
+                        @if (!Order.IsClosed && OrderActivation.StatusID.HasValue)
                         {
                             <FormField Icon="fa-chart-line" Title="Order Status">
                                 <Content>

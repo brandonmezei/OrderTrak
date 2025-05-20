@@ -649,13 +649,19 @@ namespace OrderTrak.API.Services.Order
             var inv = inventory.Data.First();
 
             // Get On Order Inventory Status
-            var onOrderStatus = await DB.INV_StockStatus
-                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.OnOrder)
-                ?? throw new ValidationException("Cannot find On Order Status");
+            var onOrderStatusTask = DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.OnOrder);
 
             // Get Picking Order Status
-            var pickingStatus = await DB.ORD_Status
-                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Picking)
+            var pickingStatusTask = DB.ORD_Status
+                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Picking);
+                
+            await Task.WhenAll(onOrderStatusTask, pickingStatusTask);
+
+            var onOrderStatus = onOrderStatusTask.Result
+                ?? throw new ValidationException("Cannot find On Order Status");
+
+            var pickingStatus = pickingStatusTask.Result
                 ?? throw new ValidationException("Cannot find Picking Status");
 
             // Get Inventory
@@ -765,8 +771,20 @@ namespace OrderTrak.API.Services.Order
                     && x.ORD_Status.Status != OrderStatus.Shipped)
                 ?? throw new ValidationException("Order not found or it is shipped.");
 
+            // Check for Invalid Box Count
+            if (orderCreateTrackingDTO.BoxCount <= 0)
+                throw new ValidationException("Box Count must be greater than 0.");
+
+            // Check for Invalid Weight
+            if (orderCreateTrackingDTO.Weight <= 0)
+                throw new ValidationException("Weight must be greater than 0.");
+
+            // Check for Invalid Pallet Count
+            if (orderCreateTrackingDTO.PalletCount.HasValue && orderCreateTrackingDTO.PalletCount < 0)
+                throw new ValidationException("Pallet Count must be greater than or equal to 0.");
+
             // Check for Duplicates
-            if(order.ORD_Tracking.Any(x => x.Tracking == orderCreateTrackingDTO.TrackingNumber))
+            if (order.ORD_Tracking.Any(x => x.Tracking == orderCreateTrackingDTO.TrackingNumber))
                 throw new ValidationException("Tracking number already exists.");
 
             // Create Tracking
@@ -848,6 +866,74 @@ namespace OrderTrak.API.Services.Order
                 TotalRecords = await query.CountAsync(),
                 PageIndex = searchQuery.Page
             };
+        }
+
+        public async Task DeleteTrackingFromOrderAsync(Guid trackingID)
+        {
+            // Get Order Tracking
+            var orderTracking = await DB.ORD_Tracking
+                .FirstOrDefaultAsync(x => x.FormID == trackingID
+                    && x.ORD_Order.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order Tracking not found or Order is shipped.");
+
+            // Soft Delete Tracking
+            orderTracking.IsDelete = true;
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task CompleteShippingOrderAsync(OrderCompleteShippingDTO orderCompleteShippingDTO)
+        {
+            // Get Order
+            var order = await DB.ORD_Order
+                .Include(x => x.ORD_Tracking)
+                .Include(x => x.ORD_Line)
+                    .ThenInclude(x => x.ORD_PickList)
+                        .ThenInclude(x => x.INV_Stock)
+                            .ThenInclude(x => x.INV_StockStatus)
+                .Include(x => x.ORD_Status)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.FormID == orderCompleteShippingDTO.OrderID
+                    && x.ORD_Status.Status != OrderStatus.Shipped)
+                ?? throw new ValidationException("Order not found or it is shipped.");
+
+            // Get required statuses
+            var shippedStatusTask = DB.ORD_Status
+                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Shipped);
+
+            var shippedStockStatusTask = DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.Shipped);
+
+            await Task.WhenAll(shippedStatusTask, shippedStockStatusTask);
+
+            var shippedStatus = shippedStatusTask.Result
+                ?? throw new ValidationException("Shipped order status not found.");
+
+            var shippedStockStatus = shippedStockStatusTask.Result
+                ?? throw new ValidationException("Shipped stock status not found.");
+
+            // Check if Order has Tracking
+            if (order.ORD_Tracking.Count == 0)
+                throw new ValidationException("Order must have at least one tracking number.");
+
+            // Get Order Lines
+            var orderLines = await GetOrderLineAsync(new OrderPartListSearchDTO { FormID = order.FormID, StockOnly = true });
+
+            // Check if Picked Counts are equal to Order Line Counts
+            if(orderLines.Any(x => x.Quantity != x.PickedQuantity))
+                throw new ValidationException("Order Line picked quantity does not match order line quantity.");
+
+            // Update all Inv_Stock to Shipped
+            foreach (var inv in order.ORD_Line.SelectMany(x => x.ORD_PickList.Select(x => x.INV_Stock)))
+                inv.INV_StockStatus = shippedStockStatus;
+
+            // Update Order to Shipped
+            order.ORD_Status = shippedStatus;
+            order.ActualShipDate = DateTime.UtcNow;
+
+            // Save
+            await DB.SaveChangesAsync();
         }
     }
 }
