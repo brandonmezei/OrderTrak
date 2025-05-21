@@ -9,5 +9,7 @@ namespace OrderTrak.API.Services.Inventory
         Task<PagedTable<InventorySearchReturnDTO>> SearchInventoryAsync(InventorySearchDTO searchQuery);
 
         Task<Guid> SplitBoxIDAsync(Guid FormID, int qty);
+
+        Task UpdateInventoryLocationPutawayAsync(InventoryLocationUpdateDTO inventoryLocationUpdateDTO);
     }
 }

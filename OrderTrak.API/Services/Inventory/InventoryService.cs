@@ -177,5 +177,60 @@ namespace OrderTrak.API.Services.Inventory
             // Return the new stock ID
             return newStock.FormID;
         }
+
+        public async Task UpdateInventoryLocationPutawayAsync(InventoryLocationUpdateDTO inventoryLocationUpdateDTO)
+        {
+            // Get InStock Stock Status
+            var inStockStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.InStock)
+                ?? throw new ValidationException("In Stock status not found.");
+
+            // Get Inventory
+            var inventory = await DB.INV_Stock
+                .Include(x => x.UPL_Location)
+                .Include(x => x.PO_Line)
+                    .ThenInclude(x => x.UPL_PartInfo)
+                        .ThenInclude(x => x.UPL_UOM)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.FormID == inventoryLocationUpdateDTO.FormID)
+                ?? throw new ValidationException("Inventory not found.");
+
+            // Check if the location is valid
+            var location = await DB.UPL_Location
+                .Include(x => x.UPL_UOM)
+                .FirstOrDefaultAsync(x => x.LocationNumber == inventoryLocationUpdateDTO.LocationNumber && x.LocationNumber != Locations.Dock)
+                ?? throw new ValidationException("Location not found.");
+
+            // Check dimensions
+            var boxDimensions = (inventory.PO_Line.UPL_PartInfo.Height ?? 0) * (inventory.PO_Line.UPL_PartInfo.Width ?? 0) * (inventory.PO_Line.UPL_PartInfo.Depth ?? 0);
+            var locationDimensions = location.Height * location.Width * location.Depth;
+
+            // Convert to inches
+            if(inventory.PO_Line.UPL_PartInfo.UPL_UOM.UnitOfMeasurement == UOM.Feet)
+                boxDimensions = boxDimensions * 12 * 12 * 12;
+
+            if (inventory.UPL_Location.UPL_UOM.UnitOfMeasurement == UOM.Feet)
+                locationDimensions = locationDimensions * 12 * 12 * 12;
+
+            // Get BoxCount
+            var boxCount = await DB.INV_Stock
+                    .Where(x => x.LocationID == location.Id && x.INV_StockStatus.StockStatus != StockStatus.Shipped)
+                    .SumAsync(x => x.Quantity);
+
+            var boxCountDimensions = boxCount * boxDimensions;
+
+            locationDimensions -= boxCountDimensions;
+
+            // Check if the box fits in the location
+            if (boxDimensions > locationDimensions)
+                throw new ValidationException($"Box does not fit in the location. { (boxDimensions / 12) } feet needed { (locationDimensions / 12) } available.");
+
+            // Update Inventory
+            inventory.UPL_Location = location;
+            inventory.INV_StockStatus = inStockStatus;
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
     }
 }

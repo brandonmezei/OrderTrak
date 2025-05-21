@@ -10,7 +10,7 @@ namespace OrderTrak.API.Controllers.Inventory
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "InventoryLookup")]
+    [Authorize(Policy = "InventoryLookupReceiving")]
     public class InventoryController(IInventoryService inventoryService) : ControllerBase
     {
         private readonly IInventoryService inventoryService = inventoryService;
@@ -22,6 +22,25 @@ namespace OrderTrak.API.Controllers.Inventory
             try
             {
                 return Ok(await inventoryService.SearchInventoryAsync(searchQuery));
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "Receiving")]
+        [HttpPost("UpdateInventoryLocationPutaway")]
+        public async Task<ActionResult> UpdateInventoryLocationPutawayAsync([FromBody] InventoryLocationUpdateDTO inventoryLocationUpdateDTO)
+        {
+            try
+            {
+                await inventoryService.UpdateInventoryLocationPutawayAsync(inventoryLocationUpdateDTO);
+                return Ok();
             }
             catch (ValidationException ex)
             {

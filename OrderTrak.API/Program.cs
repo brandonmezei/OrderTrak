@@ -143,6 +143,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("InventoryLookup", policy =>
         policy.Requirements.Add(new FunctionAccessRequirement("InventoryLookup")));
+
+    options.AddPolicy("InventoryLookupReceiving", policy =>
+        policy.Requirements.Add(new FunctionAccessRequirement("InventoryLookup", "Receiving")));
 });
 
 builder.Services.AddCors(options =>

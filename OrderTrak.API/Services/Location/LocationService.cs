@@ -2,6 +2,7 @@
 using OrderTrak.API.Models.DTO;
 using OrderTrak.API.Models.DTO.Location;
 using OrderTrak.API.Models.OrderTrakDB;
+using OrderTrak.API.Static;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderTrak.API.Services.Location
@@ -48,6 +49,14 @@ namespace OrderTrak.API.Services.Location
             var location = await DB.UPL_Location
                 .FirstOrDefaultAsync(x => x.FormID == locationID)
                 ?? throw new ValidationException("Location not found");
+
+            // Check if location is dock
+            if (string.Compare(location.LocationNumber, Locations.Dock, true) == 0)
+                throw new ValidationException("Dock location cannot be deleted.");
+
+            // Check if location has stock in it
+            if (await DB.INV_Stock.AnyAsync(x => x.LocationID == location.Id && x.INV_StockStatus.StockStatus != StockStatus.Shipped))
+                throw new ValidationException("Location cannot be deleted because it has stock in it.");
 
             // Soft Delete
             location.IsDelete = true;
@@ -109,6 +118,9 @@ namespace OrderTrak.API.Services.Location
                 3 => searchQuery.SortOrder == 1
                                         ? query.OrderBy(x => x.UPL_UOM.UnitOfMeasurement)
                                         : query.OrderByDescending(x => x.UPL_UOM.UnitOfMeasurement),
+                4 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.INV_Stock.Where(i => i.INV_StockStatus.StockStatus != StockStatus.Shipped).Sum(i => i.Quantity))
+                                        : query.OrderByDescending(x => x.INV_Stock.Where(i => i.INV_StockStatus.StockStatus != StockStatus.Shipped).Sum(i => i.Quantity)),
                 _ => query.OrderBy(x => x.Id),
             };
             var locationList = await query
@@ -120,7 +132,8 @@ namespace OrderTrak.API.Services.Location
                     FormID = x.FormID,
                     LocationNumber = x.LocationNumber,
                     Volume = x.Height * x.Width * x.Depth,
-                    UnitOfMeasure = x.UPL_UOM.UnitOfMeasurement
+                    UnitOfMeasure = x.UPL_UOM.UnitOfMeasurement,
+                    TotalQuantity = x.INV_Stock.Where(i => i.INV_StockStatus.StockStatus != StockStatus.Shipped).Sum(i => i.Quantity)
                 })
                 .ToListAsync();
 
@@ -139,6 +152,10 @@ namespace OrderTrak.API.Services.Location
             var location = await DB.UPL_Location
                 .FirstOrDefaultAsync(x => x.FormID == locationUpdateDTO.FormID)
                 ?? throw new ValidationException("Location not found");
+
+            // Check if location is dock
+            if (string.Compare(location.LocationNumber, Locations.Dock, true) == 0)
+                throw new ValidationException("Dock location cannot be updated.");
 
             // Check if location already exists
             if (await DB.UPL_Location.AnyAsync(x => x.LocationNumber == locationUpdateDTO.LocationNumber && x.FormID != locationUpdateDTO.FormID))

@@ -6,6 +6,68 @@
 
 <PageTitle>Receiving Putaway - OrderTrak</PageTitle>
 
+@if (PutawayInventory != null)
+{
+    var searchedLine = ReturnTable?.Data.FirstOrDefault(x => x.FormID == PutawayInventory.FormID);
+
+    if (searchedLine != null)
+    {
+        <ModalPopup Title="Putaway Inventory" OnClose="() => Putaway_Toggle(null)" Messages=Layout.Messages>
+            <Content>
+                <div class="columns is-centered">
+                    <div class="column is-2">
+                        <FormField Icon="fa-cogs" Title="Part Number">
+                            <Content>
+                                <InputText class="input" Placeholder="Part Number" @bind-Value="searchedLine.PartNumber" disabled />
+                            </Content>
+                        </FormField>
+                    </div>
+                    <div class="column">
+                        <FormField Icon="fa-align-left" Title="Description">
+                            <Content>
+                                <InputText class="input" Placeholder="Part Description" @bind-Value="searchedLine.PartDescription" disabled />
+                            </Content>
+                        </FormField>
+                    </div>
+                    <div class="column is-2">
+                        <FormField Icon="fa-cubes" Title="Quantity">
+                            <Content>
+                                <InputNumber class="input" @bind-Value="searchedLine.Quantity" disabled />
+                            </Content>
+                        </FormField>
+                    </div>
+                </div>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <EditForm Model="@PutawayInventory" OnValidSubmit="Putaway_Submit">
+                            <CardComponent Title=@($"{searchedLine.BoxID}") Icon="fa-box-open">
+                                <CardBody>
+                                    <DataAnnotationsValidator />
+                                    <FormField Icon="fa-warehouse" Title="Location Name">
+                                        <Content>
+                                            <InputText class="input is-danger" Placeholder="Location Name" @bind-Value="PutawayInventory.LocationNumber" />
+                                            <ValidationMessage For="@(() => PutawayInventory.LocationNumber)" />
+                                        </Content>
+                                    </FormField>
+                                </CardBody>
+                                <Footer>
+                                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                                        <span class="icon">
+                                            <i class="fas fa-floppy-disk" />
+                                        </span>
+                                        <span>Save</span>
+                                    </button>
+                                </Footer>
+                            </CardComponent>
+                        </EditForm>
+                    </div>
+                </div>
+            </Content>
+        </ModalPopup>
+    }
+}
+
+
 <div class="box">
     <div class="columns is-centered">
         <div class="column">
@@ -114,6 +176,28 @@
                                                 }
                                             </a>
                                         </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(8)">
+                                                <span>Size Per Box</span>
+                                                @if (SearchFilters.SortColumn == 8)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(9)">
+                                                <span>UOM</span>
+                                                @if (SearchFilters.SortColumn == 9)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -122,8 +206,7 @@
                                         <tr>
                                             <td>
                                                 <div class="buttons">
-                                                    @* <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/receiving/{line.FormID}")" />
-                                                    <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" /> *@
+                                                    <FormButton Title="Putaway" Style="is-small" Icon="fa-box-open" OnClick="() => Putaway_Toggle(line.FormID)" />
                                                 </div>
                                             </td>
                                             <td>@line.BoxID</td>
@@ -133,6 +216,8 @@
                                             <td>@line.StockGroup</td>
                                             <td>@line.Location</td>
                                             <td>@line.Quantity</td>
+                                            <td>@line.UnitSize</td>
+                                            <td>@line.UnitSizeUOM</td>
                                         </tr>
                                     }
                                 </tbody>

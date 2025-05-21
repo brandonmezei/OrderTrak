@@ -10,5 +10,10 @@ namespace OrderTrak.Client.Services.Inventory
         {
             return await ApiClient.SearchInventoryAsync(searchQuery);
         }
+
+        public async Task UpdateInventoryLocationPutawayAsync(InventoryLocationUpdateDTO inventoryLocationUpdateDTO)
+        {
+            await ApiClient.UpdateInventoryLocationPutawayAsync(inventoryLocationUpdateDTO);
+        }
     }
 }

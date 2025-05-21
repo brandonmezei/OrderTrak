@@ -355,6 +355,15 @@ namespace OrderTrak.API.Services.Receiving
                 6 => searchQuery.SortOrder == 1
                                        ? query.OrderBy(x => x.UPL_Location.LocationNumber)
                                        : query.OrderByDescending(x => x.UPL_Location.LocationNumber),
+                7 => searchQuery.SortOrder == 1
+                                    ? query.OrderBy(x => x.Quantity)
+                                    : query.OrderByDescending(x => x.Quantity),
+                8 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.PO_Line.UPL_PartInfo.Height * x.PO_Line.UPL_PartInfo.Width * x.PO_Line.UPL_PartInfo.Depth)
+                                        : query.OrderByDescending(x => x.PO_Line.UPL_PartInfo.Height * x.PO_Line.UPL_PartInfo.Width * x.PO_Line.UPL_PartInfo.Depth),
+                9 => searchQuery.SortOrder == 1
+                                       ? query.OrderBy(x => x.PO_Line.UPL_PartInfo.UPL_UOM.UnitOfMeasurement)
+                                       : query.OrderByDescending(x => x.PO_Line.UPL_PartInfo.UPL_UOM.UnitOfMeasurement),
                 _ => query.OrderBy(x => x.Id),
             };
 
@@ -372,7 +381,9 @@ namespace OrderTrak.API.Services.Receiving
                     PO = x.PO_Line.PO_Header.PONumber,
                     StockGroup = x.UPL_StockGroup.StockGroupTitle,
                     Location = x.UPL_Location.LocationNumber,
-                    Quantity = x.Quantity
+                    Quantity = x.Quantity,
+                    UnitSize = (x.PO_Line.UPL_PartInfo.Height ?? 0) * (x.PO_Line.UPL_PartInfo.Width ?? 0) * (x.PO_Line.UPL_PartInfo.Depth ?? 0),
+                    UnitSizeUOM = x.PO_Line.UPL_PartInfo.UPL_UOM.UnitOfMeasurement
                 })
                 .ToListAsync();
 

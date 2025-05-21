@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
+using OrderTrak.Client.Services.Inventory;
 using OrderTrak.Client.Services.Receiving;
 using OrderTrak.Client.Statics;
 using static OrderTrak.Client.Models.OrderTrakMessages;
@@ -11,10 +12,15 @@ namespace OrderTrak.Client.Pages.Receiving
         [Inject]
         private IReceivingService ReceivingService { get; set; } = default!;
 
+        [Inject]
+        private IInventoryService InventoryService { get; set; } = default!;
+
         protected SearchQueryDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
         protected PagedTableOfReceivingPutawaySearchReturnDTO? ReturnTable;
 
+        protected InventoryLocationUpdateDTO? PutawayInventory { get; set; }
+        
         protected override void OnInitialized()
         {
             Layout.ClearMessages();
@@ -142,6 +148,58 @@ namespace OrderTrak.Client.Pages.Receiving
             catch (Exception ex)
             {
                 Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected void Putaway_Toggle(Guid? LineID)
+        {
+            if (LineID.HasValue)
+            {
+                PutawayInventory = new()
+                {
+                    FormID = LineID.Value,
+                    LocationNumber = string.Empty
+                };
+            }
+            else
+            {
+                PutawayInventory = null;
+            }
+        }
+
+        protected async Task Putaway_Submit()
+        {
+            if (IsLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsLoading = true;
+
+            try
+            {
+                if (PutawayInventory != null)
+                {
+                    // Putaway Inventory
+                    await InventoryService.UpdateInventoryLocationPutawayAsync(PutawayInventory);
+
+                    // Get Rec from API
+                    ReturnTable = await ReceivingService.SearchReceivingPutawayAsync(SearchFilters);
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                PutawayInventory = null;
+                IsLoading = false;
             }
         }
     }

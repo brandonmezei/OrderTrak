@@ -6,5 +6,6 @@
         public string LocationNumber { get; set; } = string.Empty;
         public decimal Volume { get; set; } = 0;
         public string UnitOfMeasure { get; set; } = string.Empty;
+        public int TotalQuantity { get; set; } = 0;
     }
 }

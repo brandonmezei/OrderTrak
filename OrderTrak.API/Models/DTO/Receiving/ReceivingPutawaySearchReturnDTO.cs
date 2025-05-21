@@ -10,5 +10,7 @@
         public string StockGroup { get; set; } = string.Empty;
         public string Location { get; set;} = string.Empty;
         public int Quantity { get; set; } = 0;
+        public decimal UnitSize { get; set; } = 0;
+        public string UnitSizeUOM { get; set; } = string.Empty;
     }
 }

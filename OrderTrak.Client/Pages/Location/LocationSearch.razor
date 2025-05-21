@@ -2,6 +2,7 @@
 @using OrderTrak.Client.Shared
 @using OrderTrak.Client.Shared.DropDowns
 @using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Statics
 @inherits OrderTrakBasePage
 
 <PageTitle>Location - OrderTrak</PageTitle>
@@ -18,7 +19,7 @@
                                 <DataAnnotationsValidator />
                                 <FormField Icon="fa-warehouse" Title="Location Name">
                                     <Content>
-                                        <InputText class="input is-danger"  Placeholder="Location Name" @bind-Value="CreateLocation.LocationNumber" />
+                                        <InputText class="input is-danger" Placeholder="Location Name" @bind-Value="CreateLocation.LocationNumber" />
                                         <ValidationMessage For="@(() => CreateLocation.LocationNumber)" />
                                     </Content>
                                 </FormField>
@@ -26,7 +27,7 @@
                                     <div class="column">
                                         <FormField Icon="fa-ruler-vertical" Title="Height">
                                             <Content>
-                                                <InputNumber class="input is-danger"  Placeholder="Height" @bind-Value="CreateLocation.Height" />
+                                                <InputNumber class="input is-danger" Placeholder="Height" @bind-Value="CreateLocation.Height" />
                                                 <ValidationMessage For="@(() => CreateLocation.Height)" />
                                             </Content>
                                         </FormField>
@@ -34,7 +35,7 @@
                                     <div class="column">
                                         <FormField Icon="fa-ruler-horizontal" Title="Width">
                                             <Content>
-                                                <InputNumber class="input is-danger"  Placeholder="Width" @bind-Value="CreateLocation.Width" />
+                                                <InputNumber class="input is-danger" Placeholder="Width" @bind-Value="CreateLocation.Width" />
                                                 <ValidationMessage For="@(() => CreateLocation.Width)" />
                                             </Content>
                                         </FormField>
@@ -42,7 +43,7 @@
                                     <div class="column">
                                         <FormField Icon="fa-ruler-combined" Title="Depth">
                                             <Content>
-                                                <InputNumber class="input is-danger"  Placeholder="Depth" @bind-Value="CreateLocation.Depth" />
+                                                <InputNumber class="input is-danger" Placeholder="Depth" @bind-Value="CreateLocation.Depth" />
                                                 <ValidationMessage For="@(() => CreateLocation.Depth)" />
                                             </Content>
                                         </FormField>
@@ -121,62 +122,77 @@
                     @if (ReturnTable?.Data.Count > 0)
                     {
                         <div class="table-container">
-                        <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>
-                                        <a @onclick="() => SortSwitch_Click(1)">
-                                            <span>Location</span>
-                                            @if (SearchFilters.SortColumn == 1)
-                                            {
-                                                <span class="icon">
-                                                    <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
-                                                </span>
-                                            }
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a @onclick="() => SortSwitch_Click(2)">
-                                            <span>Volumn</span>
-                                            @if (SearchFilters.SortColumn == 2)
-                                            {
-                                                <span class="icon">
-                                                    <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
-                                                </span>
-                                            }
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a @onclick="() => SortSwitch_Click(3)">
-                                            <span>Unit of Measurement</span>
-                                            @if (SearchFilters.SortColumn == 3)
-                                            {
-                                                <span class="icon">
-                                                    <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
-                                                </span>
-                                            }
-                                        </a>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var line in ReturnTable.Data)
-                                {
+                            <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <div class="buttons">
-                                                <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/location/{line.FormID}")" />
-                                                <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
-                                            </div>
-                                        </td>
-                                        <td>@line.LocationNumber</td>
-                                        <td>@line.Volume</td>
-                                        <td>@line.UnitOfMeasure</td>
+                                        <th></th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(1)">
+                                                <span>Location</span>
+                                                @if (SearchFilters.SortColumn == 1)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(2)">
+                                                <span>Volumn</span>
+                                                @if (SearchFilters.SortColumn == 2)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(3)">
+                                                <span>Unit of Measurement</span>
+                                                @if (SearchFilters.SortColumn == 3)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(4)">
+                                                <span>Total Quantity</span>
+                                                @if (SearchFilters.SortColumn == 4)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in ReturnTable.Data)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="buttons">
+                                                    @if (string.Compare(line.LocationNumber, Locations.Dock, true) != 0)
+                                                    {
+                                                        <FormButton Title="Edit" Style="is-small" Icon="fa-edit" URL="@($"/location/{line.FormID}")" />
+                                                        <FormButton Title="Delete" Style="is-small" Icon="fa-trash" OnClick="() => Delete_Toggle(line.FormID)" />
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>@line.LocationNumber</td>
+                                            <td>@line.Volume</td>
+                                            <td>@line.UnitOfMeasure</td>
+                                            <td>@line.TotalQuantity</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                         @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
                         {

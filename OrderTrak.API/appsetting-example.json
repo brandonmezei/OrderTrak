@@ -1,20 +1,25 @@
 {
   "Logging": {
     "LogLevel": {
-      "Default": "Information",
+      "Default": "Warning",
       "Microsoft.AspNetCore": "Warning"
     }
   },
   "ConnectionStrings": {
     "OrderTrakDatabase": ""
   },
+  "Jwt": {
+    "Key": "",
+    "Issuer": "",
+    "Audience": ""
+  },
   "Serilog": {
-    "Using": [ "Serilog.Sinks.MSSqlServer", "Serilog.Sinks.Console" ],
+    "Using": [ "Serilog.Sinks.MSSqlServer" ],
     "MinimumLevel": {
-      "Default": "Information",
+      "Default": "Warning",
       "Override": {
-        "Microsoft": "Information",
-        "System": "Information"
+        "Microsoft": "Warning",
+        "System": "Warning"
       }
     },
     "WriteTo": [
@@ -27,7 +32,7 @@
           "connectionString": "OrderTrakDatabase",
           "tableName": "SYS_EventLog",
           "autoCreateSqlTable": true,
-          "restrictedToMinimumLevel": "Information",
+          "restrictedToMinimumLevel": "Warning",
           "columnOptionsSection": {
             "addStandardColumns": [ "LogEvent" ],
             "removeStandardColumns": [ "Properties" ]
