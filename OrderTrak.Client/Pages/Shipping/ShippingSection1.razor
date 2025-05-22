@@ -60,12 +60,19 @@
                                     </Content>
                                 </FormField>
                             </div>
+                            <div class="column is-half">
+                                <FormField Icon="fa-truck" Title="Requested Delivery Date">
+                                    <Content>
+                                        <InputDate class="input" Placeholder="Requested Delivery Date" @bind-Value="Order.RequestedDeliveryDate" disabled />
+                                    </Content>
+                                </FormField>
+                            </div>
                             @if (Order.IsClosed && !Order.IsCanceled)
                             {
                                 <div class="column is-half">
-                                    <FormField Icon="fa-box-open" Title="Actual Delivery Date">
+                                    <FormField Icon="fa-box-open" Title="Actual Ship Date">
                                         <Content>
-                                            <InputDate class="input" Placeholder="Actual Delivery Date" @bind-Value="Order.ActualShipDate" disabled />
+                                            <InputDate class="input" Placeholder="Actual Ship Date" @bind-Value="Order.ActualShipDate" disabled />
                                         </Content>
                                     </FormField>
                                 </div>

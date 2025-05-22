@@ -40,5 +40,10 @@ namespace OrderTrak.Client.Services.Filters
         {
             return [.. await ApiService.GetOrderStatusListDropDownAsync()];
         }
+
+        public async Task<List<DropDownFilterDTO>> GetInventoryStatusListAsync()
+        {
+            return [.. await ApiService.GetInventoryStatusListDropDownAsync()];
+        }
     }
 }

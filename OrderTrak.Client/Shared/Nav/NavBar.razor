@@ -32,6 +32,18 @@
                         }
                     </div>
                 </div>
+                <div class="navbar-item has-dropdown @(IsInventoryOpen ? "is-active" : string.Empty)">
+                    <button class="navbar-link" @onclick="Toggle_Inventory">
+                        <i class="fas fa-boxes-stacked"></i>
+                        Inventory
+                    </button>
+                    <div class="navbar-dropdown">
+                        @if (Permissions.Any(x => x == "InventoryLookup"))
+                        {
+                            <NavBarItem Label="Inventory Lookup" Icon="fa-search" URL="/inventory/search" />
+                        }
+                    </div>
+                </div>
                 <div class="navbar-item has-dropdown @(IsWarehouseOpen ? "is-active" : string.Empty)">
                     <button class="navbar-link" @onclick="Toggle_Warehouse">
                         <i class="fas fa-warehouse"></i>

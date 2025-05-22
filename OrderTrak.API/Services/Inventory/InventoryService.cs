@@ -35,7 +35,18 @@ namespace OrderTrak.API.Services.Inventory
                         x.UPL_Location.LocationNumber.Contains(filter) ||
                         x.PO_Line.PO_Header.PONumber.Contains(filter) ||
                         x.UPL_StockGroup.StockGroupTitle.Contains(filter) ||
-                        x.SerialNumber.Contains(filter)
+                        x.SerialNumber.Contains(filter) ||
+                        x.AssetTag.Contains(filter) ||
+                        x.UDF1.Contains(filter) ||
+                        x.UDF2.Contains(filter) ||
+                        x.UDF3.Contains(filter) ||
+                        x.UDF4.Contains(filter) ||
+                        x.UDF5.Contains(filter) ||
+                        x.UDF6.Contains(filter) ||
+                        x.UDF7.Contains(filter) ||
+                        x.UDF8.Contains(filter) ||
+                        x.UDF9.Contains(filter) ||
+                        x.UDF10.Contains(filter)
                     );
                 }
             }
@@ -64,11 +75,18 @@ namespace OrderTrak.API.Services.Inventory
                         );
                 }
             }
+            else
+            {
+                // Filter Out Shipped if not Requested
+                if (!searchQuery.ShowShipped)
+                    query = query.Where(x => x.INV_StockStatus.StockStatus != StockStatus.Shipped);
+            }
 
             // Inventory Filter
             if (searchQuery.InventoryID.HasValue)
-            query = query.Where(x => x.FormID == searchQuery.InventoryID);
+                query = query.Where(x => x.FormID == searchQuery.InventoryID);
 
+           
             // Apply Order By
             query = searchQuery.SortColumn switch
             {
@@ -99,6 +117,42 @@ namespace OrderTrak.API.Services.Inventory
                 9 => searchQuery.SortOrder == 1
                                         ? query.OrderBy(x => x.Quantity)
                                         : query.OrderByDescending(x => x.Quantity),
+                10 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.AssetTag)
+                                        : query.OrderByDescending(x => x.AssetTag),
+                11 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF1)
+                                        : query.OrderByDescending(x => x.UDF1),
+                12 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF2)
+                                        : query.OrderByDescending(x => x.UDF2),
+                13 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF3)
+                                        : query.OrderByDescending(x => x.UDF3),
+                14 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF4)
+                                        : query.OrderByDescending(x => x.UDF4),
+                15 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF5)
+                                        : query.OrderByDescending(x => x.UDF5),
+                16 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF6)
+                                        : query.OrderByDescending(x => x.UDF6),
+                17 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF7)
+                                        : query.OrderByDescending(x => x.UDF7),
+                18 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF8)
+                                        : query.OrderByDescending(x => x.UDF8),
+                19 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF9)
+                                        : query.OrderByDescending(x => x.UDF9),
+                20 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.UDF10)
+                                        : query.OrderByDescending(x => x.UDF10),
+                21 => searchQuery.SortOrder == 1
+                                        ? query.OrderBy(x => x.INV_StockStatus.StockStatus)
+                                        : query.OrderByDescending(x => x.INV_StockStatus.StockStatus),
                 _ => query.OrderBy(x => x.Id),
             };
 
@@ -110,15 +164,32 @@ namespace OrderTrak.API.Services.Inventory
                 .Select(x => new InventorySearchReturnDTO
                 {
                     FormID = x.FormID,
+                    ProjectID = x.PO_Line.PO_Header.UPL_Project.FormID,
+                    StockGroupID = x.UPL_StockGroup.FormID,
+                    StatusID = x.INV_StockStatus.FormID,
                     BoxID = x.Id,
                     ProjectCode = x.PO_Line.PO_Header.UPL_Project.ProjectCode,
                     PartNumber = x.PO_Line.UPL_PartInfo.PartNumber,
                     PartDescription = x.PO_Line.UPL_PartInfo.PartDescription,
-                    Location = x.UPL_Location.LocationNumber,
+                    LocationNumber = x.UPL_Location.LocationNumber,
+                    Status = x.INV_StockStatus.StockStatus,
                     PO = x.PO_Line.PO_Header.PONumber,
                     StockGroup = x.UPL_StockGroup.StockGroupTitle,
                     SerialNumber = x.SerialNumber,
-                    Quantity = x.Quantity
+                    Quantity = x.Quantity,
+                    AssetTag = x.AssetTag,
+                    UDF1 = x.UDF1,
+                    UDF2 = x.UDF2,
+                    UDF3 = x.UDF3,
+                    UDF4 = x.UDF4,
+                    UDF5 = x.UDF5,
+                    UDF6 = x.UDF6,
+                    UDF7 = x.UDF7,
+                    UDF8 = x.UDF8,
+                    UDF9 = x.UDF9,
+                    UDF10 = x.UDF10,
+                    CanUpdate = x.INV_StockStatus.StockStatus != StockStatus.Shipped && x.INV_StockStatus.StockStatus != StockStatus.OnOrder,
+                    IsSerialized = x.PO_Line.IsSerialized
                 })
                 .ToListAsync();
 
@@ -206,7 +277,7 @@ namespace OrderTrak.API.Services.Inventory
             var locationDimensions = location.Height * location.Width * location.Depth;
 
             // Convert to inches
-            if(inventory.PO_Line.UPL_PartInfo.UPL_UOM.UnitOfMeasurement == UOM.Feet)
+            if (inventory.PO_Line.UPL_PartInfo.UPL_UOM.UnitOfMeasurement == UOM.Feet)
                 boxDimensions = boxDimensions * 12 * 12 * 12;
 
             if (inventory.UPL_Location.UPL_UOM.UnitOfMeasurement == UOM.Feet)
@@ -223,11 +294,60 @@ namespace OrderTrak.API.Services.Inventory
 
             // Check if the box fits in the location
             if (boxDimensions > locationDimensions)
-                throw new ValidationException($"Box does not fit in the location. { (boxDimensions / 12) } feet needed { (locationDimensions / 12) } available.");
+                throw new ValidationException($"Box does not fit in the location. {(boxDimensions / 12)} feet needed {(locationDimensions / 12)} available.");
 
             // Update Inventory
             inventory.UPL_Location = location;
             inventory.INV_StockStatus = inStockStatus;
+
+            // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task UpdateInventoryLookupAsync(InventoryUpdateLookupDTO inventoryUpdateLookupDTO)
+        {
+            // Build INV Query
+            var invQuery = DB.INV_Stock
+                .Include(x => x.UPL_StockGroup)
+                .Include(x => x.PO_Line)
+                .Where(x => x.FormID == inventoryUpdateLookupDTO.FormID
+                    && x.INV_StockStatus.StockStatus != StockStatus.Shipped && x.INV_StockStatus.StockStatus != StockStatus.OnOrder);
+
+            // Get Inventory to Update
+            var inventory = await invQuery
+                .FirstOrDefaultAsync()
+                ?? throw new ValidationException("Inventory not found.");
+
+            // Check Serial
+            if (inventory.PO_Line.IsSerialized && string.IsNullOrEmpty(inventoryUpdateLookupDTO.SerialNumber))
+                throw new ValidationException("Serial Number is required.");
+
+            // Update Location
+            await UpdateInventoryLocationPutawayAsync(new InventoryLocationUpdateDTO
+            {
+                FormID = inventoryUpdateLookupDTO.FormID,
+                LocationNumber = inventoryUpdateLookupDTO.LocationNumber
+            });
+
+            // Reload 
+            inventory = await invQuery
+                .FirstOrDefaultAsync()
+                ?? throw new ValidationException("Inventory not found.");
+
+            // Get StockGroup
+            var stockGroup = await DB.UPL_StockGroup
+                .FirstOrDefaultAsync(x => x.FormID == inventoryUpdateLookupDTO.StockGroupID)
+                ?? throw new ValidationException("Stock Group not found.");
+
+            var stockStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.FormID == inventoryUpdateLookupDTO.StatusID)
+                ?? throw new ValidationException("Stock Status not found.");
+
+            // Update Inventory
+            inventory.UPL_StockGroup = stockGroup;
+            inventory.INV_StockStatus = stockStatus;
+            inventory.SerialNumber = inventoryUpdateLookupDTO.SerialNumber;
+            inventory.AssetTag = inventoryUpdateLookupDTO.AssetTag;
 
             // Save
             await DB.SaveChangesAsync();

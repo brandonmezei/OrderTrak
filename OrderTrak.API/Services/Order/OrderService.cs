@@ -649,19 +649,13 @@ namespace OrderTrak.API.Services.Order
             var inv = inventory.Data.First();
 
             // Get On Order Inventory Status
-            var onOrderStatusTask = DB.INV_StockStatus
-                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.OnOrder);
-
-            // Get Picking Order Status
-            var pickingStatusTask = DB.ORD_Status
-                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Picking);
-                
-            await Task.WhenAll(onOrderStatusTask, pickingStatusTask);
-
-            var onOrderStatus = onOrderStatusTask.Result
+            var onOrderStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.OnOrder)
                 ?? throw new ValidationException("Cannot find On Order Status");
 
-            var pickingStatus = pickingStatusTask.Result
+            // Get Picking Order Status
+            var pickingStatus = await DB.ORD_Status
+                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Picking)
                 ?? throw new ValidationException("Cannot find Picking Status");
 
             // Get Inventory
@@ -903,19 +897,13 @@ namespace OrderTrak.API.Services.Order
                 ?? throw new ValidationException("Order not found or it is shipped.");
 
             // Get required statuses
-            var shippedStatusTask = DB.ORD_Status
-                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Shipped);
-
-            var shippedStockStatusTask = DB.INV_StockStatus
-                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.Shipped);
-
-            await Task.WhenAll(shippedStatusTask, shippedStockStatusTask);
-
-            var shippedStatus = shippedStatusTask.Result
+            var shippedStatus = await DB.ORD_Status
+                .FirstOrDefaultAsync(x => x.Status == OrderStatus.Shipped)
                 ?? throw new ValidationException("Shipped order status not found.");
 
-            var shippedStockStatus = shippedStockStatusTask.Result
-                ?? throw new ValidationException("Shipped stock status not found.");
+            var shippedStockStatus = await DB.INV_StockStatus
+                .FirstOrDefaultAsync(x => x.StockStatus == StockStatus.Shipped)
+                ?? throw new ValidationException("Shipped stock status not found.");           
 
             // Check if Order has Tracking
             if (order.ORD_Tracking.Count == 0)

@@ -51,6 +51,25 @@ namespace OrderTrak.API.Controllers.Inventory
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [Authorize(Policy = "InventoryLookup")]
+        [HttpPost("UpdateInventoryLookup")]
+        public async Task<ActionResult> UpdateInventoryLookupAsync([FromBody] InventoryUpdateLookupDTO inventoryUpdateLookupDTO)
+        {
+            try
+            {
+                await inventoryService.UpdateInventoryLookupAsync(inventoryUpdateLookupDTO);
+                return Ok();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         #endregion
     }
 }

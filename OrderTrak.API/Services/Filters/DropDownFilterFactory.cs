@@ -108,5 +108,18 @@ namespace OrderTrak.API.Services.Filters
                  })
                  .ToListAsync();
         }
+
+        public async Task<List<DropDownFilterDTO>> GetInventoryStatusListAsync()
+        {
+            return await DB.INV_StockStatus
+                 .OrderBy(x => x.StockStatus)
+                 .AsNoTracking()
+                 .Select(x => new DropDownFilterDTO
+                 {
+                     FormID = x.FormID,
+                     Label = x.StockStatus
+                 })
+                 .ToListAsync();
+        }
     }
 }

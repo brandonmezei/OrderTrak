@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using OrderTrak.Client.Pages.Inventory;
 using OrderTrak.Client.Services.API;
 
 namespace OrderTrak.Client.Models
@@ -31,6 +32,8 @@ namespace OrderTrak.Client.Models
             CreateMap<OrderPartListDTO, OrderPartListUpdate>();
             CreateMap<OrderShipDTO, OrderShipUpdateDTO>();
             CreateMap<OrderActivationDTO, OrderActivationUpdateDTO>();
+
+            CreateMap<InventorySearchReturnDTO, InventoryUpdateLookupDTO>();
         }
     }
 }

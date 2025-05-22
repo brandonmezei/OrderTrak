@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using OrderTrak.Client.Services.API;
 using OrderTrak.Client.Services.Inventory;
+using OrderTrak.Client.Services.Location;
 using OrderTrak.Client.Services.Receiving;
 using OrderTrak.Client.Statics;
+using System.Threading.Tasks;
 using static OrderTrak.Client.Models.OrderTrakMessages;
 
 namespace OrderTrak.Client.Pages.Receiving
@@ -15,12 +17,19 @@ namespace OrderTrak.Client.Pages.Receiving
         [Inject]
         private IInventoryService InventoryService { get; set; } = default!;
 
+        [Inject]
+        private ILocationService LocationService { get; set; } = default!;
+
         protected SearchQueryDTO SearchFilters { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+        protected SearchQueryDTO LocationSearch { get; set; } = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
 
         protected PagedTableOfReceivingPutawaySearchReturnDTO? ReturnTable;
 
+        protected PagedTableOfLocationSearchReturnDTO? LocationTable;
         protected InventoryLocationUpdateDTO? PutawayInventory { get; set; }
-        
+
+        protected int Section { get; set; } = 1;
+
         protected override void OnInitialized()
         {
             Layout.ClearMessages();
@@ -200,6 +209,120 @@ namespace OrderTrak.Client.Pages.Receiving
             {
                 PutawayInventory = null;
                 IsLoading = false;
+            }
+        }
+
+        protected async Task Section_Click(int ChangeSection)
+        {
+            Section = ChangeSection;
+
+            if (Section == 2)
+            {
+                LocationSearch = new() { Page = 1, RecordSize = 50, SortOrder = 1, SortColumn = 1 };
+
+                // Get Location from API
+                LocationTable = await LocationService.SearchLocationAsync(LocationSearch);
+            }
+            else
+                LocationTable = null;
+        }
+
+        protected async Task LocationSearch_Click()
+        {
+            if (IsCardLoading)
+                return;
+
+            Layout.ClearMessages();
+
+            IsCardLoading = true;
+
+            try
+            {
+                LocationSearch.Page = 1;
+
+                // Get Location from API
+                LocationTable = await LocationService.SearchLocationAsync(LocationSearch);
+
+                if (LocationTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+            finally
+            {
+                IsCardLoading = false;
+            }
+        }
+
+        protected async Task LocationSortSwitch_Click(int column)
+        {
+            LocationSearch.SortColumn = column;
+            LocationSearch.SortOrder = LocationSearch.SortOrder == 1 ? 2 : 1;
+
+            try
+            {
+
+                // Get Location from API
+                LocationTable = await LocationService.SearchLocationAsync(LocationSearch);
+
+                if (LocationTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected async Task LocationPageSwitch_Click(int page)
+        {
+            LocationSearch.Page = page;
+
+            try
+            {
+                // Get Location from API
+                LocationTable = await LocationService.SearchLocationAsync(LocationSearch);
+
+                if (LocationTable?.TotalRecords == 0)
+                {
+                    Layout.AddMessage(Messages.NoRecordsFound, MessageType.Warning);
+                }
+            }
+            catch (ApiException ex)
+            {
+                Layout.AddMessage(ex.Response, MessageType.Error);
+            }
+            catch (Exception ex)
+            {
+                Layout.AddMessage(ex.Message, MessageType.Error);
+            }
+        }
+
+        protected async Task LocationSelect_Click(Guid? LineID)
+        {
+            if(LineID.HasValue)
+            {
+                var warehouseLine = LocationTable?.Data.FirstOrDefault(x => x.FormID == LineID.Value);
+
+                if (warehouseLine != null && PutawayInventory != null)
+                {
+                    PutawayInventory.LocationNumber = warehouseLine.LocationNumber;
+                    await Section_Click(1);
+                }
             }
         }
     }

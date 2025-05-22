@@ -2,6 +2,7 @@
 @using OrderTrak.Client.Shared
 @using OrderTrak.Client.Shared.FormComponents
 @using OrderTrak.Client.Shared.DropDowns
+@using OrderTrak.Client.Statics
 @inherits OrderTrakBasePage
 
 <PageTitle>Receiving Putaway - OrderTrak</PageTitle>
@@ -14,54 +15,182 @@
     {
         <ModalPopup Title="Putaway Inventory" OnClose="() => Putaway_Toggle(null)" Messages=Layout.Messages>
             <Content>
-                <div class="columns is-centered">
-                    <div class="column is-2">
-                        <FormField Icon="fa-cogs" Title="Part Number">
-                            <Content>
-                                <InputText class="input" Placeholder="Part Number" @bind-Value="searchedLine.PartNumber" disabled />
-                            </Content>
-                        </FormField>
-                    </div>
-                    <div class="column">
-                        <FormField Icon="fa-align-left" Title="Description">
-                            <Content>
-                                <InputText class="input" Placeholder="Part Description" @bind-Value="searchedLine.PartDescription" disabled />
-                            </Content>
-                        </FormField>
-                    </div>
-                    <div class="column is-2">
-                        <FormField Icon="fa-cubes" Title="Quantity">
-                            <Content>
-                                <InputNumber class="input" @bind-Value="searchedLine.Quantity" disabled />
-                            </Content>
-                        </FormField>
-                    </div>
+                <div class="tabs is-centered is-boxed">
+                    <ul>
+                        <li class="@(Section == 1 ? "is-active" : string.Empty)">
+                            <a @onclick="() => Section_Click(1)">
+                                <span class="icon is-small">
+                                    <i class="fas fa-box-open" aria -hidden="true"></i>
+                                </span>
+                                <span>Putaway</span>
+                            </a>
+                        </li>
+                        <li class="@(Section == 2 ? "is-active" : string.Empty)">
+                            <a @onclick="() => Section_Click(2)">
+                                <span class="icon is-small">
+                                    <i class="fas fa-warehouse" aria-hidden="true"></i>
+                                </span>
+                                <span>Warehouse</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="columns is-centered">
-                    <div class="column is-half">
-                        <EditForm Model="@PutawayInventory" OnValidSubmit="Putaway_Submit">
-                            <CardComponent Title=@($"{searchedLine.BoxID}") Icon="fa-box-open">
-                                <CardBody>
-                                    <DataAnnotationsValidator />
-                                    <FormField Icon="fa-warehouse" Title="Location Name">
-                                        <Content>
-                                            <InputText class="input is-danger" Placeholder="Location Name" @bind-Value="PutawayInventory.LocationNumber" />
-                                            <ValidationMessage For="@(() => PutawayInventory.LocationNumber)" />
-                                        </Content>
-                                    </FormField>
-                                </CardBody>
-                                <Footer>
-                                    <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
-                                        <span class="icon">
-                                            <i class="fas fa-floppy-disk" />
-                                        </span>
-                                        <span>Save</span>
-                                    </button>
-                                </Footer>
-                            </CardComponent>
-                        </EditForm>
+                @if (Section == 1)
+                {
+                    <div class="columns is-centered">
+                        <div class="column is-2">
+                            <FormField Icon="fa-cogs" Title="Part Number">
+                                <Content>
+                                    <InputText class="input" Placeholder="Part Number" @bind-Value="searchedLine.PartNumber" disabled />
+                                </Content>
+                            </FormField>
+                        </div>
+                        <div class="column">
+                            <FormField Icon="fa-align-left" Title="Description">
+                                <Content>
+                                    <InputText class="input" Placeholder="Part Description" @bind-Value="searchedLine.PartDescription" disabled />
+                                </Content>
+                            </FormField>
+                        </div>
+                        <div class="column is-2">
+                            <FormField Icon="fa-cubes" Title="Quantity">
+                                <Content>
+                                    <InputNumber class="input" @bind-Value="searchedLine.Quantity" disabled />
+                                </Content>
+                            </FormField>
+                        </div>
                     </div>
-                </div>
+                    <div class="columns is-centered">
+                        <div class="column is-half">
+                            <EditForm Model="@PutawayInventory" OnValidSubmit="Putaway_Submit">
+                                <CardComponent Title=@($"{searchedLine.BoxID}") Icon="fa-box-open">
+                                    <CardBody>
+                                        <DataAnnotationsValidator />
+                                        <FormField Icon="fa-warehouse" Title="Location Name">
+                                            <Content>
+                                                <InputText class="input is-danger" Placeholder="Location Name" @bind-Value="PutawayInventory.LocationNumber" />
+                                                <ValidationMessage For="@(() => PutawayInventory.LocationNumber)" />
+                                            </Content>
+                                        </FormField>
+                                    </CardBody>
+                                    <Footer>
+                                        <button type="submit" class="button card-footer-item @(IsLoading ? "is-loading" : string.Empty)">
+                                            <span class="icon">
+                                                <i class="fas fa-floppy-disk" />
+                                            </span>
+                                            <span>Save</span>
+                                        </button>
+                                    </Footer>
+                                </CardComponent>
+                            </EditForm>
+                        </div>
+                    </div>
+                }
+                else if (Section == 2)
+                {
+                    <CardComponent Title="Search" Icon="fa-search" RightTitle="@($"{ LocationTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
+                        <CardBody>
+                            <div class="columns is-centered">
+                                <div class="column is-half">
+                                    <div class="box">
+                                        <EditForm Model="@LocationSearch" OnValidSubmit="@LocationSearch_Click">
+                                            <div class="field has-addons">
+                                                <div class="control is-expanded">
+                                                    <InputText class="input" @bind-Value="LocationSearch.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                                </div>
+                                                <div class="control">
+                                                    <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                        <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                        <span>Search</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </EditForm>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (LocationTable?.Data.Count > 0)
+                            {
+                                <div class="table-container">
+                                    <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>
+                                                    <a @onclick="() => LocationSortSwitch_Click(1)">
+                                                        <span>Location</span>
+                                                        @if (LocationSearch.SortColumn == 1)
+                                                        {
+                                                            <span class="icon">
+                                                                <i class="fas @(LocationSearch.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                            </span>
+                                                        }
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a @onclick="() => LocationSortSwitch_Click(2)">
+                                                        <span>Volumn</span>
+                                                        @if (LocationSearch.SortColumn == 2)
+                                                        {
+                                                            <span class="icon">
+                                                                <i class="fas @(LocationSearch.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                            </span>
+                                                        }
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a @onclick="() => LocationSortSwitch_Click(3)">
+                                                        <span>Unit of Measurement</span>
+                                                        @if (LocationSearch.SortColumn == 3)
+                                                        {
+                                                            <span class="icon">
+                                                                <i class="fas @(LocationSearch.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                            </span>
+                                                        }
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a @onclick="() => LocationSortSwitch_Click(4)">
+                                                        <span>Total Quantity</span>
+                                                        @if (LocationSearch.SortColumn == 4)
+                                                        {
+                                                            <span class="icon">
+                                                                <i class="fas @(LocationSearch.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                            </span>
+                                                        }
+                                                    </a>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var line in LocationTable.Data)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="buttons">
+                                                            @if (string.Compare(line.LocationNumber, Locations.Dock, true) != 0)
+                                                            {
+                                                                <FormButton Title="Select" Style="is-small" Icon="fa-mouse-pointer" OnClick="() => LocationSelect_Click(line.FormID)" />
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td>@line.LocationNumber</td>
+                                                    <td>@line.Volume</td>
+                                                    <td>@line.UnitOfMeasure</td>
+                                                    <td>@line.TotalQuantity</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (LocationTable.TotalRecords > LocationSearch.RecordSize)
+                                {
+                                    <TablePager PageIndex="@LocationSearch.Page" PageSize="@LocationSearch.RecordSize" TotalRecordCount="@LocationTable.TotalRecords" OnPageChanged="LocationPageSwitch_Click" />
+                                }
+                            }
+                        </CardBody>
+                    </CardComponent>
+                }
             </Content>
         </ModalPopup>
     }

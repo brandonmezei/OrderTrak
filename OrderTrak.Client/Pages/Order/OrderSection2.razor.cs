@@ -346,7 +346,7 @@ namespace OrderTrak.Client.Pages.Order
             PickLineID = null;
         }
 
-        protected async Task PickRemove_Toggle(Guid? PickID)
+        protected void PickRemove_Toggle(Guid? PickID)
         {
             RemovePickLineID = PickID;
         }

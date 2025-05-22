@@ -11,5 +11,7 @@ namespace OrderTrak.API.Services.Inventory
         Task<Guid> SplitBoxIDAsync(Guid FormID, int qty);
 
         Task UpdateInventoryLocationPutawayAsync(InventoryLocationUpdateDTO inventoryLocationUpdateDTO);
+
+        Task UpdateInventoryLookupAsync(InventoryUpdateLookupDTO inventoryUpdateLookupDTO);
     }
 }

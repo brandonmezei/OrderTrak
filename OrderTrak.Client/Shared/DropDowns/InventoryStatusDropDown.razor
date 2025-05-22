@@ -1,0 +1,23 @@
+﻿@if (DropDownFilters.Count > 0)
+{
+    <div class="select is-fullwidth">
+        <select @onchange="OnSelectedValueChanged">
+            <option value="">-- Inventory Status --</option>
+            @foreach (var line in DropDownFilters)
+            {
+                if (line.FormID == SelectedValue)
+                {
+                    <option value="@line.FormID" selected>@line.Label</option>
+                }
+                else
+                {
+                    <option value="@line.FormID">@line.Label</option>
+                }
+            }
+        </select>
+    </div>
+}
+else
+{
+    <input class="input" type="text" value="No Inventory Status found." disabled>
+}

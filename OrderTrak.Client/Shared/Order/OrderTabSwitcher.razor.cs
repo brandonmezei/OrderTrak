@@ -19,7 +19,7 @@ namespace OrderTrak.Client.Shared.Order
         [Parameter]
         public Guid? FormID { get; set; }
 
-        private async Task OnClick_Handler(int redirect)
+        private void OnClick_Handler(int redirect)
         {
             switch (redirect)
             {

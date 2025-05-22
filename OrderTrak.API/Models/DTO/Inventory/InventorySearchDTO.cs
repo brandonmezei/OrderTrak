@@ -6,5 +6,6 @@
        public Guid? InventoryID { get; set; }
 
        public bool ShowPickedOnly { get; set; }
+       public bool ShowShipped { get; set; }
     }
 }

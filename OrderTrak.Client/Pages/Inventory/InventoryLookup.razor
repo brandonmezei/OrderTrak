@@ -1,0 +1,248 @@
+﻿@page "/inventory/search"
+@using OrderTrak.Client.Shared
+@using OrderTrak.Client.Shared.FormComponents
+@using OrderTrak.Client.Shared.DropDowns
+@inherits OrderTrakBasePage
+
+<PageTitle>Inventory Lookup - OrderTrak</PageTitle>
+
+@if (LineUpdate != null)
+{
+    var invLine = ReturnTable?.Data.FirstOrDefault(x => x.FormID == LineUpdate.FormID);
+
+    if (invLine != null)
+    {
+        <ModalPopup Title="Edit Inventory" OnClose="() => UpdateLine_Toggle(null)" Messages=Layout.Messages>
+            <Content>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <EditForm Model="@LineUpdate" OnValidSubmit="UpdateLine_Save">
+                            <CardComponent Title="@($"{invLine.BoxID}")" Icon="fa-box">
+                                <CardBody>
+                                    <DataAnnotationsValidator />
+                                    <FormField Icon="fa-cogs" Title="Part Number">
+                                        <Content>
+                                            <InputText class="input" Placeholder="Part Number" @bind-Value="invLine.PartNumber" disabled />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-align-left" Title="Part Description">
+                                        <Content>
+                                            <InputText class="input" Placeholder="Part Description" @bind-Value="invLine.PartDescription" disabled />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-chart-line" Title="Order Status">
+                                        <Content>
+                                            <InventoryStatusDropDown SelectedValue=@LineUpdate.StatusID
+                                                                     SelectedValueChanged="InventoryStatus_Change"
+                                                                     ExcludeList=@ExcludeStockStatus />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-warehouse" Title="Stock Group">
+                                        <Content>
+                                            <StockGroupDropDown SelectedValue="LineUpdate.StockGroupID" SelectedValueChanged="StockGroup_Change" />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-warehouse" Title="Location Name">
+                                        <Content>
+                                            <InputText class="input is-danger" Placeholder="Location Name" @bind-Value="LineUpdate.LocationNumber" />
+                                        </Content>
+                                    </FormField>
+                                    @if (invLine.IsSerialized)
+                                    {
+                                        <FormField Icon="fa-barcode" Title="Serial">
+                                            <Content>
+                                                <InputText class="input is-danger" @bind-Value="LineUpdate.SerialNumber" />
+                                            </Content>
+                                        </FormField>
+                                        <FormField Icon="fa-desktop" Title="Asset">
+                                            <Content>
+                                                <InputText class="input is-primary" @bind-Value="LineUpdate.AssetTag" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                </CardBody>
+                            <Footer>
+                                <FormButton Title="Save" Style="card-footer-item" Icon="fa-save" />
+                            </Footer>
+                        </CardComponent>
+                    </EditForm>
+                </div>
+            </div>
+        </Content>
+    </ModalPopup>
+    }
+}
+
+<div class="box">
+    <div class="columns is-centered">
+        <div class="column">
+            <CardComponent Title="Inventory Lookup" Icon="fa-search" RightTitle="@($"{ ReturnTable?.TotalRecords } record(s)")" IsCardLoading=IsCardLoading>
+                <CardBody>
+                    <div class="columns is-centered">
+                        <div class="column is-half">
+                            <div class="box">
+                                <EditForm Model="@SearchFilters" OnValidSubmit="@Search_Click">
+                                    <div class="field has-addons">
+                                        <div class="control is-expanded">
+                                            <InputText class="input" @bind-Value="SearchFilters.SearchFilter" Placeholder="Search Filter (Comma Seperate Terms)" />
+                                        </div>
+                                        <div class="control">
+                                            <button class="button is-hoverable @(IsLoading ? "is-loading" : string.Empty)" type="submit">
+                                                <span class="fa fa-search" style="margin-right: 5px;"></span>
+                                                <span>Search</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="field">
+                                        <InputCheckbox class="is-checkradio" @bind-Value="SearchFilters.ShowShipped" id="ShowShipped" @onclick="ShowShipped_Change" />
+                                        <label for="ShowShipped">Show Shipped Inventory</label>
+                                    </div>
+                                </EditForm>
+                            </div>
+                        </div>
+                    </div>
+                    @if (ReturnTable?.Data.Count > 0)
+                    {
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-striped is-hoverable has-text-centered">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(1)">
+                                                <span>Box ID</span>
+                                                @if (SearchFilters.SortColumn == 1)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(3)">
+                                                <span>Part</span>
+                                                @if (SearchFilters.SortColumn == 3)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(5)">
+                                                <span>Location</span>
+                                                @if (SearchFilters.SortColumn == 5)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(21)">
+                                                <span>Status</span>
+                                                @if (SearchFilters.SortColumn == 21)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(6)">
+                                                <span>PO</span>
+                                                @if (SearchFilters.SortColumn == 6)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(7)">
+                                                <span>Stock Group</span>
+                                                @if (SearchFilters.SortColumn == 7)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(8)">
+                                                <span>Serial</span>
+                                                @if (SearchFilters.SortColumn == 8)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(10)">
+                                                <span>Asset</span>
+                                                @if (SearchFilters.SortColumn == 10)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a @onclick="() => SortSwitch_Click(9)">
+                                                <span>Quantity</span>
+                                                @if (SearchFilters.SortColumn == 9)
+                                                {
+                                                    <span class="icon">
+                                                        <i class="fas @(SearchFilters.SortOrder == 1 ? "fa-chevron-down" :"fa-chevron-up" )"></i>
+                                                    </span>
+                                                }
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var line in ReturnTable.Data)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="buttons">
+                                                    @if(line.CanUpdate)
+                                                    {
+                                                        <FormButton Title="Edit" Style="is-small" Icon="fa-edit" OnClick="() => UpdateLine_Toggle(line.FormID)" />
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>@line.BoxID</td>
+                                            <td>@line.PartNumber</td>
+                                            <td>@line.LocationNumber</td>
+                                            <td>@line.Status</td>
+                                            <td>@line.Po</td>
+                                            <td>@line.StockGroup</td>
+                                            <td>@line.SerialNumber</td>
+                                            <td>@line.AssetTag</td>
+                                            <td>@line.Quantity</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @if (ReturnTable.TotalRecords > SearchFilters.RecordSize)
+                        {
+                            <TablePager PageIndex="@SearchFilters.Page" PageSize="@SearchFilters.RecordSize" TotalRecordCount="@ReturnTable.TotalRecords" OnPageChanged="PageSwitch_Click" />
+                        }
+                    }
+                </CardBody>
+            </CardComponent>
+        </div>
+    </div>
+</div>
