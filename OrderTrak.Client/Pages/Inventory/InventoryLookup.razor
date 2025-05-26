@@ -33,8 +33,8 @@
                                     <FormField Icon="fa-chart-line" Title="Order Status">
                                         <Content>
                                             <InventoryStatusDropDown SelectedValue=@LineUpdate.StatusID
-                                                                     SelectedValueChanged="InventoryStatus_Change"
-                                                                     ExcludeList=@ExcludeStockStatus />
+                                            SelectedValueChanged="InventoryStatus_Change"
+                                            ExcludeList=@ExcludeStockStatus />
                                         </Content>
                                     </FormField>
                                     <FormField Icon="fa-warehouse" Title="Stock Group">
@@ -61,17 +61,136 @@
                                         </FormField>
                                     }
                                 </CardBody>
-                            <Footer>
-                                <FormButton Title="Save" Style="card-footer-item" Icon="fa-save" />
-                            </Footer>
-                        </CardComponent>
-                    </EditForm>
+                                <Footer>
+                                    <FormButton Title="Save" Style="card-footer-item" Icon="fa-save" />
+                                </Footer>
+                            </CardComponent>
+                        </EditForm>
+                    </div>
                 </div>
-            </div>
-        </Content>
-    </ModalPopup>
+            </Content>
+        </ModalPopup>
     }
 }
+
+
+@if (UDFUpdate != null)
+{
+    var invLine = ReturnTable?.Data.FirstOrDefault(x => x.FormID == UDFUpdate.FormID);
+
+    if (invLine != null)
+    {
+        <ModalPopup Title="Edit Inventory UDF" OnClose="() => UpdateUDF_Toggle(null)" Messages=Layout.Messages>
+            <Content>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <EditForm Model="@UDFUpdate" OnValidSubmit="UpdateUDFLine_Save">
+                            <CardComponent Title="@($"{invLine.BoxID}")" Icon="fa-box">
+                                <CardBody>
+                                    <DataAnnotationsValidator />
+                                    <FormField Icon="fa-cogs" Title="Part Number">
+                                        <Content>
+                                            <InputText class="input" Placeholder="Part Number" @bind-Value="invLine.PartNumber" disabled />
+                                        </Content>
+                                    </FormField>
+                                    <FormField Icon="fa-align-left" Title="Part Description">
+                                        <Content>
+                                            <InputText class="input" Placeholder="Part Description" @bind-Value="invLine.PartDescription" disabled />
+                                        </Content>
+                                    </FormField>
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel1))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel1>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel1" @bind-Value="UDFUpdate.UdF1" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel2))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel2>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel2" @bind-Value="UDFUpdate.UdF2" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel3))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel3>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel3" @bind-Value="UDFUpdate.UdF3" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel4))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel4>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel4" @bind-Value="UDFUpdate.UdF4" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel5))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel5>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel5" @bind-Value="UDFUpdate.UdF5" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel6))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel6>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel6" @bind-Value="UDFUpdate.UdF6" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel7))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel7>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel7" @bind-Value="UDFUpdate.UdF7" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel8))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel8>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel8" @bind-Value="UDFUpdate.UdF8" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel9))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel9>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel9" @bind-Value="UDFUpdate.UdF9" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                    @if (!string.IsNullOrEmpty(invLine.UdfLabel10))
+                                    {
+                                        <FormField Icon="fa-hashtag" Title=@invLine.UdfLabel10>
+                                            <Content>
+                                                <InputText class="input is-primary" Placeholder="@invLine.UdfLabel10" @bind-Value="UDFUpdate.UdF10" />
+                                            </Content>
+                                        </FormField>
+                                    }
+                                </CardBody>
+                                <Footer>
+                                    <FormButton Title="Save" Style="card-footer-item" Icon="fa-save" />
+                                </Footer>
+                            </CardComponent>
+                        </EditForm>
+                    </div>
+                </div>
+            </Content>
+        </ModalPopup>
+    }
+}
+
 
 <div class="box">
     <div class="columns is-centered">
@@ -219,6 +338,7 @@
                                                     @if(line.CanUpdate)
                                                     {
                                                         <FormButton Title="Edit" Style="is-small" Icon="fa-edit" OnClick="() => UpdateLine_Toggle(line.FormID)" />
+                                                        <FormButton Title="UDF" Style="is-small" Icon="fa-wrench" OnClick="() => UpdateUDF_Toggle(line.FormID)" />
                                                     }
                                                 </div>
                                             </td>

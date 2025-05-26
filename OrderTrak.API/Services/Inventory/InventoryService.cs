@@ -188,6 +188,16 @@ namespace OrderTrak.API.Services.Inventory
                     UDF8 = x.UDF8,
                     UDF9 = x.UDF9,
                     UDF10 = x.UDF10,
+                    UDFLabel1 = x.PO_Line.PO_Header.UPL_Project.UDF1,
+                    UDFLabel2 = x.PO_Line.PO_Header.UPL_Project.UDF2,
+                    UDFLabel3 = x.PO_Line.PO_Header.UPL_Project.UDF3,
+                    UDFLabel4 = x.PO_Line.PO_Header.UPL_Project.UDF4,
+                    UDFLabel5 = x.PO_Line.PO_Header.UPL_Project.UDF5,
+                    UDFLabel6 = x.PO_Line.PO_Header.UPL_Project.UDF6,
+                    UDFLabel7 = x.PO_Line.PO_Header.UPL_Project.UDF7,
+                    UDFLabel8 = x.PO_Line.PO_Header.UPL_Project.UDF8,
+                    UDFLabel9 = x.PO_Line.PO_Header.UPL_Project.UDF9,
+                    UDFLabel10 = x.PO_Line.PO_Header.UPL_Project.UDF10,
                     CanUpdate = x.INV_StockStatus.StockStatus != StockStatus.Shipped && x.INV_StockStatus.StockStatus != StockStatus.OnOrder,
                     IsSerialized = x.PO_Line.IsSerialized
                 })
@@ -350,6 +360,32 @@ namespace OrderTrak.API.Services.Inventory
             inventory.AssetTag = inventoryUpdateLookupDTO.AssetTag;
 
             // Save
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task UpdateInventoryLookupUDFAsync(InventoryUpdateLookupUDFDTO inventoryUpdateLookupUDFDTO)
+        {
+            // Build INV Query
+            var inv = await DB.INV_Stock
+                .Include(x => x.UPL_StockGroup)
+                .Include(x => x.PO_Line)
+                .FirstOrDefaultAsync(x => x.FormID == inventoryUpdateLookupUDFDTO.FormID
+                    && x.INV_StockStatus.StockStatus != StockStatus.Shipped && x.INV_StockStatus.StockStatus != StockStatus.OnOrder)
+                ?? throw new ValidationException("Inventory not found.");
+
+            // Update UDF
+            inv.UDF1 = inventoryUpdateLookupUDFDTO.UDF1;
+            inv.UDF2 = inventoryUpdateLookupUDFDTO.UDF2;
+            inv.UDF3 = inventoryUpdateLookupUDFDTO.UDF3;
+            inv.UDF4 = inventoryUpdateLookupUDFDTO.UDF4;
+            inv.UDF5 = inventoryUpdateLookupUDFDTO.UDF5;
+            inv.UDF6 = inventoryUpdateLookupUDFDTO.UDF6;
+            inv.UDF7 = inventoryUpdateLookupUDFDTO.UDF7;
+            inv.UDF8 = inventoryUpdateLookupUDFDTO.UDF8;
+            inv.UDF9 = inventoryUpdateLookupUDFDTO.UDF9;
+            inv.UDF10 = inventoryUpdateLookupUDFDTO.UDF10;
+
+            // Save changes to the database
             await DB.SaveChangesAsync();
         }
     }

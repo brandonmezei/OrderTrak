@@ -13,5 +13,6 @@ namespace OrderTrak.API.Services.Inventory
         Task UpdateInventoryLocationPutawayAsync(InventoryLocationUpdateDTO inventoryLocationUpdateDTO);
 
         Task UpdateInventoryLookupAsync(InventoryUpdateLookupDTO inventoryUpdateLookupDTO);
+        Task UpdateInventoryLookupUDFAsync(InventoryUpdateLookupUDFDTO inventoryUpdateLookupUDFDTO);
     }
 }

@@ -27,6 +27,16 @@
         public string? UDF8 { get; set; }
         public string? UDF9 { get; set; }
         public string? UDF10 { get; set; }
+        public string? UDFLabel1 { get; set; }
+        public string? UDFLabel2 { get; set; }
+        public string? UDFLabel3 { get; set; }
+        public string? UDFLabel4 { get; set; }
+        public string? UDFLabel5 { get; set; }
+        public string? UDFLabel6 { get; set; }
+        public string? UDFLabel7 { get; set; }
+        public string? UDFLabel8 { get; set; }
+        public string? UDFLabel9 { get; set; }
+        public string? UDFLabel10 { get; set; }
         public bool CanUpdate { get; set; }
         public bool IsSerialized { get; set; }
     }

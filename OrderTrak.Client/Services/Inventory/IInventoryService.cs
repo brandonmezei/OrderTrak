@@ -7,5 +7,6 @@ namespace OrderTrak.Client.Services.Inventory
         Task<PagedTableOfInventorySearchReturnDTO> SearchInventoryAsync(InventorySearchDTO searchQuery);
         Task UpdateInventoryLocationPutawayAsync(InventoryLocationUpdateDTO inventoryLocationUpdateDTO);
         Task UpdateInventoryLookupAsync(InventoryUpdateLookupDTO inventoryUpdateLookupDTO);
+        Task UpdateInventoryLookupUDFAsync(InventoryUpdateLookupUDFDTO inventoryUpdateLookupUDFDTO);
     }
 }

@@ -16,6 +16,7 @@ namespace OrderTrak.Client.Pages.Inventory
         protected PagedTableOfInventorySearchReturnDTO? ReturnTable;
 
         protected InventoryUpdateLookupDTO? LineUpdate { get; set; }
+        protected InventoryUpdateLookupUDFDTO? UDFUpdate { get; set; }
 
         protected readonly List<string> ExcludeStockStatus = [
             StockStatus.OnOrder, 
@@ -110,6 +111,8 @@ namespace OrderTrak.Client.Pages.Inventory
 
         protected void UpdateLine_Toggle(Guid? LineID)
         {
+            Layout.Messages.Clear();
+
             if (LineID.HasValue)
             {
                 // Get Inventory Line
@@ -124,6 +127,8 @@ namespace OrderTrak.Client.Pages.Inventory
 
         protected async Task UpdateLine_Save()
         {
+            Layout.Messages.Clear();
+
             if (LineUpdate != null)
             {
                 try
@@ -161,6 +166,53 @@ namespace OrderTrak.Client.Pages.Inventory
         {
             if (LineUpdate != null)
                 LineUpdate.StatusID = FormID;
+        }
+
+        protected void UpdateUDF_Toggle(Guid? LineID)
+        {
+            Layout.Messages.Clear();
+
+            if (LineID.HasValue)
+            {
+                // Get Inventory Line
+                var invLine = ReturnTable?.Data.FirstOrDefault(x => x.FormID == LineID.Value);
+
+                if (invLine != null)
+                    UDFUpdate = MapperService.Map<InventoryUpdateLookupUDFDTO>(invLine);
+            }
+            else
+                UDFUpdate = null;
+        }
+
+        protected async Task UpdateUDFLine_Save()
+        {
+            Layout.Messages.Clear();
+
+            if (UDFUpdate != null)
+            {
+                try
+                {
+                    // Update Line
+                    await InventoryService.UpdateInventoryLookupUDFAsync(UDFUpdate);
+
+                    // Refresh
+                    ReturnTable = await InventoryService.SearchInventoryAsync(SearchFilters);
+
+                    Layout.AddMessage(Messages.SaveSuccesful, MessageType.Success);
+                }
+                catch (ApiException ex)
+                {
+                    Layout.AddMessage(ex.Response, MessageType.Error);
+                }
+                catch (Exception ex)
+                {
+                    Layout.AddMessage(ex.Message, MessageType.Error);
+                }
+                finally
+                {
+                    UDFUpdate = null;
+                }
+            }
         }
     }
 }

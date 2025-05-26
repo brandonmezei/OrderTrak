@@ -20,5 +20,10 @@ namespace OrderTrak.Client.Services.Inventory
         {
             await ApiClient.UpdateInventoryLookupAsync(inventoryUpdateLookupDTO);
         }
+
+        public async Task UpdateInventoryLookupUDFAsync(InventoryUpdateLookupUDFDTO inventoryUpdateLookupUDFDTO)
+        {
+            await ApiClient.UpdateInventoryLookupUDFAsync(inventoryUpdateLookupUDFDTO);
+        }
     }
 }

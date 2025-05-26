@@ -34,6 +34,7 @@ namespace OrderTrak.Client.Models
             CreateMap<OrderActivationDTO, OrderActivationUpdateDTO>();
 
             CreateMap<InventorySearchReturnDTO, InventoryUpdateLookupDTO>();
+            CreateMap<InventorySearchReturnDTO, InventoryUpdateLookupUDFDTO>();
         }
     }
 }
