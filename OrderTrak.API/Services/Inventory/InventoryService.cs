@@ -35,6 +35,7 @@ namespace OrderTrak.API.Services.Inventory
                         x.UPL_Location.LocationNumber.Contains(filter) ||
                         x.PO_Line.PO_Header.PONumber.Contains(filter) ||
                         x.UPL_StockGroup.StockGroupTitle.Contains(filter) ||
+                        x.INV_StockStatus.StockStatus.Contains(filter) ||
                         x.SerialNumber.Contains(filter) ||
                         x.AssetTag.Contains(filter) ||
                         x.UDF1.Contains(filter) ||
